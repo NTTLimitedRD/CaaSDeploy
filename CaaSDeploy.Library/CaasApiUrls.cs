@@ -10,6 +10,7 @@ namespace CaasDeploy.Library
     {
         public string DeployUrl { get; set; }
         public string GetUrl { get; set; }
+        public string ListUrl { get; set; }
         public string DeleteUrl { get; set; }
     }
 }

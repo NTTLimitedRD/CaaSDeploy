@@ -14,9 +14,9 @@ namespace CaasDeploy.Library
     {
         private Dictionary<string, CaasApiUrls> _resourceApis = new Dictionary<string, CaasApiUrls>
         {
-            { "NetworkDomain", new CaasApiUrls { DeployUrl = "/network/deployNetworkDomain", GetUrl = "/network/networkDomain/{0}", DeleteUrl = "/network/deleteNetworkDomain" } },
-            { "VLAN", new CaasApiUrls { DeployUrl = "/network/deployVlan", GetUrl = "/network/vlan/{0}", DeleteUrl = "/network/deleteVlan" } },
-            { "Server", new CaasApiUrls { DeployUrl = "/server/deployServer", GetUrl = "/server/server/{0}", DeleteUrl = "/server/deleteServer" } },
+            { "NetworkDomain", new CaasApiUrls { DeployUrl = "/network/deployNetworkDomain", GetUrl = "/network/networkDomain/{0}", ListUrl="/network/networkDomain?name={0}", DeleteUrl = "/network/deleteNetworkDomain" } },
+            { "VLAN", new CaasApiUrls { DeployUrl = "/network/deployVlan", GetUrl = "/network/vlan/{0}", ListUrl="/network/vlan?name={0}", DeleteUrl = "/network/deleteVlan" } },
+            { "Server", new CaasApiUrls { DeployUrl = "/server/deployServer", GetUrl = "/server/server/{0}", ListUrl = "/server/server?name={0}", DeleteUrl = "/server/deleteServer" } },
         };
 
         // Move this to config...
@@ -33,6 +33,7 @@ namespace CaasDeploy.Library
         };
 
         private const string _mcp2UrlStem = "/caas/2.0";
+        private string _resourceId;
         private string _resourceType;
         private CaasApiUrls _resourceApi;
         private CaasAccountDetails _accountDetails;
@@ -40,8 +41,9 @@ namespace CaasDeploy.Library
         private const int _pollingDelaySeconds = 30;
         private const int _pollingTimeOutMinutes = 20;
 
-        public ResourceDeployer(string resourceType, string region, CaasAccountDetails accountDetails)
+        public ResourceDeployer(string resourceId, string resourceType, string region, CaasAccountDetails accountDetails)
         {
+            _resourceId = resourceId;
             _resourceType = resourceType;
             _resourceApi = _resourceApis[resourceType];
             _apiBaseUrl = _apiBaseUrls[region];
@@ -60,12 +62,13 @@ namespace CaasDeploy.Library
 
         private async Task<string> Deploy(string jsonPayload)
         {
+            Console.Write("Deploying {0}: '{1}'", _resourceType, _resourceId);
             using (var client = GetHttpClient())
             {
                 var url = GetApiUrl(_resourceApi.DeployUrl);
                 var response = await client.PostAsync(url, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
                 var responseBody = await response.Content.ReadAsStringAsync();
-                response.EnsureSuccessStatusCode();
+                await ThrowForHttpFailure(response);
                 var jsonResponse = JObject.Parse(responseBody);
                 var info = (JArray)jsonResponse["info"];
                 // TODO: Check if we ever get more than 1 
@@ -86,7 +89,7 @@ namespace CaasDeploy.Library
                 var url = String.Format(GetApiUrl(_resourceApi.GetUrl), id);
                 var response = await client.GetAsync(url);
                 var responseBody = await response.Content.ReadAsStringAsync();
-                response.EnsureSuccessStatusCode();
+                await ThrowForHttpFailure(response);
                 var jsonResponse = JObject.Parse(responseBody);
                 var properties = new Dictionary<string, string>();
                 foreach (var jprop in jsonResponse.Properties())
@@ -98,15 +101,48 @@ namespace CaasDeploy.Library
             }
         }
 
+        public async Task<string> GetResourceIdByName(string name)
+        {
+            using (var client = GetHttpClient())
+            {
+                var url = String.Format(GetApiUrl(_resourceApi.ListUrl), name);
+                var response = await client.GetAsync(url);
+                var responseBody = await response.Content.ReadAsStringAsync();
+                await ThrowForHttpFailure(response);
+                var jsonResponse = JObject.Parse(responseBody);
+                var results = (JArray) jsonResponse.First.Children().First();
+                if (results.Count == 0)
+                {
+                    return null;
+                }
+                else if (results.Count > 1)
+                {
+                    throw new InvalidOperationException("More than 1 matching item found.");
+                }
+
+                return results[0]["id"].Value<string>();
+
+            }
+        }
+
         private async Task Delete(string id)
         {
+            Console.Write("Deleting {0}: '{1}'", _resourceType, _resourceId);
             using (var client = GetHttpClient())
             {
                 var url = GetApiUrl(_resourceApi.DeleteUrl);
                 string jsonPayload = String.Format("{{ \"id\": \"{0}\" }}", id);
                 var response = await client.PostAsync(url, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
-                var responseBody = await response.Content.ReadAsStringAsync();
-                response.EnsureSuccessStatusCode();
+                await ThrowForHttpFailure(response);
+            }
+        }
+
+        private async Task ThrowForHttpFailure(HttpResponseMessage response)
+        {
+            var responseBody = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new WebException(responseBody);
             }
         }
 
@@ -135,8 +171,10 @@ namespace CaasDeploy.Library
                 var props = await Get(id);
                 if (props["state"] == "NORMAL")
                 {
+                    Console.WriteLine("Done!");
                     return props;
                 }
+                Console.Write(".");
                 await Task.Delay(TimeSpan.FromSeconds(_pollingDelaySeconds));
             }
 
@@ -157,11 +195,13 @@ namespace CaasDeploy.Library
                 {
                     var props = await Get(id);
                 }
-                catch (HttpRequestException)
+                catch (WebException)
                 {
                     // Check detail
+                    Console.WriteLine("Done!");
                     return;
                 }
+                Console.Write(".");
                 await Task.Delay(TimeSpan.FromSeconds(_pollingDelaySeconds));
             }
 
