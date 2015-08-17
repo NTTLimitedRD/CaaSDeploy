@@ -1,0 +1,11 @@
+c:\projects\CaasDeploy\CaasDeploy\bin\Debug\CaasDeploy.exe.config
+c:\projects\CaasDeploy\CaasDeploy\bin\Debug\CaasDeploy.exe
+c:\projects\CaasDeploy\CaasDeploy\bin\Debug\CaasDeploy.pdb
+c:\projects\CaasDeploy\CaasDeploy\obj\Debug\CaasDeploy.csprojResolveAssemblyReference.cache
+c:\projects\CaasDeploy\CaasDeploy\obj\Debug\CaasDeploy.exe
+c:\projects\CaasDeploy\CaasDeploy\obj\Debug\CaasDeploy.pdb
+c:\projects\CaasDeploy\CaasDeploy\bin\Debug\CaasDeploy.Library.dll
+c:\projects\CaasDeploy\CaasDeploy\bin\Debug\CaasDeploy.Library.pdb
+c:\projects\CaasDeploy\CaasDeploy\bin\Debug\Newtonsoft.Json.dll
+c:\projects\CaasDeploy\CaasDeploy\bin\Debug\Newtonsoft.Json.xml
+c:\projects\CaasDeploy\CaasDeploy\bin\Debug\TestTemplate.json

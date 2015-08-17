@@ -1,0 +1,13 @@
+c:\projects\CaasDeploy\CaaSDeploy.Library\bin\Debug\CaasDeploy.Library.dll.config
+c:\projects\CaasDeploy\CaaSDeploy.Library\bin\Debug\CaasDeploy.Library.dll
+c:\projects\CaasDeploy\CaaSDeploy.Library\bin\Debug\CaasDeploy.Library.pdb
+c:\projects\CaasDeploy\CaaSDeploy.Library\bin\Debug\Newtonsoft.Json.dll
+c:\projects\CaasDeploy\CaaSDeploy.Library\bin\Debug\System.Net.Http.Extensions.dll
+c:\projects\CaasDeploy\CaaSDeploy.Library\bin\Debug\System.Net.Http.Primitives.dll
+c:\projects\CaasDeploy\CaaSDeploy.Library\bin\Debug\Newtonsoft.Json.xml
+c:\projects\CaasDeploy\CaaSDeploy.Library\bin\Debug\System.Net.Http.Extensions.xml
+c:\projects\CaasDeploy\CaaSDeploy.Library\bin\Debug\System.Net.Http.Primitives.xml
+c:\projects\CaasDeploy\CaaSDeploy.Library\obj\Debug\CaaSDeploy.Library.csproj.App.config
+c:\projects\CaasDeploy\CaaSDeploy.Library\obj\Debug\CaaSDeploy.Library.csprojResolveAssemblyReference.cache
+c:\projects\CaasDeploy\CaaSDeploy.Library\obj\Debug\CaasDeploy.Library.dll
+c:\projects\CaasDeploy\CaaSDeploy.Library\obj\Debug\CaasDeploy.Library.pdb
