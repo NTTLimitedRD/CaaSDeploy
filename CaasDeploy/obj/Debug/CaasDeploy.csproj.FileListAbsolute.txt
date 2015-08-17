@@ -9,3 +9,4 @@ c:\projects\CaasDeploy\CaasDeploy\bin\Debug\CaasDeploy.Library.pdb
 c:\projects\CaasDeploy\CaasDeploy\bin\Debug\Newtonsoft.Json.dll
 c:\projects\CaasDeploy\CaasDeploy\bin\Debug\Newtonsoft.Json.xml
 c:\projects\CaasDeploy\CaasDeploy\bin\Debug\TestTemplate.json
+c:\projects\CaasDeploy\CaasDeploy\bin\Debug\TestTemplate.params.json

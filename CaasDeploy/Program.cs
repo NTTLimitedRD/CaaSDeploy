@@ -13,11 +13,22 @@ namespace CaasDeploy
 
         static void Main(string[] args)
         {
-            var t = Task.Run(() => MainAsync());
+            var t = Task.Run(() => Deploy());
             t.Wait();
         }
 
-        static async Task MainAsync()
+        static async Task Deploy()
+        {
+            var sr = new StreamReader(@"C:\temp\CaasCredentials.txt");
+            string userName = sr.ReadLine();
+            string password = sr.ReadLine();
+            sr.Close();
+            var accountDetails = await CaasAuthentication.Authenticate(userName, password);
+
+            var d = new Deployment("TestTemplate.json", "TestTemplate.params.json", "NA", accountDetails);
+            await d.Deploy();
+        }
+        static async Task CreateResources()
         {
             Console.WriteLine("Authenticating...");
 

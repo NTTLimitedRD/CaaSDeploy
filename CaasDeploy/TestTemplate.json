@@ -6,7 +6,7 @@
     "myNetworkDomainName": {
       "description": "The name to use for the Network Domain"
     },
-    "region": {
+    "datacenterId": {
       "description": "The region to deploy to"
     }
   },
@@ -15,7 +15,7 @@
       "resourceType": "NetworkDomain",
       "resourceId": "MyNetworkDomain",
       "resourceDefinition": {
-        "datacenterId": "$parameters['region']",
+        "datacenterId": "$parameters['datacenterId']",
         "name": "$parameters['myNetworkDomainName']",
         "description": "Testing CaaS Deployment Templates",
         "type": "ESSENTIALS"
@@ -27,7 +27,7 @@
       "resourceId": "VLAN1",
       "resourceDefinition": {
         "networkDomainId": "$resources['MyNetworkDomain'].id",
-        "name": "Production VLAN",
+        "name": "Toms Test VLAN",
         "description": "Testing CaaS Deployment Templates",
         "privateIpv4BaseAddress": "10.0.3.0"
       },
