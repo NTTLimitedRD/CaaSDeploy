@@ -1,0 +1,13 @@
+﻿{
+   "parameters": {
+        "myVMName": {
+            "value": "Toms Test VM"
+        },
+        "myNetworkDomainName": {
+            "value": "Toms Test Network Domain"
+        },
+        "datacenterId": {
+            "value": "NA9"
+        }
+    }
+}
