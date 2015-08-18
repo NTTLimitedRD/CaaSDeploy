@@ -11,16 +11,17 @@ namespace CaasDeploy.Library
 {
     public static class CaasAuthentication
     {
-        private const string authUrl = "https://api-au.dimensiondata.com/oec/0.9/myaccount";
+        private const string authUrl = "/oec/0.9/myaccount";
 
-        public static async Task<CaasAccountDetails> Authenticate(string userName, string password)
+        public static async Task<CaasAccountDetails> Authenticate(string userName, string password, string region)
         {
             var credentials = new NetworkCredential(userName, password);
             var handler = new HttpClientHandler { Credentials = credentials };
 
             using (var client = new HttpClient(handler))
             {
-                var responseSteam = await client.GetStreamAsync(authUrl);
+                string url = Configuration.ApiBaseUrls[region] + authUrl;
+                var responseSteam = await client.GetStreamAsync(url);
                 var xdoc = XDocument.Load(responseSteam);
                 XNamespace ns5 = "http://oec.api.opsource.net/schemas/directory";
                 var orgId = xdoc.Root.Element(ns5 + "orgId").Value;

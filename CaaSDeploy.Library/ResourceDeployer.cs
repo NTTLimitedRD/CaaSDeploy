@@ -19,18 +19,6 @@ namespace CaasDeploy.Library
             { "Server", new CaasApiUrls { DeployUrl = "/server/deployServer", GetUrl = "/server/server/{0}", ListUrl = "/server/server?name={0}", DeleteUrl = "/server/deleteServer" } },
         };
 
-        // Move this to config...
-        private Dictionary<string, string> _apiBaseUrls = new Dictionary<string, string>()
-        {
-            { "NA", "https://api-na.dimensiondata.com" },
-            { "EU", "https://api-eu.dimensiondata.com" },
-            { "AU", "https://api-au.dimensiondata.com" },
-            { "AF", "https://api-mea.dimensiondata.com" },
-            { "AP", "https://api-ap.dimensiondata.com" },
-            { "SA", "https://api-latam.dimensiondata.com" },
-            { "CA", "https://api-canada.dimensiondata.com" },
-            { "CANBERRA", "https://api-canberra.dimensiondata.com" },
-        };
 
         private const string _mcp2UrlStem = "/caas/2.0";
         private string _resourceId;
@@ -46,7 +34,7 @@ namespace CaasDeploy.Library
             _resourceId = resourceId;
             _resourceType = resourceType;
             _resourceApi = _resourceApis[resourceType];
-            _apiBaseUrl = _apiBaseUrls[region];
+            _apiBaseUrl = Configuration.ApiBaseUrls[region];
             _accountDetails = accountDetails;
         }
 

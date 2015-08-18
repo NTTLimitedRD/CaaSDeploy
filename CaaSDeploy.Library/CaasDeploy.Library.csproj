@@ -57,6 +57,7 @@
     <Compile Include="CaasAccountDetails.cs" />
     <Compile Include="CaasApiUrls.cs" />
     <Compile Include="CaasAuthentication.cs" />
+    <Compile Include="Configuration.cs" />
     <Compile Include="Deployment.cs" />
     <Compile Include="DeploymentTemplate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
