@@ -17,6 +17,7 @@ namespace CaasDeploy.Library
             { "NetworkDomain", new CaasApiUrls { DeployUrl = "/network/deployNetworkDomain", GetUrl = "/network/networkDomain/{0}", ListUrl="/network/networkDomain?name={0}", DeleteUrl = "/network/deleteNetworkDomain" } },
             { "VLAN", new CaasApiUrls { DeployUrl = "/network/deployVlan", GetUrl = "/network/vlan/{0}", ListUrl="/network/vlan?name={0}", DeleteUrl = "/network/deleteVlan" } },
             { "Server", new CaasApiUrls { DeployUrl = "/server/deployServer", GetUrl = "/server/server/{0}", ListUrl = "/server/server?name={0}", DeleteUrl = "/server/deleteServer" } },
+            { "FirewallRule", new CaasApiUrls { DeployUrl = "/network/createFirewallRule", GetUrl = "/network/firewallRule/{0}", ListUrl = null, DeleteUrl = "/network/deleteFirewallRule" } },
         };
 
 
@@ -91,6 +92,12 @@ namespace CaasDeploy.Library
 
         public async Task<string> GetResourceIdByName(string name)
         {
+            if (_resourceApi.ListUrl == null)
+            {
+                // Some resource types can't be retrieved just by name
+                return null;
+            }
+
             using (var client = GetHttpClient())
             {
                 var url = String.Format(GetApiUrl(_resourceApi.ListUrl), name);

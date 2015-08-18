@@ -23,6 +23,37 @@
       "dependsOn": [ ]
     },
     {
+      "resourceType": "FirewallRule",
+      "resourceId": "MyFirewallRule",
+      "resourceDefinition": {
+        "networkDomainId": "$resources['MyNetworkDomain'].id",
+        "name": "My.Rule",
+        "action": "ACCEPT_DECISIVELY",
+        "ipVersion": "IPV4",
+        "protocol": "TCP",
+        "source": {
+          "ip": {
+            "address": "10.2.0.0",
+            "prefixSize": "16"
+          },
+          "port": {
+            "begin": "8866",
+            "end": "8877"
+          }
+        },
+        "destination": {
+          "ip": { "address": "10.0.4.114" }
+        },
+        "enabled": "true",
+        "placement": {
+          "position": "FIRST"
+        }
+      },
+    "dependsOn": [
+        "MyNetworkDomain"
+      ]
+    },
+    {
       "resourceType": "VLAN",
       "resourceId": "VLAN1",
       "resourceDefinition": {
@@ -62,5 +93,3 @@
     }
   ]
 }
-
-
