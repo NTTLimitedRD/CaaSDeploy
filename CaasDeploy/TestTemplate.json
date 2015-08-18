@@ -12,17 +12,6 @@
   },
   "resources": [
     {
-      "resourceType": "NetworkDomain",
-      "resourceId": "MyNetworkDomain",
-      "resourceDefinition": {
-        "datacenterId": "$parameters['datacenterId']",
-        "name": "$parameters['myNetworkDomainName']",
-        "description": "Testing CaaS Deployment Templates",
-        "type": "ESSENTIALS"
-      },
-      "dependsOn": [ ]
-    },
-    {
       "resourceType": "FirewallRule",
       "resourceId": "MyFirewallRule",
       "resourceDefinition": {
@@ -52,6 +41,17 @@
     "dependsOn": [
         "MyNetworkDomain"
       ]
+    },
+    {
+      "resourceType": "NetworkDomain",
+      "resourceId": "MyNetworkDomain",
+      "resourceDefinition": {
+        "datacenterId": "$parameters['datacenterId']",
+        "name": "$parameters['myNetworkDomainName']",
+        "description": "Testing CaaS Deployment Templates",
+        "type": "ESSENTIALS"
+      },
+      "dependsOn": [ ]
     },
     {
       "resourceType": "VLAN",

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
+using CaasDeploy.Library.Utilities;
 
 namespace CaasDeploy.Library
 {
@@ -40,9 +41,10 @@ namespace CaasDeploy.Library
         {
             Dictionary<string, Dictionary<string, string>> resourcesProperties = new Dictionary<string, Dictionary<string, string>>();
 
-            foreach (var resource in _template.resources)
+            var sortedResources = ResourceDependencies.DependencySort(_template.resources).Reverse();
+
+            foreach (var resource in sortedResources)
             {
-                // TODO: Sort the resources by dependency
                 SubstituteTokens(resource.resourceDefinition, _parameters, resourcesProperties);
                 var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType, _region, _accountDetails);
                 var properties = await deployer.DeployAndWait(resource.resourceDefinition.ToString());
@@ -52,10 +54,10 @@ namespace CaasDeploy.Library
 
         public async Task Delete()
         {
-            var reversedResources = new List<Resource>(_template.resources);
-            reversedResources.Reverse();
+            var sortedResources = ResourceDependencies.DependencySort(_template.resources);
+
             // TODO: Sort the resources by dependency
-            foreach (var resource in reversedResources)
+            foreach (var resource in sortedResources)
             {
                 SubstituteTokens(resource.resourceDefinition, _parameters, null);
                 var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType, _region, _accountDetails);
