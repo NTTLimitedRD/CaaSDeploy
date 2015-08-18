@@ -13,7 +13,7 @@ namespace CaasDeploy.Library.Utilities
 	public static class ResourceDependencies
 	{
 		/// <summary>
-		///		Sort the specified resources in dependency order (least-dependent-first).
+		///		Sort the specified resources in dependency order (most-dependent-first).
 		/// </summary>
 		/// <param name="resources">
 		///		The resources to examine.
