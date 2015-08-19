@@ -39,7 +39,7 @@ namespace CaasDeploy.Library
 
         public async Task Deploy()
         {
-            Dictionary<string, Dictionary<string, string>> resourcesProperties = new Dictionary<string, Dictionary<string, string>>();
+            Dictionary<string, JObject> resourcesProperties = new Dictionary<string, JObject>();
 
             var sortedResources = ResourceDependencies.DependencySort(_template.resources).Reverse();
 
@@ -61,16 +61,19 @@ namespace CaasDeploy.Library
             {
                 SubstituteTokens(resource.resourceDefinition, _parameters, null);
                 var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType, _region, _accountDetails);
-                var id = await deployer.GetResourceIdByName(resource.resourceDefinition["name"].Value<string>());
-                if (id != null)
+                if (resource.resourceDefinition["name"] != null)
                 {
-                    await deployer.DeleteAndWait(id);
+                    var id = await deployer.GetResourceIdByName(resource.resourceDefinition["name"].Value<string>());
+                    if (id != null)
+                    {
+                        await deployer.DeleteAndWait(id);
+                    }
                 }
             }
         }
 
 
-        private void SubstituteTokens(JObject resourceDefinition, Dictionary<string, string> parameters, Dictionary<string, Dictionary<string, string>> resourcesProperties)
+        private void SubstituteTokens(JObject resourceDefinition, Dictionary<string, string> parameters, Dictionary<string, JObject> resourcesProperties)
         {
             foreach (var parameter in resourceDefinition)
             {
@@ -95,7 +98,7 @@ namespace CaasDeploy.Library
                         {
                             string resourceId = propsMatch.Groups[1].Value;
                             string property = propsMatch.Groups[2].Value;
-                            var newValue = resourcesProperties[resourceId][property];
+                            var newValue = resourcesProperties[resourceId].SelectToken(property).Value<string>();
                             parameter.Value.Replace(new JValue(newValue));
                         }
                     }

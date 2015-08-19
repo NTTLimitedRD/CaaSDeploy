@@ -67,13 +67,13 @@ namespace CaasDeploy.Library
             }
         }
 
-        public async Task<Dictionary<string, string>> DeployAndWait(string jsonPayload)
+        public async Task<JObject> DeployAndWait(string jsonPayload)
         {
             var id = await Deploy(jsonPayload);
             return await WaitForDeploy(id);
         }
 
-        public async Task<Dictionary<string, string>> Get(string id)
+        public async Task<JObject> Get(string id)
         {
             using (var client = GetHttpClient())
             {
@@ -82,12 +82,7 @@ namespace CaasDeploy.Library
                 var responseBody = await response.Content.ReadAsStringAsync();
                 await ThrowForHttpFailure(response);
                 var jsonResponse = JObject.Parse(responseBody);
-                var properties = new Dictionary<string, string>();
-                foreach (var jprop in jsonResponse.Properties())
-                {
-                    properties.Add(jprop.Name, jprop.Value.ToString());
-                }
-                return properties;
+                return jsonResponse;
                 
             }
         }
@@ -154,7 +149,7 @@ namespace CaasDeploy.Library
             return _apiBaseUrl + _mcp2UrlStem + "/" + _accountDetails.OrgId + url;
         }
 
-        public async Task<Dictionary<string, string>> WaitForDeploy(string id)
+        public async Task<JObject> WaitForDeploy(string id)
         {
             DateTime startTime = DateTime.Now;
             while(true)
@@ -166,7 +161,7 @@ namespace CaasDeploy.Library
                 }
 
                 var props = await Get(id);
-                if (props["state"] == "NORMAL")
+                if (props["state"].Value<string>() == "NORMAL")
                 {
                     Console.WriteLine("Done!");
                     return props;

@@ -128,11 +128,11 @@
     {
       "resourceType": "NatRule",
       "resourceId": "nat",
-      "dependsOn":  [ "MyNetworkDomain", "PublicIpBlock", "MyVM"],
+      "dependsOn":  [ "MyNetworkDomain", "PublicIpBlock", "MyVM", "VLAN1"],
       "resourceDefinition": 
       {
           "networkDomainId": "$resources['MyNetworkDomain'].id",
-          "internalIp" : "$resources['MyVM'].networkInfo.parimaryNic.privateIpv4",
+          "internalIp" : "$resources['MyVM'].networkInfo.primaryNic.privateIpv4",
           "externalIp" :"$resources['PublicIpBlock'].baseIp"
       }
     }
