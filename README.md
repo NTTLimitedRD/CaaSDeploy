@@ -28,7 +28,7 @@ The templates are in JSON format and contain two sections: **parameters** and **
 JSON properties within the **resourceDefinition** may use the following macros to retrieve values from properties or from the output after creating another resource:
 
 * **$parameters['*paramName*']**: Retrieves the value of the specfied parameter
-* **resources['*resourceId*']._property_**: Retrieves the value of the requested property for a previously created resource.
+* **$resources['*resourceId*']._propertyPath_**: Retrieves the value of the requested property for a previously created resource. The properties can be several levels deep, e.g. "$resources['MyVM'].networkInfo.primaryNic.privateIpv4"
 
 ## Sample Template
 This template deploys a new Network Domain with a VNET, a Public IP Block and a Server. It also creates a NAT rule mapping the 
