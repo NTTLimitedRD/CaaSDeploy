@@ -25,7 +25,7 @@ The templates are in JSON format and contain two sections: **parameters** and **
 * **dependsOn**: An array with the resourceIds for any other resources which must be created before this one.
 * **resourceDefinition**: A blob of JSON that is passed to the CloudControl 2.0 API to create the resource (see [documentation](https://community.opsourcecloud.net/Browse.jsp?id=e5b1a66815188ad439f76183b401f026) for syntax).
 
-JSON properties within the **resourceDefinition** may use the following macros to retrieve values from properties or from the output after creating another resource:
+JSON properties within the **resourceDefinition** may use the following macros to retrieve values from parameters or from the output after creating another resource:
 
 * **$parameters['*paramName*']**: Retrieves the value of the specfied parameter
 * **$resources['*resourceId*']._propertyPath_**: Retrieves the value of the requested property for a previously created resource. The properties can be several levels deep, e.g. "$resources['MyVM'].networkInfo.primaryNic.privateIpv4"
