@@ -3,7 +3,14 @@ Deployment of CaaS infrastructure using JSON templates
 
 ## Command Line
 Usage: 
-**CaasDeploy.exe** -action Deploy|Delete -template *PathToTemplateFile* -parameters *PathToParametersFile* -region *RegionName* -username *CaaSUserName* -password *CaasPassword*
+
+*To deploy using a template and parameter file:*
+
+**CaasDeploy.exe** -action Deploy -template *PathToTemplateFile* -parameters *PathToParametersFile* -deploymentLog *PathToDeploymentLogFile* -region *RegionName* -username *CaaSUserName* -password *CaasPassword*
+
+*To delete a deployment using a previous deployment log*:
+
+**CaasDeploy.exe** -action Delete -deploymentLog *PathToDeploymentLogFile* -region *RegionName* -username *CaaSUserName* -password *CaasPassword*
 
 ## Template format
 The templates are in JSON format and contain two sections: **parameters** and **resources**.
@@ -18,10 +25,10 @@ The templates are in JSON format and contain two sections: **parameters** and **
 * **dependsOn**: An array with the resourceIds for any other resources which must be created before this one.
 * **resourceDefinition**: A blob of JSON that is passed to the CloudControl 2.0 API to create the resource (see [documentation](https://community.opsourcecloud.net/Browse.jsp?id=e5b1a66815188ad439f76183b401f026) for syntax).
 
-JSON properties within the **resourceDefinition** may use the following macros to retrieve values from properties or from the output after creating another resource:
+JSON properties within the **resourceDefinition** may use the following macros to retrieve values from parameters or from the output after creating another resource:
 
 * **$parameters['*paramName*']**: Retrieves the value of the specfied parameter
-* **resources['*resourceId*']._property_**: Retrieves the value of the requested property for a previously created resource.
+* **$resources['*resourceId*']._propertyPath_**: Retrieves the value of the requested property for a previously created resource. The properties can be several levels deep, e.g. "$resources['MyVM'].networkInfo.primaryNic.privateIpv4"
 
 ## Sample Template
 This template deploys a new Network Domain with a VNET, a Public IP Block and a Server. It also creates a NAT rule mapping the 
