@@ -22,9 +22,14 @@ namespace CaasDeploy.Library
 
         public static Dictionary<string, string> ParseParameters(string fileName)
         {
+            var dict = new Dictionary<string, string>();
+            if (fileName == null)
+            {
+                return dict;
+            }
+
             using (var reader = new StreamReader(fileName))
             {
-                var dict = new Dictionary<string, string>();
                 var content = reader.ReadToEnd();
                 var jObject = JObject.Parse(content);
                 foreach (var param in ((JObject)jObject["parameters"]).Properties())

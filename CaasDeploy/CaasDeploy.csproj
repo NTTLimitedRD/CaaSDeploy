@@ -71,6 +71,9 @@
     <None Include="TestTemplate.params.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="VIPTemplate.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CaaSDeploy.Library\CaasDeploy.Library.csproj">

@@ -20,6 +20,10 @@ namespace CaasDeploy.Library
             { "FirewallRule", new CaasApiUrls { DeployUrl = "/network/createFirewallRule", GetUrl = "/network/firewallRule/{0}", DeleteUrl = "/network/deleteFirewallRule" } },
             { "PublicIpBlock", new CaasApiUrls { DeployUrl = "/network/addPublicIpBlock", GetUrl = "/network/publicIpBlock/{0}", DeleteUrl = "/network/removePublicIpBlock" } },
             { "NatRule", new CaasApiUrls { DeployUrl = "/network/createNatRule", GetUrl = "/network/natRule/{0}", DeleteUrl = "/network/deleteNatRule" } },
+            { "VirtualListener", new CaasApiUrls { DeployUrl = "/networkDomainVip/createVirtualListener", GetUrl = "/networkDomainVip/virtualListener/{0}", DeleteUrl = "/networkDomainVip/deleteVirtualListener" } },
+            { "Pool", new CaasApiUrls { DeployUrl = "/networkDomainVip/createPool", GetUrl = "/networkDomainVip/pool/{0}", DeleteUrl = "/networkDomainVip/deletePool" } },
+            { "Node", new CaasApiUrls { DeployUrl = "/networkDomainVip/createNode", GetUrl = "/networkDomainVip/node/{0}", DeleteUrl = "/networkDomainVip/deleteNode" } },
+            { "PoolMember", new CaasApiUrls { DeployUrl = "/networkDomainVip/addPoolMember", GetUrl = "/networkDomainVip/poolMember/{0}", DeleteUrl = "/networkDomainVip/removePoolMember" } },
         };
 
 

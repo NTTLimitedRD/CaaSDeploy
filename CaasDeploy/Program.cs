@@ -50,7 +50,6 @@ namespace CaasDeploy
 
                 if (!arguments.ContainsKey("action") ||
                     !arguments.ContainsKey("template") ||
-                    !arguments.ContainsKey("parameters") ||
                     !arguments.ContainsKey("deploymentlog") ||
                     !arguments.ContainsKey("region") ||
                     !arguments.ContainsKey("username") ||
@@ -81,7 +80,7 @@ namespace CaasDeploy
             Console.WriteLine("\tCaasDeploy.exe");
             Console.WriteLine("\t\t-action Deploy|Delete");
             Console.WriteLine("\t\t[-template {PathToTemplateFile}]  (required for Deploy)");
-            Console.WriteLine("\t\t[-parameters {PathToParametersFile}]  (required for Deploy)");
+            Console.WriteLine("\t\t[-parameters {PathToParametersFile}]  (optional for Deploy)");
             Console.WriteLine("\t\t-deploymentlog {PathToLogFile}");
             Console.WriteLine("\t\t-region {RegionName}");
             Console.WriteLine("\t\t-username {CaaSUserName}");
@@ -100,7 +99,8 @@ namespace CaasDeploy
 
                 if (arguments["action"].ToLower() == "deploy")
                 {
-                    await d.Deploy(arguments["template"], arguments["parameters"], arguments["deploymentlog"]);
+                    string parametersFile = arguments.ContainsKey("parameters") ? arguments["parameters"] : null;
+                    await d.Deploy(arguments["template"], parametersFile, arguments["deploymentlog"]);
                     Console.WriteLine($"Complete! Deployment log written to {arguments["deploymentlog"]}.");
                 }
                 else if (arguments["action"].ToLower() == "delete")
