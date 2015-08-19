@@ -13,25 +13,51 @@
   "resources": [
     {
       "resourceType": "FirewallRule",
-      "resourceId": "MyFirewallRule",
+      "resourceId": "AllowHTTPFirewallRule",
       "resourceDefinition": {
         "networkDomainId": "$resources['MyNetworkDomain'].id",
-        "name": "My.Rule",
+        "name": "AllowHTTPFirewallRule",
         "action": "ACCEPT_DECISIVELY",
         "ipVersion": "IPV4",
         "protocol": "TCP",
         "source": {
           "ip": {
-            "address": "10.2.0.0",
-            "prefixSize": "16"
-          },
-          "port": {
-            "begin": "8866",
-            "end": "8877"
+            "address": "ANY"
           }
         },
         "destination": {
-          "ip": { "address": "10.0.4.114" }
+          "ip": { "address": "$resources['PublicIpBlock'].baseIp" },
+          "port": {
+            "begin": "80",
+            "end": "80"
+          }
+        },
+        "enabled": "true",
+        "placement": {
+          "position": "FIRST"
+        }
+      },
+      "dependsOn": [
+        "PublicIpBlock"
+      ]
+    },
+        {
+      "resourceType": "FirewallRule",
+      "resourceId": "AllowRDPFirewallRule",
+      "resourceDefinition": {
+        "networkDomainId": "$resources['MyNetworkDomain'].id",
+        "name": "AllowRDPFirewallRule",
+        "action": "ACCEPT_DECISIVELY",
+        "ipVersion": "IPV4",
+        "protocol": "TCP",
+        "source": {
+          "ip": {
+            "address": "ANY"
+          }
+        },
+        "destination": {
+          "ip": { "address": "$resources['PublicIpBlock'].baseIp" },
+          "port": { "begin": "3389", "end": "3389" }
         },
         "enabled": "true",
         "placement": {
@@ -39,7 +65,7 @@
         }
       },
     "dependsOn": [
-        "MyNetworkDomain"
+        "PublicIpBlock"
       ]
     },
     {
@@ -54,7 +80,7 @@
       "dependsOn": [ ]
     },
     {
-      "resourceType": "VLAN",
+      "resourceType": "Vlan",
       "resourceId": "VLAN1",
       "resourceDefinition": {
         "networkDomainId": "$resources['MyNetworkDomain'].id",
@@ -90,6 +116,25 @@
       "dependsOn": [
         "VLAN1"
       ]
+    },
+    {
+      "resourceType": "PublicIpBlock",
+      "resourceId": "PublicIpBlock",
+      "dependsOn": [ "MyNetworkDomain", "MyVM" ],
+      "resourceDefinition": {
+        "networkDomainId": "$resources['MyNetworkDomain'].id"
+      }
+    },
+    {
+      "resourceType": "NatRule",
+      "resourceId": "nat",
+      "dependsOn":  [ "MyNetworkDomain", "PublicIpBlock", "MyVM"],
+      "resourceDefinition": 
+      {
+          "networkDomainId": "$resources['MyNetworkDomain'].id",
+          "internalIp" : "$resources['MyVM'].networkInfo.parimaryNic.privateIpv4",
+          "externalIp" :"$resources['PublicIpBlock'].baseIp"
+      }
     }
   ]
 }

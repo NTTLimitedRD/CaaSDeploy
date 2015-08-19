@@ -1,0 +1,91 @@
+﻿{
+  "parameters": {
+    "myNetworkDomainName": {
+      "description": "The name to use for the Network Domain"
+    },
+    "datacenterId": {
+      "description": "The region to deploy to"
+    }
+  },
+  "resources": [
+    {
+      "resourceType": "FirewallRule",
+      "resourceId": "AllowHTTPFirewallRule",
+      "resourceDefinition": {
+        "networkDomainId": "a56552a3-f771-4fa9-a67e-ec40ce2b3d66",
+        "name": "AllowHTTPFirewallRule",
+        "action": "ACCEPT_DECISIVELY",
+        "ipVersion": "IPV4",
+        "protocol": "TCP",
+        "source": {
+          "ip": {
+            "address": "ANY"
+          }
+        },
+        "destination": {
+          "ip": { "address": "$resources['PublicIpBlock'].baseIp" },
+          "port": {
+            "begin": "80",
+            "end": "80"
+          }
+        },
+        "enabled": "true",
+        "placement": {
+          "position": "FIRST"
+        }
+      },
+      "dependsOn": [
+        "PublicIpBlock"
+      ]
+    },
+    {
+      "resourceType": "FirewallRule",
+      "resourceId": "AllowRDPFirewallRule",
+      "resourceDefinition": {
+        "networkDomainId": "a56552a3-f771-4fa9-a67e-ec40ce2b3d66",
+        "name": "AllowRDPFirewallRule",
+        "action": "ACCEPT_DECISIVELY",
+        "ipVersion": "IPV4",
+        "protocol": "TCP",
+        "source": {
+          "ip": {
+            "address": "ANY"
+          }
+        },
+        "destination": {
+          "ip": { "address": "$resources['PublicIpBlock'].baseIp" },
+          "port": {
+            "begin": "3389",
+            "end": "3389"
+          }
+        },
+        "enabled": "true",
+        "placement": {
+          "position": "FIRST"
+        }
+      },
+      "dependsOn": [
+        "PublicIpBlock"
+      ]
+    },
+    {
+      "resourceType": "PublicIpBlock",
+      "resourceId": "PublicIpBlock",
+      "dependsOn": [  ],
+      "resourceDefinition": {
+        "networkDomainId": "a56552a3-f771-4fa9-a67e-ec40ce2b3d66"
+      }
+    },
+    {
+      "resourceType": "NatRule",
+      "resourceId": "nat",
+      "dependsOn": [  ],
+      "resourceDefinition": 
+      {
+          "networkDomainId": "a56552a3-f771-4fa9-a67e-ec40ce2b3d66",
+          "internalIp" : "10.0.3.11",
+          "externalIp" :"$resources['PublicIpBlock'].baseIp"
+      }
+    }
+  ]
+}
