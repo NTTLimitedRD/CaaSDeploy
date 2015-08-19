@@ -40,15 +40,38 @@ namespace CaasDeploy
 
         private static bool ValidateArguments(Dictionary<string, string> arguments)
         {
-            if (!arguments.ContainsKey("action") ||
-                !arguments.ContainsKey("template") ||
-                !arguments.ContainsKey("parameters") ||
-                !arguments.ContainsKey("region") ||
-                !arguments.ContainsKey("username") ||
-                !arguments.ContainsKey("password"))
+            if (!arguments.ContainsKey("action") || !new string[] { "deploy", "delete" }.Contains(arguments["action"].ToLower()))
             {
                 return false;
             }
+
+            if (arguments["action"].ToLower() == "deploy")
+            {
+
+                if (!arguments.ContainsKey("action") ||
+                    !arguments.ContainsKey("template") ||
+                    !arguments.ContainsKey("parameters") ||
+                    !arguments.ContainsKey("deploymentlog") ||
+                    !arguments.ContainsKey("region") ||
+                    !arguments.ContainsKey("username") ||
+                    !arguments.ContainsKey("password"))
+                {
+                    return false;
+                }
+            } 
+            else if (arguments["action"].ToLower() == "delete")
+            {
+
+                if (!arguments.ContainsKey("action") ||
+                    !arguments.ContainsKey("deploymentlog") ||
+                    !arguments.ContainsKey("region") ||
+                    !arguments.ContainsKey("username") ||
+                    !arguments.ContainsKey("password"))
+                {
+                    return false;
+                }
+            }
+
             return true;
         }
 
@@ -57,8 +80,9 @@ namespace CaasDeploy
             Console.WriteLine("Usage: ");
             Console.WriteLine("\tCaasDeploy.exe");
             Console.WriteLine("\t\t-action Deploy|Delete");
-            Console.WriteLine("\t\t-template {PathToTemplateFile}");
-            Console.WriteLine("\t\t-parameters {PathToParametersFile}");
+            Console.WriteLine("\t\t[-template {PathToTemplateFile}]  (required for Deploy)");
+            Console.WriteLine("\t\t[-parameters {PathToParametersFile}]  (required for Deploy)");
+            Console.WriteLine("\t\t-deploymentlog {PathToLogFile}");
             Console.WriteLine("\t\t-region {RegionName}");
             Console.WriteLine("\t\t-username {CaaSUserName}");
             Console.WriteLine("\t\t-password {CaasPassword}");
@@ -72,16 +96,16 @@ namespace CaasDeploy
 
             try
             {
-                var d = new Deployment(arguments["template"], arguments["parameters"], 
-                    arguments["region"], accountDetails);
+                var d = new Deployment(arguments["region"], accountDetails);
 
                 if (arguments["action"].ToLower() == "deploy")
                 {
-                    await d.Deploy();
+                    await d.Deploy(arguments["template"], arguments["parameters"], arguments["deploymentlog"]);
+                    Console.WriteLine($"Complete! Deployment log written to {arguments["deploymentlog"]}.");
                 }
                 else if (arguments["action"].ToLower() == "delete")
                 {
-                    await d.Delete();
+                    await d.Delete(arguments["deploymentlog"]);
                 }
             }
             catch (Exception ex)

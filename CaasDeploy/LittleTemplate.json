@@ -12,7 +12,7 @@
       "resourceType": "FirewallRule",
       "resourceId": "AllowHTTPFirewallRule",
       "resourceDefinition": {
-        "networkDomainId": "a56552a3-f771-4fa9-a67e-ec40ce2b3d66",
+        "networkDomainId": "6b49864b-b84e-4a43-a280-8961f5dfe29e",
         "name": "AllowHTTPFirewallRule",
         "action": "ACCEPT_DECISIVELY",
         "ipVersion": "IPV4",
@@ -42,7 +42,7 @@
       "resourceType": "FirewallRule",
       "resourceId": "AllowRDPFirewallRule",
       "resourceDefinition": {
-        "networkDomainId": "a56552a3-f771-4fa9-a67e-ec40ce2b3d66",
+        "networkDomainId": "6b49864b-b84e-4a43-a280-8961f5dfe29e",
         "name": "AllowRDPFirewallRule",
         "action": "ACCEPT_DECISIVELY",
         "ipVersion": "IPV4",
@@ -73,18 +73,7 @@
       "resourceId": "PublicIpBlock",
       "dependsOn": [  ],
       "resourceDefinition": {
-        "networkDomainId": "a56552a3-f771-4fa9-a67e-ec40ce2b3d66"
-      }
-    },
-    {
-      "resourceType": "NatRule",
-      "resourceId": "nat",
-      "dependsOn": [  ],
-      "resourceDefinition": 
-      {
-          "networkDomainId": "a56552a3-f771-4fa9-a67e-ec40ce2b3d66",
-          "internalIp" : "10.0.3.11",
-          "externalIp" :"$resources['PublicIpBlock'].baseIp"
+        "networkDomainId": "6b49864b-b84e-4a43-a280-8961f5dfe29e"
       }
     }
   ]

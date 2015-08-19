@@ -14,12 +14,12 @@ namespace CaasDeploy.Library
     {
         private Dictionary<string, CaasApiUrls> _resourceApis = new Dictionary<string, CaasApiUrls>
         {
-            { "NetworkDomain", new CaasApiUrls { DeployUrl = "/network/deployNetworkDomain", GetUrl = "/network/networkDomain/{0}", ListUrl="/network/networkDomain?name={0}", DeleteUrl = "/network/deleteNetworkDomain" } },
-            { "Vlan", new CaasApiUrls { DeployUrl = "/network/deployVlan", GetUrl = "/network/vlan/{0}", ListUrl="/network/vlan?name={0}", DeleteUrl = "/network/deleteVlan" } },
-            { "Server", new CaasApiUrls { DeployUrl = "/server/deployServer", GetUrl = "/server/server/{0}", ListUrl = "/server/server?name={0}", DeleteUrl = "/server/deleteServer" } },
-            { "FirewallRule", new CaasApiUrls { DeployUrl = "/network/createFirewallRule", GetUrl = "/network/firewallRule/{0}", ListUrl = null, DeleteUrl = "/network/deleteFirewallRule" } },
-            { "PublicIpBlock", new CaasApiUrls { DeployUrl = "/network/addPublicIpBlock", GetUrl = "/network/publicIpBlock/{0}", ListUrl = null, DeleteUrl = "/network/removePublicIpBlock" } },
-            { "NatRule", new CaasApiUrls { DeployUrl = "/network/createNatRule", GetUrl = "/network/natRule/{0}", ListUrl = null, DeleteUrl = "/network/deleteNatRule" } },
+            { "NetworkDomain", new CaasApiUrls { DeployUrl = "/network/deployNetworkDomain", GetUrl = "/network/networkDomain/{0}", DeleteUrl = "/network/deleteNetworkDomain" } },
+            { "Vlan", new CaasApiUrls { DeployUrl = "/network/deployVlan", GetUrl = "/network/vlan/{0}", DeleteUrl = "/network/deleteVlan" } },
+            { "Server", new CaasApiUrls { DeployUrl = "/server/deployServer", GetUrl = "/server/server/{0}", DeleteUrl = "/server/deleteServer" } },
+            { "FirewallRule", new CaasApiUrls { DeployUrl = "/network/createFirewallRule", GetUrl = "/network/firewallRule/{0}", DeleteUrl = "/network/deleteFirewallRule" } },
+            { "PublicIpBlock", new CaasApiUrls { DeployUrl = "/network/addPublicIpBlock", GetUrl = "/network/publicIpBlock/{0}", DeleteUrl = "/network/removePublicIpBlock" } },
+            { "NatRule", new CaasApiUrls { DeployUrl = "/network/createNatRule", GetUrl = "/network/natRule/{0}", DeleteUrl = "/network/deleteNatRule" } },
         };
 
 
@@ -53,7 +53,7 @@ namespace CaasDeploy.Library
 
         private async Task<string> Deploy(string jsonPayload)
         {
-            Console.Write("Deploying {0}: '{1}'", _resourceType, _resourceId);
+            Console.Write("Deploying {0}: '{1}' ", _resourceType, _resourceId);
             using (var client = GetHttpClient())
             {
                 var url = GetApiUrl(_resourceApi.DeployUrl);
@@ -87,45 +87,29 @@ namespace CaasDeploy.Library
             }
         }
 
-        public async Task<string> GetResourceIdByName(string name)
+        private async Task<bool> Delete(string id) // Returns true if waiting is required
         {
-            if (_resourceApi.ListUrl == null)
-            {
-                // Some resource types can't be retrieved just by name
-                return null;
-            }
-
+            Console.Write($"Deleting {_resourceType}: '{_resourceId}' (ID: {id}) ");
             using (var client = GetHttpClient())
             {
-                var url = String.Format(GetApiUrl(_resourceApi.ListUrl), name);
-                var response = await client.GetAsync(url);
-                var responseBody = await response.Content.ReadAsStringAsync();
-                await ThrowForHttpFailure(response);
-                var jsonResponse = JObject.Parse(responseBody);
-                var results = (JArray) jsonResponse.First.Children().First();
-                if (results.Count == 0)
+                try
                 {
-                    return null;
+                    var url = GetApiUrl(_resourceApi.DeleteUrl);
+                    string jsonPayload = String.Format("{{ \"id\": \"{0}\" }}", id);
+                    var response = await client.PostAsync(url, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
+                    await ThrowForHttpFailure(response);
+                    return true;
                 }
-                else if (results.Count > 1)
+                catch (CaasException ex)
                 {
-                    throw new InvalidOperationException("More than 1 matching item found.");
+                    // Check detail
+                    if (ex.ResponseCode == "RESOURCE_NOT_FOUND")
+                    {
+                        Console.WriteLine("Not found.");
+                        return false;
+                    }
+                    throw;
                 }
-
-                return results[0]["id"].Value<string>();
-
-            }
-        }
-
-        private async Task Delete(string id)
-        {
-            Console.Write("Deleting {0}: '{1}'", _resourceType, _resourceId);
-            using (var client = GetHttpClient())
-            {
-                var url = GetApiUrl(_resourceApi.DeleteUrl);
-                string jsonPayload = String.Format("{{ \"id\": \"{0}\" }}", id);
-                var response = await client.PostAsync(url, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
-                await ThrowForHttpFailure(response);
             }
         }
 
@@ -134,14 +118,17 @@ namespace CaasDeploy.Library
             var responseBody = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
             {
-                throw new WebException(responseBody);
+                throw new CaasException(responseBody);
             }
         }
 
         public async Task DeleteAndWait(string id)
         {
-            await Delete(id);
-            await WaitForDelete(id);
+            bool wait = await Delete(id);
+            if (wait)
+            {
+                await WaitForDelete(id);
+            }
         }
 
         private string GetApiUrl(string url)
@@ -187,11 +174,15 @@ namespace CaasDeploy.Library
                 {
                     var props = await Get(id);
                 }
-                catch (WebException)
+                catch (CaasException ex)
                 {
                     // Check detail
-                    Console.WriteLine("Done!");
-                    return;
+                    if (ex.ResponseCode == "RESOURCE_NOT_FOUND")
+                    {
+                        Console.WriteLine("Done!");
+                        return;
+                    }
+                    throw;
                 }
                 Console.Write(".");
                 await Task.Delay(TimeSpan.FromSeconds(_pollingDelaySeconds));

@@ -34,5 +34,14 @@ namespace CaasDeploy.Library
                 return dict;
             }
         }
+
+        public static DeploymentLog ParseDeploymentLog(string fileName)
+        {
+            using (var reader = new StreamReader(fileName))
+            {
+                var content = reader.ReadToEnd();
+                return JsonConvert.DeserializeObject<DeploymentLog>(content);
+            }
+        }
     }
 }

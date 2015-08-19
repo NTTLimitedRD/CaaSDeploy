@@ -77,7 +77,10 @@
     <Compile Include="CaasAccountDetails.cs" />
     <Compile Include="CaasApiUrls.cs" />
     <Compile Include="CaasAuthentication.cs" />
+    <Compile Include="CaasException.cs" />
     <Compile Include="Configuration.cs" />
+    <Compile Include="DeploymentLog.cs" />
+    <Compile Include="ResourceLog.cs" />
     <Compile Include="Utilities\ResourceDependencies.cs" />
     <Compile Include="Deployment.cs" />
     <Compile Include="DeploymentTemplate.cs" />

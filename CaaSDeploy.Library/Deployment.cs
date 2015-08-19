@@ -6,68 +6,99 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
 using CaasDeploy.Library.Utilities;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace CaasDeploy.Library
 {
     public class Deployment
     {
-        private DeploymentTemplate _template;
-        private Dictionary<string, string> _parameters;
         private string _region;
         private CaasAccountDetails _accountDetails;
         private Regex _parameterRegex = new Regex("\\$parameters\\['(.*)'\\]");
         private Regex _resourcePropertyRegex = new Regex("\\$resources\\['(.*)'\\]\\.(.*)");
 
-        public Deployment(string templateFile, string parametersFile, string region, CaasAccountDetails accountDetails)
-            : this(templateFile, region, accountDetails)
+        public Deployment(string region, CaasAccountDetails accountDetails)
         {
-            _parameters = TemplateParser.ParseParameters(parametersFile);
-        }
-
-        public Deployment(string templateFile, Dictionary<string, string> parameters, string region, CaasAccountDetails accountDetails)
-             : this(templateFile, region, accountDetails)
-        {
-            _parameters = parameters;
-        }
-
-        public Deployment(string templateFile, string region, CaasAccountDetails accountDetails)
-        {
-            _template = TemplateParser.ParseTemplate(templateFile);
             _region = region;
             _accountDetails = accountDetails;
         }
 
-        public async Task Deploy()
+        public async Task Deploy(string templateFile, string parametersFile, string logFile)
         {
+            await Deploy(templateFile, TemplateParser.ParseParameters(parametersFile), logFile);
+        }
+
+        public async Task Deploy(string templateFile, Dictionary<string, string> parameters, string logFile)
+        {
+            var template = TemplateParser.ParseTemplate(templateFile);
             Dictionary<string, JObject> resourcesProperties = new Dictionary<string, JObject>();
 
-            var sortedResources = ResourceDependencies.DependencySort(_template.resources).Reverse();
+            var sortedResources = ResourceDependencies.DependencySort(template.resources).Reverse();
+            var log = new DeploymentLog()
+            {
+                deploymentTime = DateTime.Now,
+                region = _region,
+                templateFile = templateFile,
+                parameters = parameters,
+                resources = new List<ResourceLog>(),
+            };
 
             foreach (var resource in sortedResources)
             {
-                SubstituteTokens(resource.resourceDefinition, _parameters, resourcesProperties);
-                var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType, _region, _accountDetails);
-                var properties = await deployer.DeployAndWait(resource.resourceDefinition.ToString());
-                resourcesProperties.Add(resource.resourceId, properties);
+                try
+                {
+                    SubstituteTokens(resource.resourceDefinition, parameters, resourcesProperties);
+                    var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType, _region, _accountDetails);
+                    var properties = await deployer.DeployAndWait(resource.resourceDefinition.ToString());
+
+                    resourcesProperties.Add(resource.resourceId, properties);
+
+                    log.resources.Add(new ResourceLog()
+                    {
+                        resourceId = resource.resourceId,
+                        resourceType = resource.resourceType,
+                        details = properties,
+                    });
+                }
+                catch (CaasException ex)
+                {
+                    log.resources.Add(new ResourceLog()
+                    {
+                        resourceId = resource.resourceId,
+                        resourceType = resource.resourceType,
+                        error = ex.FullResponse,
+                    });
+                    WriteLog(log, logFile);
+                    throw;
+                }
+            }
+            WriteLog(log, logFile);
+        }
+
+        private void WriteLog(DeploymentLog log, string logFile)
+        {
+            using (var sw = new StreamWriter(logFile))
+            {
+                var json = JsonConvert.SerializeObject(log, Formatting.Indented);
+                sw.Write(json);
             }
         }
 
-        public async Task Delete()
+        public async Task Delete(string logFile)
         {
-            var sortedResources = ResourceDependencies.DependencySort(_template.resources);
+            var log = TemplateParser.ParseDeploymentLog(logFile);
 
-            // TODO: Sort the resources by dependency
-            foreach (var resource in sortedResources)
+            var reversedResources = new List<ResourceLog>(log.resources);
+            reversedResources.Reverse();
+
+            foreach (var resource in reversedResources)
             {
-                SubstituteTokens(resource.resourceDefinition, _parameters, null);
-                var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType, _region, _accountDetails);
-                if (resource.resourceDefinition["name"] != null)
+                if (resource.details != null)
                 {
-                    var id = await deployer.GetResourceIdByName(resource.resourceDefinition["name"].Value<string>());
-                    if (id != null)
-                    {
-                        await deployer.DeleteAndWait(id);
-                    }
+                    var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType, _region, _accountDetails);
+                    var caasId = resource.details["id"].Value<string>();
+                    await deployer.DeleteAndWait(caasId);
                 }
             }
         }
