@@ -3,7 +3,14 @@ Deployment of CaaS infrastructure using JSON templates
 
 ## Command Line
 Usage: 
-**CaasDeploy.exe** -action Deploy|Delete -template *PathToTemplateFile* -parameters *PathToParametersFile* -region *RegionName* -username *CaaSUserName* -password *CaasPassword*
+
+*To deploy using a template and parameter file:*
+
+**CaasDeploy.exe** -action Deploy -template *PathToTemplateFile* -parameters *PathToParametersFile* -deploymentLog *PathToDeploymentLogFile* -region *RegionName* -username *CaaSUserName* -password *CaasPassword*
+
+*To delete a deployment using a previous deployment log*:
+
+**CaasDeploy.exe** -action Delete -deploymentLog *PathToDeploymentLogFile* -region *RegionName* -username *CaaSUserName* -password *CaasPassword*
 
 ## Template format
 The templates are in JSON format and contain two sections: **parameters** and **resources**.
