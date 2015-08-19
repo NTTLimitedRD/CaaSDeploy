@@ -6,7 +6,10 @@ Usage:
 
 *To deploy using a template and parameter file:*
 
-**CaasDeploy.exe** -action Deploy -template *PathToTemplateFile* -parameters *PathToParametersFile* -deploymentLog *PathToDeploymentLogFile* -region *RegionName* -username *CaaSUserName* -password *CaasPassword*
+**CaasDeploy.exe** -action Deploy -template *PathToTemplateFile* [-parameters *PathToParametersFile*] -deploymentLog *PathToDeploymentLogFile* -region *RegionName* -username *CaaSUserName* -password *CaasPassword*
+
+The -parameters argument can be omited if you don't have any parameters in your template.
+The -region argument should use the CaaS region code, e.g. AU or NA.
 
 *To delete a deployment using a previous deployment log*:
 
@@ -20,7 +23,7 @@ The templates are in JSON format and contain two sections: **parameters** and **
 
 **resources** contains an array with the list of resources to be deployed. Each element in the array has the following properties.
 
-* **resourceType**: The type of CaaS resource to deploy. Acceptable values (case sensitive) are NetworkDomain, Vlan, Server, FirewallRule, PublicIpBlock, NatRule.
+* **resourceType**: The type of CaaS resource to deploy. Acceptable values (case sensitive) are NetworkDomain, Vlan, Server, FirewallRule, PublicIpBlock, NatRule, Node, Pool, PoolMember, VirtualListener.
 * **resourceId**: A unique identifier for the resource. This isn't used by CaaS, so it's only valid within the template for deploying templates.
 * **dependsOn**: An array with the resourceIds for any other resources which must be created before this one.
 * **resourceDefinition**: A blob of JSON that is passed to the CloudControl 2.0 API to create the resource (see [documentation](https://community.opsourcecloud.net/Browse.jsp?id=e5b1a66815188ad439f76183b401f026) for syntax).
