@@ -97,7 +97,7 @@ namespace CaasDeploy
 
             try
             {
-                var d = new Deployment(accountDetails);
+                var d = new Deployment();
 
                 if (arguments["action"].ToLower() == "deploy")
                 {
@@ -105,14 +105,15 @@ namespace CaasDeploy
                     var parameters = TemplateParser.ParseParameters(parametersFile);
                     var template = TemplateParser.ParseTemplate(arguments["template"]);
 
-                    var log = await d.Deploy(template, parameters);
+                    var log = await d.Deploy(template, parameters, accountDetails);
                     Console.WriteLine($"Result: {log.status}");
                     WriteLog(log, arguments["deploymentlog"]);
                     Console.WriteLine($"Complete! Deployment log written to {arguments["deploymentlog"]}.");
                 }
                 else if (arguments["action"].ToLower() == "delete")
                 {
-                    await d.Delete(arguments["deploymentlog"]);
+                    var log = TemplateParser.ParseDeploymentLog(arguments["deploymentlog"]);
+                    await d.Delete(log, accountDetails);
                 }
             }
             catch (Exception ex)

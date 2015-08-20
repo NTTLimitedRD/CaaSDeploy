@@ -14,16 +14,15 @@ namespace CaasDeploy.Library
 {
     public class Deployment
     {
-        private CaasAccountDetails _accountDetails;
         private Regex _parameterRegex = new Regex("\\$parameters\\['(.*)'\\]");
         private Regex _resourcePropertyRegex = new Regex("\\$resources\\['(.*)'\\]\\.(.*)");
 
-        public Deployment(CaasAccountDetails accountDetails)
+        public Deployment()
         {
-            _accountDetails = accountDetails;
+            
         }
 
-        public async Task<DeploymentLog> Deploy(DeploymentTemplate template, Dictionary<string, string> parameters)
+        public async Task<DeploymentLog> Deploy(DeploymentTemplate template, Dictionary<string, string> parameters, CaasAccountDetails accountDetails)
         {
             Dictionary<string, JObject> resourcesProperties = new Dictionary<string, JObject>();
 
@@ -31,7 +30,7 @@ namespace CaasDeploy.Library
             var log = new DeploymentLog()
             {
                 deploymentTime = DateTime.Now,
-                region = _accountDetails.Region,
+                region = accountDetails.Region,
                 templateName = template.metadata.templateName,
                 parameters = parameters,
                 resources = new List<ResourceLog>(),
@@ -42,7 +41,7 @@ namespace CaasDeploy.Library
                 try
                 {
                     SubstituteTokens(resource.resourceDefinition, parameters, resourcesProperties);
-                    var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType,  _accountDetails);
+                    var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType,  accountDetails);
                     var properties = await deployer.DeployAndWait(resource.resourceDefinition.ToString());
 
                     resourcesProperties.Add(resource.resourceId, properties);
@@ -71,12 +70,17 @@ namespace CaasDeploy.Library
             return log;
         }
 
-  
 
-        public async Task Delete(string logFile)
+        public DeploymentLog DeploySync(DeploymentTemplate template, Dictionary<string, string> parameters, CaasAccountDetails accountDetails)
         {
-            var log = TemplateParser.ParseDeploymentLog(logFile);
+            var task = Deploy(template, parameters, accountDetails);
+            task.Wait();
+            return task.Result;
+        }
 
+
+        public async Task Delete(DeploymentLog log, CaasAccountDetails accountDetails)
+        {
             var reversedResources = new List<ResourceLog>(log.resources);
             reversedResources.Reverse();
 
@@ -84,7 +88,7 @@ namespace CaasDeploy.Library
             {
                 if (resource.details != null)
                 {
-                    var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType, _accountDetails);
+                    var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType, accountDetails);
                     var caasId = resource.details["id"].Value<string>();
                     await deployer.DeleteAndWait(caasId);
                 }

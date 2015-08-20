@@ -11,7 +11,7 @@ namespace CaasDeploy.Api
         public void Configuration(IAppBuilder app)
         {
 		    GlobalConfiguration.Configuration
-			    .UseSqlServerStorage("HangfireDB");
+			    .UseSqlServerStorage("HangFireDB");
 
 			app.UseHangfireDashboard();
 			app.UseHangfireServer();

@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using CaasDeploy.Library.Models;
 
 namespace CaasDeploy.Library.Tests
 {
