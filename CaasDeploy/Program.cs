@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CaasDeploy.Library.Models;
+using Newtonsoft.Json;
 
 namespace CaasDeploy
 {
@@ -95,12 +97,17 @@ namespace CaasDeploy
 
             try
             {
-                var d = new Deployment(arguments["region"], accountDetails);
+                var d = new Deployment(accountDetails);
 
                 if (arguments["action"].ToLower() == "deploy")
                 {
                     string parametersFile = arguments.ContainsKey("parameters") ? arguments["parameters"] : null;
-                    await d.Deploy(arguments["template"], parametersFile, arguments["deploymentlog"]);
+                    var parameters = TemplateParser.ParseParameters(parametersFile);
+                    var template = TemplateParser.ParseTemplate(arguments["template"]);
+
+                    var log = await d.Deploy(template, parameters);
+                    Console.WriteLine($"Result: {log.status}");
+                    WriteLog(log, arguments["deploymentlog"]);
                     Console.WriteLine($"Complete! Deployment log written to {arguments["deploymentlog"]}.");
                 }
                 else if (arguments["action"].ToLower() == "delete")
@@ -111,6 +118,15 @@ namespace CaasDeploy
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+            }
+        }
+
+        private static void WriteLog(DeploymentLog log, string logFile)
+        {
+            using (var sw = new StreamWriter(logFile))
+            {
+                var json = JsonConvert.SerializeObject(log, Formatting.Indented);
+                sw.Write(json);
             }
         }
     }

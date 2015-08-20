@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using CaasDeploy.Library.Models;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CaasDeploy.Library
 {
-    internal static class TemplateParser
+    public static class TemplateParser
     {
         public static DeploymentTemplate ParseTemplate(string fileName)
         {

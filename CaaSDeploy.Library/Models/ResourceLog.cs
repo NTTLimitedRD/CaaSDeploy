@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CaasDeploy.Library
+namespace CaasDeploy.Library.Models
 {
     public class ResourceLog
     {

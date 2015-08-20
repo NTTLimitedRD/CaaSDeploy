@@ -8,38 +8,31 @@ using System.Text.RegularExpressions;
 using CaasDeploy.Library.Utilities;
 using Newtonsoft.Json;
 using System.IO;
+using CaasDeploy.Library.Models;
 
 namespace CaasDeploy.Library
 {
     public class Deployment
     {
-        private string _region;
         private CaasAccountDetails _accountDetails;
         private Regex _parameterRegex = new Regex("\\$parameters\\['(.*)'\\]");
         private Regex _resourcePropertyRegex = new Regex("\\$resources\\['(.*)'\\]\\.(.*)");
 
-        public Deployment(string region, CaasAccountDetails accountDetails)
+        public Deployment(CaasAccountDetails accountDetails)
         {
-            _region = region;
             _accountDetails = accountDetails;
         }
 
-        public async Task Deploy(string templateFile, string parametersFile, string logFile)
+        public async Task<DeploymentLog> Deploy(DeploymentTemplate template, Dictionary<string, string> parameters)
         {
-            await Deploy(templateFile, TemplateParser.ParseParameters(parametersFile), logFile);
-        }
-
-        public async Task Deploy(string templateFile, Dictionary<string, string> parameters, string logFile)
-        {
-            var template = TemplateParser.ParseTemplate(templateFile);
             Dictionary<string, JObject> resourcesProperties = new Dictionary<string, JObject>();
 
             var sortedResources = ResourceDependencies.DependencySort(template.resources).Reverse();
             var log = new DeploymentLog()
             {
                 deploymentTime = DateTime.Now,
-                region = _region,
-                templateFile = templateFile,
+                region = _accountDetails.Region,
+                templateName = template.metadata.templateName,
                 parameters = parameters,
                 resources = new List<ResourceLog>(),
             };
@@ -49,7 +42,7 @@ namespace CaasDeploy.Library
                 try
                 {
                     SubstituteTokens(resource.resourceDefinition, parameters, resourcesProperties);
-                    var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType, _region, _accountDetails);
+                    var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType,  _accountDetails);
                     var properties = await deployer.DeployAndWait(resource.resourceDefinition.ToString());
 
                     resourcesProperties.Add(resource.resourceId, properties);
@@ -60,6 +53,7 @@ namespace CaasDeploy.Library
                         resourceType = resource.resourceType,
                         details = properties,
                     });
+
                 }
                 catch (CaasException ex)
                 {
@@ -69,21 +63,15 @@ namespace CaasDeploy.Library
                         resourceType = resource.resourceType,
                         error = ex.FullResponse,
                     });
-                    WriteLog(log, logFile);
-                    throw;
+                    log.status = "Failed";
+                    return log;
                 }
             }
-            WriteLog(log, logFile);
+            log.status = "Success";
+            return log;
         }
 
-        private void WriteLog(DeploymentLog log, string logFile)
-        {
-            using (var sw = new StreamWriter(logFile))
-            {
-                var json = JsonConvert.SerializeObject(log, Formatting.Indented);
-                sw.Write(json);
-            }
-        }
+  
 
         public async Task Delete(string logFile)
         {
@@ -96,7 +84,7 @@ namespace CaasDeploy.Library
             {
                 if (resource.details != null)
                 {
-                    var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType, _region, _accountDetails);
+                    var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType, _accountDetails);
                     var caasId = resource.details["id"].Value<string>();
                     await deployer.DeleteAndWait(caasId);
                 }

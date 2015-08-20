@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using CaasDeploy.Library.Models;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,12 +37,12 @@ namespace CaasDeploy.Library
         private const int _pollingDelaySeconds = 30;
         private const int _pollingTimeOutMinutes = 20;
 
-        public ResourceDeployer(string resourceId, string resourceType, string region, CaasAccountDetails accountDetails)
+        public ResourceDeployer(string resourceId, string resourceType, CaasAccountDetails accountDetails)
         {
             _resourceId = resourceId;
             _resourceType = resourceType;
             _resourceApi = _resourceApis[resourceType];
-            _apiBaseUrl = Configuration.ApiBaseUrls[region];
+            _apiBaseUrl = Configuration.ApiBaseUrls[accountDetails.Region];
             _accountDetails = accountDetails;
         }
 

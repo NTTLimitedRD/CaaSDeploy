@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CaasDeploy.Library
+namespace CaasDeploy.Library.Models
 {
     public class CaasAccountDetails
     {
         public string UserName { get; set; }
         public string Password { get; set; }
         public string OrgId { get; set; }
+        public string Region { get; set; }
     }
 }

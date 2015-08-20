@@ -1,4 +1,9 @@
 ﻿{
+    "metadata": {
+    "schemaVersion": "0.1",
+    "templateName": "Load balanced VIP for 2 existing servers",
+    "templateDescription":  ".",
+  },
   "parameters": {
   },
   "resources": [

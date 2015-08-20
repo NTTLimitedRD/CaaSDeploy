@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CaasDeploy.Library.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -30,6 +31,7 @@ namespace CaasDeploy.Library
                     UserName = userName,
                     Password = password,
                     OrgId = orgId,
+                    Region = region,
                 };
             }
         }

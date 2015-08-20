@@ -1,4 +1,9 @@
 ﻿{
+  "metadata": {
+    "schemaVersion": "0.1",
+    "templateName": "Web Server in new Network Domain",
+    "templateDescription":  "Deploys a new VM in a new Newtwork Domain and VNET, with a public IP address and NAT rule, and firewall rules for HTTP and RDP traffic.",
+  },
   "parameters": {
     "myVMName": {
       "description": "The name to use for the Virtual Machine"

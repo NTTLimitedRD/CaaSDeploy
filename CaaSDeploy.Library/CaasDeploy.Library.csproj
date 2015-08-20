@@ -74,18 +74,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CaasAccountDetails.cs" />
+    <Compile Include="Models\CaasAccountDetails.cs" />
     <Compile Include="CaasApiUrls.cs" />
     <Compile Include="CaasAuthentication.cs" />
     <Compile Include="CaasException.cs" />
     <Compile Include="Configuration.cs" />
-    <Compile Include="DeploymentLog.cs" />
-    <Compile Include="ResourceLog.cs" />
+    <Compile Include="Models\DeploymentLog.cs" />
+    <Compile Include="Models\DeploymentTemplateMetadata.cs" />
+    <Compile Include="Models\ResourceLog.cs" />
     <Compile Include="Utilities\ResourceDependencies.cs" />
     <Compile Include="Deployment.cs" />
-    <Compile Include="DeploymentTemplate.cs" />
+    <Compile Include="Models\DeploymentTemplate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resource.cs" />
+    <Compile Include="Models\Resource.cs" />
     <Compile Include="ResourceDeployer.cs" />
     <Compile Include="TemplateParser.cs" />
   </ItemGroup>

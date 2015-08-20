@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 
-namespace CaasDeploy.Library
+namespace CaasDeploy.Library.Models
 {
     public class Resource
     {
