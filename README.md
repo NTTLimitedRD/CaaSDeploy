@@ -9,6 +9,7 @@ Usage:
 **CaasDeploy.exe** -action Deploy -template *PathToTemplateFile* [-parameters *PathToParametersFile*] -deploymentLog *PathToDeploymentLogFile* -region *RegionName* -username *CaaSUserName* -password *CaasPassword*
 
 The -parameters argument can be omited if you don't have any parameters in your template.
+
 The -region argument should use the CaaS region code, e.g. AU or NA.
 
 *To delete a deployment using a previous deployment log*:
@@ -16,7 +17,9 @@ The -region argument should use the CaaS region code, e.g. AU or NA.
 **CaasDeploy.exe** -action Delete -deploymentLog *PathToDeploymentLogFile* -region *RegionName* -username *CaaSUserName* -password *CaasPassword*
 
 ## Template format
-The templates are in JSON format and contain two sections: **parameters** and **resources**.
+The templates are in JSON format and contain three sections: **metadata**, **parameters** and **resources**.
+
+**metadata** defines the template scehma version, and user-defined name and description for this template.
 
 **parameters** contains a single JSON element containing the list of parameter names and their descriptions. The values for the parameters
 (which will vary per deployment) go in a separate file.
@@ -38,6 +41,11 @@ This template deploys a new Network Domain with a VNET, a Public IP Block and a 
 public IP to the private IP, and opens firewall ports for web and RDP traffic.
 ```json
 {
+  "metadata": {
+    "schemaVersion": "0.1",
+    "templateName": "Web Server in new Network Domain",
+    "templateDescription":  "Deploys a new VM in a new Newtwork Domain and VNET, with a public IP address and NAT rule, and firewall rules for HTTP and RDP traffic."
+  },
   "parameters": {
     "myVMName": {
       "description": "The name to use for the Virtual Machine"
