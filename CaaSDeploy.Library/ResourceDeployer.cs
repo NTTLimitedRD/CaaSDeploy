@@ -15,16 +15,16 @@ namespace CaasDeploy.Library
     {
         private Dictionary<string, CaasApiUrls> _resourceApis = new Dictionary<string, CaasApiUrls>
         {
-            { "NetworkDomain", new CaasApiUrls { DeployUrl = "/network/deployNetworkDomain", GetUrl = "/network/networkDomain/{0}", DeleteUrl = "/network/deleteNetworkDomain" } },
-            { "Vlan", new CaasApiUrls { DeployUrl = "/network/deployVlan", GetUrl = "/network/vlan/{0}", DeleteUrl = "/network/deleteVlan" } },
-            { "Server", new CaasApiUrls { DeployUrl = "/server/deployServer", GetUrl = "/server/server/{0}", DeleteUrl = "/server/deleteServer" } },
-            { "FirewallRule", new CaasApiUrls { DeployUrl = "/network/createFirewallRule", GetUrl = "/network/firewallRule/{0}", DeleteUrl = "/network/deleteFirewallRule" } },
-            { "PublicIpBlock", new CaasApiUrls { DeployUrl = "/network/addPublicIpBlock", GetUrl = "/network/publicIpBlock/{0}", DeleteUrl = "/network/removePublicIpBlock" } },
-            { "NatRule", new CaasApiUrls { DeployUrl = "/network/createNatRule", GetUrl = "/network/natRule/{0}", DeleteUrl = "/network/deleteNatRule" } },
-            { "VirtualListener", new CaasApiUrls { DeployUrl = "/networkDomainVip/createVirtualListener", GetUrl = "/networkDomainVip/virtualListener/{0}", DeleteUrl = "/networkDomainVip/deleteVirtualListener" } },
-            { "Pool", new CaasApiUrls { DeployUrl = "/networkDomainVip/createPool", GetUrl = "/networkDomainVip/pool/{0}", DeleteUrl = "/networkDomainVip/deletePool" } },
-            { "Node", new CaasApiUrls { DeployUrl = "/networkDomainVip/createNode", GetUrl = "/networkDomainVip/node/{0}", DeleteUrl = "/networkDomainVip/deleteNode" } },
-            { "PoolMember", new CaasApiUrls { DeployUrl = "/networkDomainVip/addPoolMember", GetUrl = "/networkDomainVip/poolMember/{0}", DeleteUrl = "/networkDomainVip/removePoolMember" } },
+            { "NetworkDomain", new CaasApiUrls { DeployUrl = "/network/deployNetworkDomain", GetUrl = "/network/networkDomain/{0}", ListUrl="/network/networkDomain?name={0}", DeleteUrl = "/network/deleteNetworkDomain" } },
+            { "Vlan", new CaasApiUrls { DeployUrl = "/network/deployVlan", GetUrl = "/network/vlan/{0}", ListUrl="/network/vlan?name={0}", DeleteUrl = "/network/deleteVlan" } },
+            { "Server", new CaasApiUrls { DeployUrl = "/server/deployServer", GetUrl = "/server/server/{0}", ListUrl = "/server/server?name={0}", DeleteUrl = "/server/deleteServer" } },
+            { "FirewallRule", new CaasApiUrls { DeployUrl = "/network/createFirewallRule", GetUrl = "/network/firewallRule/{0}", ListUrl = null, DeleteUrl = "/network/deleteFirewallRule" } },
+            { "PublicIpBlock", new CaasApiUrls { DeployUrl = "/network/addPublicIpBlock", GetUrl = "/network/publicIpBlock/{0}", ListUrl = null, DeleteUrl = "/network/removePublicIpBlock" } },
+            { "NatRule", new CaasApiUrls { DeployUrl = "/network/createNatRule", GetUrl = "/network/natRule/{0}", ListUrl = null, DeleteUrl = "/network/deleteNatRule" } },
+            { "VirtualListener", new CaasApiUrls { DeployUrl = "/networkDomainVip/createVirtualListener", GetUrl = "/networkDomainVip/virtualListener/{0}", ListUrl = "/networkDomainVip/virtualListener?name={0}", DeleteUrl = "/networkDomainVip/deleteVirtualListener" } },
+            { "Pool", new CaasApiUrls { DeployUrl = "/networkDomainVip/createPool", GetUrl = "/networkDomainVip/pool/{0}", ListUrl = "/networkDomainVip/pool?name={0}", DeleteUrl = "/networkDomainVip/deletePool" } },
+            { "Node", new CaasApiUrls { DeployUrl = "/networkDomainVip/createNode", GetUrl = "/networkDomainVip/node/{0}", ListUrl = "/networkDomainVip/node?name={0}", DeleteUrl = "/networkDomainVip/deleteNode" } },
+            { "PoolMember", new CaasApiUrls { DeployUrl = "/networkDomainVip/addPoolMember", GetUrl = "/networkDomainVip/poolMember/{0}", ListUrl = "/networkDomainVip/poolMember?poolId={0}&nodeId={1}", DeleteUrl = "/networkDomainVip/removePoolMember" } },
         };
 
 
@@ -59,6 +59,7 @@ namespace CaasDeploy.Library
         private async Task<string> Deploy(string jsonPayload)
         {
             Console.Write("Deploying {0}: '{1}' ", _resourceType, _resourceId);
+
             using (var client = GetHttpClient())
             {
                 var url = GetApiUrl(_resourceApi.DeployUrl);
@@ -72,10 +73,38 @@ namespace CaasDeploy.Library
             }
         }
 
-        public async Task<JObject> DeployAndWait(string jsonPayload)
+        public async Task<ResourceLog> DeployAndWait(string jsonPayload, bool skipExistingResources)
         {
-            var id = await Deploy(jsonPayload);
-            return await WaitForDeploy(id);
+            var response = new ResourceLog() { resourceId = _resourceId, resourceType = _resourceType };
+
+            try
+            {
+                if (skipExistingResources && _resourceApi.ListUrl != null)
+                {
+                    var resourceDefinition = JObject.Parse(jsonPayload);
+                    var ids = GetResourceIdentifiers(resourceDefinition);
+                    var existingResources = await GetResourceByIdentifiers(ids);
+                    if (existingResources != null && existingResources.Count() == 1)
+                    {
+                        Console.WriteLine($"Resource '{_resourceId}' already exists (ID: {existingResources.First()["id"].Value<String>()}. Existing resource will be used, even if it differs from the template definition. ");
+                        response.details = existingResources.First();
+                        response.deploymentStatus = ResourceLog.DeploymentStatusAlreadyPresent;
+                        return response;
+                    }
+                }
+
+                var id = await Deploy(jsonPayload);
+                response.details = await WaitForDeploy(id);
+                response.deploymentStatus = ResourceLog.DeploymentStatusDeployed;
+                return response;
+            }
+            catch (CaasException ex)
+            {
+                response.deploymentStatus = ResourceLog.DeploymentStatusFailed;
+                response.error = ex.FullResponse;
+                return response;
+            }
+
         }
 
         public async Task<JObject> Get(string id)
@@ -193,6 +222,41 @@ namespace CaasDeploy.Library
                 await Task.Delay(TimeSpan.FromSeconds(_pollingDelaySeconds));
             }
 
+        }
+
+        /// <summary>
+        /// Retrieves the values from the template resource definition that can be used to uniquely identify an
+        /// alredy deployed resource, in the order specified in the ListUrl parameters. 
+        /// </summary>
+        /// <param name="resourceDefinition">The JSON resource definition from the template</param>
+        /// <returns>The list of parameter values to be used for the List API call</returns>
+        public string[] GetResourceIdentifiers(JObject resourceDefinition)
+        {
+            if (_resourceType == "PoolMember")
+            {
+                return new[] { resourceDefinition["poolId"].Value<string>(), resourceDefinition["nodeId"].Value<string>(), };
+            }
+            return new[] { resourceDefinition["name"].Value<string>() };
+        }
+
+        public async Task<IEnumerable<JObject>> GetResourceByIdentifiers(string[] ids)
+        {
+            if (_resourceApi.ListUrl == null)
+            {
+                // Some resource types can't be retrieved just by name
+                return null;
+            }
+
+            using (var client = GetHttpClient())
+            {
+                var url = String.Format(GetApiUrl(_resourceApi.ListUrl), ids);
+                var response = await client.GetAsync(url);
+                var responseBody = await response.Content.ReadAsStringAsync();
+                await ThrowForHttpFailure(response);
+                var jsonResponse = JObject.Parse(responseBody);
+                var results = (JArray)jsonResponse.First.Children().First();
+                return results.Select(jv => (JObject)jv).ToArray();
+            }
         }
     }
 }

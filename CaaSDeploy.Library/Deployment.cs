@@ -42,26 +42,20 @@ namespace CaasDeploy.Library
                 {
                     SubstituteTokens(resource.resourceDefinition, parameters, resourcesProperties);
                     var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType,  accountDetails);
-                    var properties = await deployer.DeployAndWait(resource.resourceDefinition.ToString());
+                    var resourceLog = await deployer.DeployAndWait(resource.resourceDefinition.ToString(), true);
 
-                    resourcesProperties.Add(resource.resourceId, properties);
-
-                    log.resources.Add(new ResourceLog()
+                    if (resourceLog.deploymentStatus == ResourceLog.DeploymentStatusFailed)
                     {
-                        resourceId = resource.resourceId,
-                        resourceType = resource.resourceType,
-                        details = properties,
-                    });
+                        log.status = "Failed";
+                        return log;
+                    }
+
+                    resourcesProperties.Add(resource.resourceId, resourceLog.details);
+                    log.resources.Add(resourceLog);
 
                 }
-                catch (CaasException ex)
+                catch (Exception ex)
                 {
-                    log.resources.Add(new ResourceLog()
-                    {
-                        resourceId = resource.resourceId,
-                        resourceType = resource.resourceType,
-                        error = ex.FullResponse,
-                    });
                     log.status = "Failed";
                     return log;
                 }
