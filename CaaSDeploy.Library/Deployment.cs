@@ -42,7 +42,8 @@ namespace CaasDeploy.Library
                 {
                     SubstituteTokens(resource.resourceDefinition, parameters, resourcesProperties);
                     var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType,  accountDetails);
-                    var resourceLog = await deployer.DeployAndWait(resource.resourceDefinition.ToString(), true);
+                    var resourceLog = await deployer.DeployAndWait(resource.resourceDefinition.ToString());
+                    log.resources.Add(resourceLog);
 
                     if (resourceLog.deploymentStatus == ResourceLog.DeploymentStatusFailed)
                     {
@@ -51,7 +52,6 @@ namespace CaasDeploy.Library
                     }
 
                     resourcesProperties.Add(resource.resourceId, resourceLog.details);
-                    log.resources.Add(resourceLog);
 
                 }
                 catch (Exception ex)

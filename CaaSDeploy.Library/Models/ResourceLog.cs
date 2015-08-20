@@ -11,7 +11,8 @@ namespace CaasDeploy.Library.Models
     {
         public const string DeploymentStatusDeployed = "Deployed";
         public const string DeploymentStatusFailed = "Failed";
-        public const string DeploymentStatusAlreadyPresent = "AlreadyPresent";
+        public const string DeploymentStatusUpdated = "Updated";
+        public const string DeploymentStatusUsedExisting = "UsedExisting";
 
         public string resourceType { get; set; }
         public string resourceId { get; set; }

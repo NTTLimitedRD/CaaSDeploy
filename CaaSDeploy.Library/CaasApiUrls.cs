@@ -12,5 +12,6 @@ namespace CaasDeploy.Library
         public string GetUrl { get; set; }
         public string DeleteUrl { get; set; }
         public string ListUrl { get; set; }
+        public string EditUrl { get; set; }
     }
 }

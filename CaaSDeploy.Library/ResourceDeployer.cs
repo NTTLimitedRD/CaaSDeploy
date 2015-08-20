@@ -15,16 +15,30 @@ namespace CaasDeploy.Library
     {
         private Dictionary<string, CaasApiUrls> _resourceApis = new Dictionary<string, CaasApiUrls>
         {
-            { "NetworkDomain", new CaasApiUrls { DeployUrl = "/network/deployNetworkDomain", GetUrl = "/network/networkDomain/{0}", ListUrl="/network/networkDomain?name={0}", DeleteUrl = "/network/deleteNetworkDomain" } },
-            { "Vlan", new CaasApiUrls { DeployUrl = "/network/deployVlan", GetUrl = "/network/vlan/{0}", ListUrl="/network/vlan?name={0}", DeleteUrl = "/network/deleteVlan" } },
-            { "Server", new CaasApiUrls { DeployUrl = "/server/deployServer", GetUrl = "/server/server/{0}", ListUrl = "/server/server?name={0}", DeleteUrl = "/server/deleteServer" } },
-            { "FirewallRule", new CaasApiUrls { DeployUrl = "/network/createFirewallRule", GetUrl = "/network/firewallRule/{0}", ListUrl = null, DeleteUrl = "/network/deleteFirewallRule" } },
-            { "PublicIpBlock", new CaasApiUrls { DeployUrl = "/network/addPublicIpBlock", GetUrl = "/network/publicIpBlock/{0}", ListUrl = null, DeleteUrl = "/network/removePublicIpBlock" } },
-            { "NatRule", new CaasApiUrls { DeployUrl = "/network/createNatRule", GetUrl = "/network/natRule/{0}", ListUrl = null, DeleteUrl = "/network/deleteNatRule" } },
-            { "VirtualListener", new CaasApiUrls { DeployUrl = "/networkDomainVip/createVirtualListener", GetUrl = "/networkDomainVip/virtualListener/{0}", ListUrl = "/networkDomainVip/virtualListener?name={0}", DeleteUrl = "/networkDomainVip/deleteVirtualListener" } },
-            { "Pool", new CaasApiUrls { DeployUrl = "/networkDomainVip/createPool", GetUrl = "/networkDomainVip/pool/{0}", ListUrl = "/networkDomainVip/pool?name={0}", DeleteUrl = "/networkDomainVip/deletePool" } },
-            { "Node", new CaasApiUrls { DeployUrl = "/networkDomainVip/createNode", GetUrl = "/networkDomainVip/node/{0}", ListUrl = "/networkDomainVip/node?name={0}", DeleteUrl = "/networkDomainVip/deleteNode" } },
-            { "PoolMember", new CaasApiUrls { DeployUrl = "/networkDomainVip/addPoolMember", GetUrl = "/networkDomainVip/poolMember/{0}", ListUrl = "/networkDomainVip/poolMember?poolId={0}&nodeId={1}", DeleteUrl = "/networkDomainVip/removePoolMember" } },
+            { "NetworkDomain", new CaasApiUrls { DeployUrl = "/network/deployNetworkDomain", GetUrl = "/network/networkDomain/{0}", ListUrl="/network/networkDomain?name={0}", DeleteUrl = "/network/deleteNetworkDomain", EditUrl = "/network/editNetworkDomain" } },
+            { "Vlan", new CaasApiUrls { DeployUrl = "/network/deployVlan", GetUrl = "/network/vlan/{0}", ListUrl="/network/vlan?name={0}", DeleteUrl = "/network/deleteVlan", EditUrl = "/network/editVlan" } },
+            { "Server", new CaasApiUrls { DeployUrl = "/server/deployServer", GetUrl = "/server/server/{0}", ListUrl = "/server/server?name={0}", DeleteUrl = "/server/deleteServer", EditUrl = null } },
+            { "FirewallRule", new CaasApiUrls { DeployUrl = "/network/createFirewallRule", GetUrl = "/network/firewallRule/{0}", ListUrl = "/network/firewallRule?name={0}&networkDomainId={1}", DeleteUrl = "/network/deleteFirewallRule", EditUrl = "/network/editFirewallRule" } },
+            { "PublicIpBlock", new CaasApiUrls { DeployUrl = "/network/addPublicIpBlock", GetUrl = "/network/publicIpBlock/{0}", ListUrl = null, DeleteUrl = "/network/removePublicIpBlock", EditUrl= null } },
+            { "NatRule", new CaasApiUrls { DeployUrl = "/network/createNatRule", GetUrl = "/network/natRule/{0}", ListUrl = "/network/natRule?networkDomainId={0}&internalIp={1}", DeleteUrl = "/network/deleteNatRule", EditUrl = null } },
+            { "VirtualListener", new CaasApiUrls { DeployUrl = "/networkDomainVip/createVirtualListener", GetUrl = "/networkDomainVip/virtualListener/{0}", ListUrl = "/networkDomainVip/virtualListener?name={0}", DeleteUrl = "/networkDomainVip/deleteVirtualListener", /*EditUrl = "/networkDomainVip/editVirtualListener"*/ } },
+            { "Pool", new CaasApiUrls { DeployUrl = "/networkDomainVip/createPool", GetUrl = "/networkDomainVip/pool/{0}", ListUrl = "/networkDomainVip/pool?name={0}", DeleteUrl = "/networkDomainVip/deletePool", /*EditUrl = "/networkDomainVip/editPool"*/ } },
+            { "Node", new CaasApiUrls { DeployUrl = "/networkDomainVip/createNode", GetUrl = "/networkDomainVip/node/{0}", ListUrl = "/networkDomainVip/node?name={0}", DeleteUrl = "/networkDomainVip/deleteNode",  /*EditUrl = "/networkDomainVip/editNode"*/ } },
+            { "PoolMember", new CaasApiUrls { DeployUrl = "/networkDomainVip/addPoolMember", GetUrl = "/networkDomainVip/poolMember/{0}", ListUrl = "/networkDomainVip/poolMember?poolId={0}&nodeId={1}", DeleteUrl = "/networkDomainVip/removePoolMember", /*EditUrl= "/networkDomainVip/editPoolMember"*/} },
+        };
+
+        private Dictionary<string, string[]> _propertiesNotSupportedForEdit = new Dictionary<string, string[]>
+        {
+            { "NetworkDomain", new[] { "datacenterId" } },
+            { "Vlan", new[] { "networkDomainId", "privateIpv4BaseAddress" } },
+            { "Server", new[] { "networkDomainId" } },
+            { "FirewallRule", new[] { "networkDomainId", "name" } },
+            { "PublicIpBlock", new[] { "networkDomainId" } },
+            { "NatRule", new[] { "networkDomainId" } },
+            { "VirtualListener", new[] { "networkDomainId" } },
+            { "Pool", new[] { "networkDomainId" } },
+            { "Node", new[] { "networkDomainId" } },
+            { "PoolMember", new[] { "networkDomainId" } },
         };
 
 
@@ -73,23 +87,34 @@ namespace CaasDeploy.Library
             }
         }
 
-        public async Task<ResourceLog> DeployAndWait(string jsonPayload, bool skipExistingResources)
+        public async Task<ResourceLog> DeployAndWait(string jsonPayload)
         {
             var response = new ResourceLog() { resourceId = _resourceId, resourceType = _resourceType };
 
             try
             {
-                if (skipExistingResources && _resourceApi.ListUrl != null)
+                if (_resourceApi.ListUrl != null)
                 {
                     var resourceDefinition = JObject.Parse(jsonPayload);
                     var ids = GetResourceIdentifiers(resourceDefinition);
-                    var existingResources = await GetResourceByIdentifiers(ids);
-                    if (existingResources != null && existingResources.Count() == 1)
+                    var existingResourceDetails = (await GetResourceByIdentifiers(ids)).SingleOrDefault();
+                    if (existingResourceDetails != null)
                     {
-                        Console.WriteLine($"Resource '{_resourceId}' already exists (ID: {existingResources.First()["id"].Value<String>()}. Existing resource will be used, even if it differs from the template definition. ");
-                        response.details = existingResources.First();
-                        response.deploymentStatus = ResourceLog.DeploymentStatusAlreadyPresent;
-                        return response;
+                        if (_resourceApi.EditUrl == null)
+                        {
+                            Console.WriteLine($"Resource '{_resourceId}' already exists and cannot be updated. Using existing resource even if its definition doesn't match the template.");
+                            response.details = existingResourceDetails;
+                            response.deploymentStatus = ResourceLog.DeploymentStatusUsedExisting;
+                            return response;
+                        }
+                        else
+                        {
+                            var existingId = existingResourceDetails["id"].Value<string>();
+                            await UpdateExistingResource(existingId, resourceDefinition);
+                            response.details = await Get(existingId);
+                            response.deploymentStatus = ResourceLog.DeploymentStatusUpdated;
+                            return response;
+                        }
                     }
                 }
 
@@ -105,6 +130,30 @@ namespace CaasDeploy.Library
                 return response;
             }
 
+        }
+
+        private async Task UpdateExistingResource(string existingId, JObject resourceDefinition)
+        {
+            Console.WriteLine("Updating existing {0}: '{1}' ", _resourceType, _resourceId);
+
+            using (var client = GetHttpClient())
+            {
+                resourceDefinition.AddFirst(new JProperty("id", existingId));
+                RemovePropertiesUnsupportedForEdit(resourceDefinition);
+                var url = GetApiUrl(_resourceApi.EditUrl);
+                var response = await client.PostAsync(url, new StringContent(resourceDefinition.ToString(), Encoding.UTF8, "application/json"));
+                var responseBody = await response.Content.ReadAsStringAsync();
+                await ThrowForHttpFailure(response);
+
+            }
+        }
+
+        private void RemovePropertiesUnsupportedForEdit(JObject resourceDefinition)
+        {
+            foreach (var prop in _propertiesNotSupportedForEdit[_resourceType])
+            {
+                resourceDefinition.Remove(prop);
+            }
         }
 
         public async Task<JObject> Get(string id)
@@ -235,6 +284,14 @@ namespace CaasDeploy.Library
             if (_resourceType == "PoolMember")
             {
                 return new[] { resourceDefinition["poolId"].Value<string>(), resourceDefinition["nodeId"].Value<string>(), };
+            }
+            else if (_resourceType == "NatRule")
+            {
+                return new[] { resourceDefinition["networkDomainId"].Value<string>(), resourceDefinition["internalIp"].Value<string>()};
+            }
+            else if (_resourceType == "FirewallRule")
+            {
+                return new[] { resourceDefinition["name"].Value<string>(), resourceDefinition["networkDomainId"].Value<string>()};
             }
             return new[] { resourceDefinition["name"].Value<string>() };
         }
