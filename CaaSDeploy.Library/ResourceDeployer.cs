@@ -21,10 +21,10 @@ namespace CaasDeploy.Library
             { "FirewallRule", new CaasApiUrls { DeployUrl = "/network/createFirewallRule", GetUrl = "/network/firewallRule/{0}", ListUrl = "/network/firewallRule?name={0}&networkDomainId={1}", DeleteUrl = "/network/deleteFirewallRule", EditUrl = "/network/editFirewallRule" } },
             { "PublicIpBlock", new CaasApiUrls { DeployUrl = "/network/addPublicIpBlock", GetUrl = "/network/publicIpBlock/{0}", ListUrl = null, DeleteUrl = "/network/removePublicIpBlock", EditUrl= null } },
             { "NatRule", new CaasApiUrls { DeployUrl = "/network/createNatRule", GetUrl = "/network/natRule/{0}", ListUrl = "/network/natRule?networkDomainId={0}&internalIp={1}", DeleteUrl = "/network/deleteNatRule", EditUrl = null } },
-            { "VirtualListener", new CaasApiUrls { DeployUrl = "/networkDomainVip/createVirtualListener", GetUrl = "/networkDomainVip/virtualListener/{0}", ListUrl = "/networkDomainVip/virtualListener?name={0}", DeleteUrl = "/networkDomainVip/deleteVirtualListener", /*EditUrl = "/networkDomainVip/editVirtualListener"*/ } },
-            { "Pool", new CaasApiUrls { DeployUrl = "/networkDomainVip/createPool", GetUrl = "/networkDomainVip/pool/{0}", ListUrl = "/networkDomainVip/pool?name={0}", DeleteUrl = "/networkDomainVip/deletePool", /*EditUrl = "/networkDomainVip/editPool"*/ } },
-            { "Node", new CaasApiUrls { DeployUrl = "/networkDomainVip/createNode", GetUrl = "/networkDomainVip/node/{0}", ListUrl = "/networkDomainVip/node?name={0}", DeleteUrl = "/networkDomainVip/deleteNode",  /*EditUrl = "/networkDomainVip/editNode"*/ } },
-            { "PoolMember", new CaasApiUrls { DeployUrl = "/networkDomainVip/addPoolMember", GetUrl = "/networkDomainVip/poolMember/{0}", ListUrl = "/networkDomainVip/poolMember?poolId={0}&nodeId={1}", DeleteUrl = "/networkDomainVip/removePoolMember", /*EditUrl= "/networkDomainVip/editPoolMember"*/} },
+            { "VirtualListener", new CaasApiUrls { DeployUrl = "/networkDomainVip/createVirtualListener", GetUrl = "/networkDomainVip/virtualListener/{0}", ListUrl = "/networkDomainVip/virtualListener?name={0}", DeleteUrl = "/networkDomainVip/deleteVirtualListener", EditUrl = "/networkDomainVip/editVirtualListener" } },
+            { "Pool", new CaasApiUrls { DeployUrl = "/networkDomainVip/createPool", GetUrl = "/networkDomainVip/pool/{0}", ListUrl = "/networkDomainVip/pool?name={0}", DeleteUrl = "/networkDomainVip/deletePool", EditUrl = "/networkDomainVip/editPool" } },
+            { "Node", new CaasApiUrls { DeployUrl = "/networkDomainVip/createNode", GetUrl = "/networkDomainVip/node/{0}", ListUrl = "/networkDomainVip/node?name={0}", DeleteUrl = "/networkDomainVip/deleteNode",  EditUrl = "/networkDomainVip/editNode" } },
+            { "PoolMember", new CaasApiUrls { DeployUrl = "/networkDomainVip/addPoolMember", GetUrl = "/networkDomainVip/poolMember/{0}", ListUrl = "/networkDomainVip/poolMember?poolId={0}&nodeId={1}", DeleteUrl = "/networkDomainVip/removePoolMember", EditUrl= "/networkDomainVip/editPoolMember"} },
         };
 
         private Dictionary<string, string[]> _propertiesNotSupportedForEdit = new Dictionary<string, string[]>
@@ -36,7 +36,7 @@ namespace CaasDeploy.Library
             { "PublicIpBlock", new[] { "networkDomainId" } },
             { "NatRule", new[] { "networkDomainId" } },
             { "VirtualListener", new[] { "networkDomainId" } },
-            { "Pool", new[] { "networkDomainId" } },
+            { "Pool", new[] { "networkDomainId", "name" } },
             { "Node", new[] { "networkDomainId" } },
             { "PoolMember", new[] { "networkDomainId" } },
         };
@@ -141,7 +141,9 @@ namespace CaasDeploy.Library
                 resourceDefinition.AddFirst(new JProperty("id", existingId));
                 RemovePropertiesUnsupportedForEdit(resourceDefinition);
                 var url = GetApiUrl(_resourceApi.EditUrl);
-                var response = await client.PostAsync(url, new StringContent(resourceDefinition.ToString(), Encoding.UTF8, "application/json"));
+                var content = new StringContent(resourceDefinition.ToString(), Encoding.UTF8, "application/json");
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/json"); // CaaS bug is causing errors if charset is preset in the content-type header
+                var response = await client.PostAsync(url, content);
                 var responseBody = await response.Content.ReadAsStringAsync();
                 await ThrowForHttpFailure(response);
 
