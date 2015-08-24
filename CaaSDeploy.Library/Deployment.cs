@@ -73,20 +73,36 @@ namespace CaasDeploy.Library
         }
 
 
-        public async Task Delete(DeploymentLog log, CaasAccountDetails accountDetails)
+        public async Task<string> Delete(DeploymentLog log, CaasAccountDetails accountDetails)
         {
-            var reversedResources = new List<ResourceLog>(log.resources);
-            reversedResources.Reverse();
-
-            foreach (var resource in reversedResources)
+            try
             {
-                if (resource.details != null)
+                var reversedResources = new List<ResourceLog>(log.resources);
+                reversedResources.Reverse();
+
+                foreach (var resource in reversedResources)
                 {
-                    var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType, accountDetails);
-                    var caasId = resource.details["id"].Value<string>();
-                    await deployer.DeleteAndWait(caasId);
+                    if (resource.details != null)
+                    {
+                        var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType, accountDetails);
+                        var caasId = resource.details["id"].Value<string>();
+                        await deployer.DeleteAndWait(caasId);
+                    }
                 }
+                return "Success";
             }
+            catch (Exception)
+            {
+                return "Failed";
+            }
+            
+        }
+
+        public string DeleteSync(DeploymentLog log, CaasAccountDetails accountDetails)
+        {
+            var task = Delete(log, accountDetails);
+            task.Wait();
+            return task.Result;
         }
 
 

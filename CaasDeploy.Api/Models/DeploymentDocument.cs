@@ -7,7 +7,7 @@ using System.Web;
 
 namespace CaasDeploy.Api.Models
 {
-    public class TemplateAndParameters
+    public class DeploymentDocument
     {
         public CaasAccountDetails accountDetails { get; set; }
         public DeploymentTemplate template { get; set; }

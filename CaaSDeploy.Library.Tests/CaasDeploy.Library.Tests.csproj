@@ -86,11 +86,16 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ApiTests.cs" />
     <Compile Include="DependencyTests.cs" />
     <Compile Include="ExceptionAssert.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CaasDeploy.Api\CaasDeploy.Api.csproj">
+      <Project>{ee04fe93-bcc2-41c9-a4e3-c83a1e730447}</Project>
+      <Name>CaasDeploy.Api</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CaaSDeploy.Library\CaasDeploy.Library.csproj">
       <Project>{ba304b6f-b2c3-4f65-a9de-5a1a5e4951ef}</Project>
       <Name>CaasDeploy.Library</Name>
@@ -98,6 +103,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="VIPTemplateMessage.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

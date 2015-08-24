@@ -16,7 +16,7 @@ namespace CaasDeploy.Api.Controllers
     public class DeploymentController : ApiController
     {
         [HttpPost]
-        public string Deploy([FromBody] TemplateAndParameters document)
+        public string Deploy([FromBody] DeploymentDocument document)
         {
             var jobId = BackgroundJob.Enqueue<Deployment>(x => x.DeploySync(document.template, document.parameterValues, document.accountDetails));
             return jobId;
@@ -41,9 +41,10 @@ namespace CaasDeploy.Api.Controllers
         }
 
         [HttpDelete]
-        public string Delete([FromBody] DeploymentLog deploymentLog)
+        public string Delete([FromBody] DeleteDocument document)
         {
-            throw new NotImplementedException();
+            var jobId = BackgroundJob.Enqueue<Deployment>(x => x.DeleteSync(document.deploymentLog, document.accountDetails));
+            return jobId;
         }
     }
 }
