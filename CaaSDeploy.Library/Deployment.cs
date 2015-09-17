@@ -15,7 +15,7 @@ namespace CaasDeploy.Library
 {
     public class Deployment
     {
-        private Regex _parameterRegex = new Regex("\\$parameters\\['(.*)'\\]");
+        private Regex _parameterRegex = new Regex("\\$parameters\\['([^']*)'\\]");
         private Regex _resourcePropertyRegex = new Regex("\\$resources\\['(.*)'\\]\\.(.*)");
 
         public Deployment()
@@ -56,7 +56,7 @@ namespace CaasDeploy.Library
 
                     if (resource.scripts != null && resource.resourceType == "Server")
                     {
-                        CopyAndRunScripts(resource, resourceLog.details);
+                        CopyAndRunScripts(resource, resourceLog.details, parameters);
                     }
 
                 }
@@ -70,7 +70,7 @@ namespace CaasDeploy.Library
             return log;
         }
 
-        private void CopyAndRunScripts(Resource resource, JObject details)
+        private void CopyAndRunScripts(Resource resource, JObject details, Dictionary<string, string> parameters)
         {
             Console.WriteLine($"Running deployment scripts.");
             string ipv6Address = details["networkInfo"]["primaryNic"]["ipv6"].Value<string>();
@@ -93,9 +93,26 @@ namespace CaasDeploy.Library
             }
             scriptDirectory.Delete();
 
-            Console.WriteLine("\tExecuting script " + resource.scripts.onDeploy);
-            scripting.ExecuteScript(resource.scripts.onDeploy);
+            string deployScript = SubstituteTokensInCommandLine(resource.scripts.onDeploy, parameters);
+            Console.WriteLine("\tExecuting script " + deployScript);
+            scripting.ExecuteScript(deployScript);
 
+        }
+
+        private string SubstituteTokensInCommandLine(string commandLine, Dictionary<string, string> parameters)
+        {
+            var paramsMatches = _parameterRegex.Matches(commandLine);
+            string newCommandLine = commandLine;
+            if (paramsMatches.Count > 0)
+            {
+                foreach (Match paramsMatch in paramsMatches)
+                {
+                    string newValue = parameters[paramsMatch.Groups[1].Value];
+                    newCommandLine = newCommandLine.Replace(paramsMatch.Groups[0].Value, newValue);
+                }
+
+            }
+            return newCommandLine;
         }
 
         private string UnzipScriptBundle(string bundleFile)

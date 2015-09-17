@@ -1,13 +1,16 @@
 ﻿{
-   "parameters": {
-        "myVMName": {
-            "value": "Toms Test VM"
-        },
-        "myNetworkDomainName": {
-            "value": "Toms New Test Network Domain"
-        },
-        "datacenterId": {
-            "value": "NA9"
-        }
+  "parameters": {
+    "myVMName": {
+      "value": "Toms Test VM"
+    },
+    "myNetworkDomainName": {
+      "value": "Toms New Test Network Domain"
+    },
+    "datacenterId": {
+      "value": "NA9"
+    },
+    "message": {
+      "value": "HelloWorld!"
     }
+  }
 }

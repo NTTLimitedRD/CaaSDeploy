@@ -7,6 +7,9 @@
   "parameters": {
     "vmName": {
       "description": "The name to use for the VM"
+    },
+    "message": {
+      "description": "The message to write to the file"
     }
   },
   "resources": [
@@ -33,7 +36,7 @@
       },
       "scripts": {
         "bundleFile": "TestScripts.zip",
-        "onDeploy": "powershell.exe test1.ps1"
+        "onDeploy": "powershell.exe test1.ps1 -foo $parameters['message']"
       },
       "dependsOn": [ ]
     }
