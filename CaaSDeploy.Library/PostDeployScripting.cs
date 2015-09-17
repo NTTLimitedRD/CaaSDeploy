@@ -59,7 +59,7 @@ namespace CaasDeploy.Library
 
 
 
-        public void UploadWindowsScript(string localPath)
+        private void UploadWindowsScript(string localPath)
         {
             var creds = new NetworkCredential(_userName, _password);
             using (new NetworkConnection(@"\\" + _serverIP + @"\admin$", creds))

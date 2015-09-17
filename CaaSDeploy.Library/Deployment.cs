@@ -9,6 +9,7 @@ using CaasDeploy.Library.Utilities;
 using Newtonsoft.Json;
 using System.IO;
 using CaasDeploy.Library.Models;
+using System.IO.Compression;
 
 namespace CaasDeploy.Library
 {
@@ -53,6 +54,11 @@ namespace CaasDeploy.Library
 
                     resourcesProperties.Add(resource.resourceId, resourceLog.details);
 
+                    if (resource.scripts != null && resource.resourceType == "Server")
+                    {
+                        CopyAndRunScripts(resource, resourceLog.details);
+                    }
+
                 }
                 catch (Exception ex)
                 {
@@ -64,6 +70,45 @@ namespace CaasDeploy.Library
             return log;
         }
 
+        private void CopyAndRunScripts(Resource resource, JObject details)
+        {
+            Console.WriteLine($"Running deployment scripts.");
+            string ipv6Address = details["networkInfo"]["primaryNic"]["ipv6"].Value<string>();
+            string ipv6Unc = IPv6ToUnc(ipv6Address);
+            PostDeployScripting.OSType osType = details["operatingSystem"]["family"].Value<string>() == "WINDOWS" ?
+                PostDeployScripting.OSType.Windows : PostDeployScripting.OSType.Linux;
+
+            string userName = osType == PostDeployScripting.OSType.Windows ? "administrator" : "root";
+            string password = resource.resourceDefinition["administratorPassword"].Value<string>();
+
+            var scripting = new PostDeployScripting(ipv6Unc, userName, password, osType);
+
+            string scriptPath = UnzipScriptBundle(resource.scripts.bundleFile);
+            var scriptDirectory = new DirectoryInfo(scriptPath);
+            foreach (var scriptFile in scriptDirectory.EnumerateFiles())
+            {
+                Console.WriteLine("\tCopying file " + scriptFile.Name);
+                scripting.UploadScript(scriptFile.FullName);
+                scriptFile.Delete();
+            }
+            scriptDirectory.Delete();
+
+            Console.WriteLine("\tExecuting script " + resource.scripts.onDeploy);
+            scripting.ExecuteScript(resource.scripts.onDeploy);
+
+        }
+
+        private string UnzipScriptBundle(string bundleFile)
+        {
+            var path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            ZipFile.ExtractToDirectory(bundleFile, path);
+            return path;
+        }
+
+        private string IPv6ToUnc(string ipv6Address)
+        {
+            return ipv6Address.Replace(':', '-').Replace('%', 's') + ".ipv6-literal.net";
+        }
 
         public DeploymentLog DeploySync(DeploymentTemplate template, Dictionary<string, string> parameters, CaasAccountDetails accountDetails)
         {

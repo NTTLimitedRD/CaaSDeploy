@@ -1,4 +1,9 @@
 ﻿{
+    "metadata": {
+    "schemaVersion": "0.1",
+    "templateName": "The littlest template",
+    "templateDescription":  "Just for fun"
+  },
   "parameters": {
     "vmName": {
       "description": "The name to use for the VM"
@@ -9,14 +14,14 @@
       "resourceType": "Server",
       "resourceId": "MyVM",
       "resourceDefinition": {
-        "name": "$parameters['vmName']",
+        "name": "$parameters['myVMName']",
         "description": "Testing CaaS Deployment Templates",
         "imageId": "8bc629a9-8d71-4b1b-8b26-acdc077edab1",
         "start": true,
         "administratorPassword": "Password@1",
         "networkInfo": {
           "networkDomainId": "6b49864b-b84e-4a43-a280-8961f5dfe29e",
-          "primaryNic": { "vlanId": ":d062fbca-8224-42d4-b38f-006032bf7c35" },
+          "primaryNic": { "vlanId": "d062fbca-8224-42d4-b38f-006032bf7c35" },
           "additionalNic": [ ]
         },
         "disk": [
@@ -28,8 +33,9 @@
       },
       "scripts": {
         "bundleFile": "TestScripts.zip",
-        "deploy":  "powershell.exe DoStuff.ps1"
-      }
+        "onDeploy": "powershell.exe test1.ps1"
+      },
+      "dependsOn": [ ]
     }
   ]
 }
