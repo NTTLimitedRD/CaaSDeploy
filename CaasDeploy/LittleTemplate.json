@@ -1,79 +1,34 @@
 ﻿{
   "parameters": {
-    "myNetworkDomainName": {
-      "description": "The name to use for the Network Domain"
-    },
-    "datacenterId": {
-      "description": "The region to deploy to"
+    "vmName": {
+      "description": "The name to use for the VM"
     }
   },
   "resources": [
     {
-      "resourceType": "FirewallRule",
-      "resourceId": "AllowHTTPFirewallRule",
+      "resourceType": "Server",
+      "resourceId": "MyVM",
       "resourceDefinition": {
-        "networkDomainId": "6b49864b-b84e-4a43-a280-8961f5dfe29e",
-        "name": "AllowHTTPFirewallRule",
-        "action": "ACCEPT_DECISIVELY",
-        "ipVersion": "IPV4",
-        "protocol": "TCP",
-        "source": {
-          "ip": {
-            "address": "ANY"
-          }
+        "name": "$parameters['vmName']",
+        "description": "Testing CaaS Deployment Templates",
+        "imageId": "8bc629a9-8d71-4b1b-8b26-acdc077edab1",
+        "start": true,
+        "administratorPassword": "Password@1",
+        "networkInfo": {
+          "networkDomainId": "6b49864b-b84e-4a43-a280-8961f5dfe29e",
+          "primaryNic": { "vlanId": ":d062fbca-8224-42d4-b38f-006032bf7c35" },
+          "additionalNic": [ ]
         },
-        "destination": {
-          "ip": { "address": "$resources['PublicIpBlock'].baseIp" },
-          "port": {
-            "begin": "80",
-            "end": "80"
+        "disk": [
+          {
+            "scsiId": "0",
+            "speed": "STANDARD"
           }
-        },
-        "enabled": "true",
-        "placement": {
-          "position": "FIRST"
-        }
+        ]
       },
-      "dependsOn": [
-        "PublicIpBlock"
-      ]
-    },
-    {
-      "resourceType": "FirewallRule",
-      "resourceId": "AllowRDPFirewallRule",
-      "resourceDefinition": {
-        "networkDomainId": "6b49864b-b84e-4a43-a280-8961f5dfe29e",
-        "name": "AllowRDPFirewallRule",
-        "action": "ACCEPT_DECISIVELY",
-        "ipVersion": "IPV4",
-        "protocol": "TCP",
-        "source": {
-          "ip": {
-            "address": "ANY"
-          }
-        },
-        "destination": {
-          "ip": { "address": "$resources['PublicIpBlock'].baseIp" },
-          "port": {
-            "begin": "3389",
-            "end": "3389"
-          }
-        },
-        "enabled": "true",
-        "placement": {
-          "position": "FIRST"
-        }
-      },
-      "dependsOn": [
-        "PublicIpBlock"
-      ]
-    },
-    {
-      "resourceType": "PublicIpBlock",
-      "resourceId": "PublicIpBlock",
-      "dependsOn": [  ],
-      "resourceDefinition": {
-        "networkDomainId": "6b49864b-b84e-4a43-a280-8961f5dfe29e"
+      "scripts": {
+        "bundleFile": "TestScripts.zip",
+        "deploy":  "powershell.exe DoStuff.ps1"
       }
     }
   ]

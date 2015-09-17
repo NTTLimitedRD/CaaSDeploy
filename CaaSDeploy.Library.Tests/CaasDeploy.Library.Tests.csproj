@@ -89,6 +89,7 @@
     <Compile Include="ApiTests.cs" />
     <Compile Include="DependencyTests.cs" />
     <Compile Include="ExceptionAssert.cs" />
+    <Compile Include="PostDeployScriptingTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

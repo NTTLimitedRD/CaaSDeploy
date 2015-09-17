@@ -6,13 +6,17 @@
   },
   "parameters": {
     "myVMName": {
-      "description": "The name to use for the Virtual Machine"
+      "description": "The name to use for the Virtual Machine",
+      "type":  "string"
     },
     "myNetworkDomainName": {
-      "description": "The name to use for the Network Domain"
+      "description": "The name to use for the Network Domain",
+      "type":  "string"
     },
     "datacenterId": {
-      "description": "The region to deploy to"
+      "description": "The region to deploy to",
+      "type": "string",
+      "minLength":  2
     }
   },
   "resources": [
@@ -46,7 +50,7 @@
         "PublicIpBlock"
       ]
     },
-        {
+    {
       "resourceType": "FirewallRule",
       "resourceId": "AllowRDPFirewallRule",
       "resourceDefinition": {

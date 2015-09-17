@@ -1,10 +1,18 @@
 ﻿{
-    "metadata": {
+  "metadata": {
     "schemaVersion": "0.1",
     "templateName": "Load balanced VIP for 2 existing servers",
-    "templateDescription":  "."
+    "templateDescription": "."
   },
   "parameters": {
+    "networkDomainId": {
+      "description": "The network domain that the VIP should be deployed into.",
+      "type": "string",
+      "minLength": 36,
+      "maxLength": 36,
+      "caasResourceId": "NetworkDomain"
+    }
+    
   },
   "resources": [
     {
@@ -12,7 +20,7 @@
       "resourceId": "MyPool",
       "dependsOn": [ ],
       "resourceDefinition": {
-        "networkDomainId": "6b49864b-b84e-4a43-a280-8961f5dfe29e",
+        "networkDomainId": "$parameters['networkDomainId']",
         "name": "TomsPool",
         "description": "Testing",
         "loadBalanceMethod": "ROUND_ROBIN",
@@ -25,7 +33,7 @@
       "resourceId": "MyVirtualListener",
       "dependsOn": [ "MyPool" ],
       "resourceDefinition": {
-        "networkDomainId": "6b49864b-b84e-4a43-a280-8961f5dfe29e",
+        "networkDomainId": "$parameters['networkDomainId']",
         "name": "TomsVL",
         "description": "Testing",
         "type": "STANDARD",
@@ -49,7 +57,7 @@
       "resourceId": "MyNode1",
       "dependsOn": [ ],
       "resourceDefinition": {
-        "networkDomainId": "6b49864b-b84e-4a43-a280-8961f5dfe29e",
+        "networkDomainId": "$parameters['networkDomainId']",
         "name": "TomsNode1",
         "description": "Testing",
         "ipv4Address": "10.0.0.11",
@@ -63,7 +71,7 @@
       "resourceId": "MyNode2",
       "dependsOn": [ ],
       "resourceDefinition": {
-        "networkDomainId": "6b49864b-b84e-4a43-a280-8961f5dfe29e",
+        "networkDomainId": "$parameters['networkDomainId']",
         "name": "TomsNode2",
         "description": "Testing",
         "ipv4Address": "10.0.0.12",
