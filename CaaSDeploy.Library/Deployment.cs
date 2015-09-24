@@ -17,14 +17,18 @@ namespace CaasDeploy.Library
     {
         private Regex _parameterRegex = new Regex("\\$parameters\\['([^']*)'\\]");
         private Regex _resourcePropertyRegex = new Regex("\\$resources\\['(.*)'\\]\\.(.*)");
+        private string _scriptPath;
 
         public Deployment()
         {
             
         }
 
-        public async Task<DeploymentLog> Deploy(DeploymentTemplate template, Dictionary<string, string> parameters, CaasAccountDetails accountDetails)
+        public async Task<DeploymentLog> Deploy(string templateId, Dictionary<string, string> parameters, CaasAccountDetails accountDetails)
         {
+            _scriptPath = new FileInfo(templateId).DirectoryName;
+            var template = TemplateParser.ParseTemplate(templateId);
+
             Dictionary<string, JObject> resourcesProperties = new Dictionary<string, JObject>();
 
             var sortedResources = ResourceDependencies.DependencySort(template.resources).Reverse();
@@ -117,21 +121,15 @@ namespace CaasDeploy.Library
 
         private string UnzipScriptBundle(string bundleFile)
         {
+            var bundlePath = Path.Combine(_scriptPath, bundleFile);
             var path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            ZipFile.ExtractToDirectory(bundleFile, path);
+            ZipFile.ExtractToDirectory(bundlePath, path);
             return path;
         }
 
         private string IPv6ToUnc(string ipv6Address)
         {
             return ipv6Address.Replace(':', '-').Replace('%', 's') + ".ipv6-literal.net";
-        }
-
-        public DeploymentLog DeploySync(DeploymentTemplate template, Dictionary<string, string> parameters, CaasAccountDetails accountDetails)
-        {
-            var task = Deploy(template, parameters, accountDetails);
-            task.Wait();
-            return task.Result;
         }
 
 

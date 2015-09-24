@@ -103,9 +103,9 @@ namespace CaasDeploy
                 {
                     string parametersFile = arguments.ContainsKey("parameters") ? arguments["parameters"] : null;
                     var parameters = TemplateParser.ParseParameters(parametersFile);
-                    var template = TemplateParser.ParseTemplate(arguments["template"]);
+                    var templateFile = arguments["template"];
 
-                    var log = await d.Deploy(template, parameters, accountDetails);
+                    var log = await d.Deploy(templateFile, parameters, accountDetails);
                     Console.WriteLine($"Result: {log.status}");
                     WriteLog(log, arguments["deploymentlog"]);
                     Console.WriteLine($"Complete! Deployment log written to {arguments["deploymentlog"]}.");
