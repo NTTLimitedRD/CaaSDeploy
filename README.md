@@ -30,6 +30,9 @@ The templates are in JSON format and contain three sections: **metadata**, **par
 * **resourceId**: A unique identifier for the resource. This isn't used by CaaS, so it's only valid within the template for deploying templates.
 * **dependsOn**: An array with the resourceIds for any other resources which must be created before this one.
 * **resourceDefinition**: A blob of JSON that is passed to the CloudControl 2.0 API to create the resource (see [documentation](https://community.opsourcecloud.net/Browse.jsp?id=e5b1a66815188ad439f76183b401f026) for syntax).
+* **scripts**: For Server resources only, used to specify that you want to run scripts on the VM after deployment. Contains two child properties:
+  * **bundleFile**: A .zip file containing scripts and related files that should be uploaded to the server post-deployment
+  * **onDeploy**: The command line to execute on the VM post deployment.
 
 JSON properties within the **resourceDefinition** may use the following macros to retrieve values from parameters or from the output after creating another resource:
 
@@ -159,6 +162,10 @@ public IP to the private IP, and opens firewall ports for web and RDP traffic.
             "speed": "STANDARD"
           }
         ]
+      },
+      "scripts": {
+        "bundleFile": "TestScripts.zip",
+        "onDeploy": "powershell.exe test1.ps1 -foo $parameters['message']"
       },
       "dependsOn": [
         "VLAN1"
