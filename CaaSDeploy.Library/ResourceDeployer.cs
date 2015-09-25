@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -50,14 +51,16 @@ namespace CaasDeploy.Library
         private string _apiBaseUrl;
         private const int _pollingDelaySeconds = 30;
         private const int _pollingTimeOutMinutes = 20;
+        private TraceListener _logWriter;
 
-        public ResourceDeployer(string resourceId, string resourceType, CaasAccountDetails accountDetails)
+        public ResourceDeployer(string resourceId, string resourceType, CaasAccountDetails accountDetails, TraceListener logWriter)
         {
             _resourceId = resourceId;
             _resourceType = resourceType;
             _resourceApi = _resourceApis[resourceType];
             _apiBaseUrl = Configuration.ApiBaseUrls[accountDetails.Region];
             _accountDetails = accountDetails;
+            _logWriter = logWriter;
         }
 
         private HttpClient GetHttpClient()
@@ -72,7 +75,7 @@ namespace CaasDeploy.Library
 
         private async Task<string> Deploy(string jsonPayload)
         {
-            Console.Write("Deploying {0}: '{1}' ", _resourceType, _resourceId);
+            _logWriter.Write($"Deploying {_resourceType}: '{_resourceId}' ");
 
             using (var client = GetHttpClient())
             {
@@ -102,7 +105,7 @@ namespace CaasDeploy.Library
                     {
                         if (_resourceApi.EditUrl == null)
                         {
-                            Console.WriteLine($"Resource '{_resourceId}' already exists and cannot be updated. Using existing resource even if its definition doesn't match the template.");
+                            _logWriter.WriteLine($"Resource '{_resourceId}' already exists and cannot be updated. Using existing resource even if its definition doesn't match the template.");
                             response.details = existingResourceDetails;
                             response.deploymentStatus = ResourceLog.DeploymentStatusUsedExisting;
                             return response;
@@ -134,7 +137,7 @@ namespace CaasDeploy.Library
 
         private async Task UpdateExistingResource(string existingId, JObject resourceDefinition)
         {
-            Console.WriteLine("Updating existing {0}: '{1}' ", _resourceType, _resourceId);
+            _logWriter.WriteLine($"Updating existing {_resourceType}: '{_resourceId}' ");
 
             using (var client = GetHttpClient())
             {
@@ -174,7 +177,7 @@ namespace CaasDeploy.Library
 
         private async Task<bool> Delete(string id) // Returns true if waiting is required
         {
-            Console.Write($"Deleting {_resourceType}: '{_resourceId}' (ID: {id}) ");
+            _logWriter.Write($"Deleting {_resourceType}: '{_resourceId}' (ID: {id}) ");
             using (var client = GetHttpClient())
             {
                 try
@@ -190,7 +193,7 @@ namespace CaasDeploy.Library
                     // Check detail
                     if (ex.ResponseCode == "RESOURCE_NOT_FOUND")
                     {
-                        Console.WriteLine("Not found.");
+                        _logWriter.WriteLine("Not found.");
                         return false;
                     }
                     throw;
@@ -235,10 +238,10 @@ namespace CaasDeploy.Library
                 var props = await Get(id);
                 if (props["state"].Value<string>() == "NORMAL")
                 {
-                    Console.WriteLine("Done!");
+                    _logWriter.WriteLine("Done!");
                     return props;
                 }
-                Console.Write(".");
+                _logWriter.Write(".");
                 await Task.Delay(TimeSpan.FromSeconds(_pollingDelaySeconds));
             }
 
@@ -264,12 +267,12 @@ namespace CaasDeploy.Library
                     // Check detail
                     if (ex.ResponseCode == "RESOURCE_NOT_FOUND")
                     {
-                        Console.WriteLine("Done!");
+                        _logWriter.WriteLine("Done!");
                         return;
                     }
                     throw;
                 }
-                Console.Write(".");
+                _logWriter.Write(".");
                 await Task.Delay(TimeSpan.FromSeconds(_pollingDelaySeconds));
             }
 

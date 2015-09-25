@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using System.IO;
 using CaasDeploy.Library.Models;
 using System.IO.Compression;
+using System.Diagnostics;
 
 namespace CaasDeploy.Library
 {
@@ -18,10 +19,11 @@ namespace CaasDeploy.Library
         private Regex _parameterRegex = new Regex("\\$parameters\\['([^']*)'\\]");
         private Regex _resourcePropertyRegex = new Regex("\\$resources\\['(.*)'\\]\\.(.*)");
         private string _scriptPath;
+        private TraceListener _logWriter;
 
-        public Deployment()
+        public Deployment(TraceListener logWriter)
         {
-            
+            _logWriter = logWriter;
         }
 
         public async Task<DeploymentLog> Deploy(string templateId, Dictionary<string, string> parameters, CaasAccountDetails accountDetails)
@@ -46,7 +48,7 @@ namespace CaasDeploy.Library
                 try
                 {
                     SubstituteTokens(resource.resourceDefinition, parameters, resourcesProperties);
-                    var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType,  accountDetails);
+                    var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType,  accountDetails, new ConsoleTraceListener());
                     var resourceLog = await deployer.DeployAndWait(resource.resourceDefinition.ToString());
                     log.resources.Add(resourceLog);
 
@@ -76,7 +78,7 @@ namespace CaasDeploy.Library
 
         private void CopyAndRunScripts(Resource resource, JObject details, Dictionary<string, string> parameters)
         {
-            Console.WriteLine($"Running deployment scripts.");
+            _logWriter.WriteLine($"Running deployment scripts.");
             string ipv6Address = details["networkInfo"]["primaryNic"]["ipv6"].Value<string>();
             string ipv6Unc = IPv6ToUnc(ipv6Address);
             PostDeployScripting.OSType osType = details["operatingSystem"]["family"].Value<string>() == "WINDOWS" ?
@@ -91,14 +93,14 @@ namespace CaasDeploy.Library
             var scriptDirectory = new DirectoryInfo(scriptPath);
             foreach (var scriptFile in scriptDirectory.EnumerateFiles())
             {
-                Console.WriteLine("\tCopying file " + scriptFile.Name);
+                _logWriter.WriteLine("\tCopying file " + scriptFile.Name);
                 scripting.UploadScript(scriptFile.FullName);
                 scriptFile.Delete();
             }
             scriptDirectory.Delete();
 
             string deployScript = SubstituteTokensInCommandLine(resource.scripts.onDeploy, parameters);
-            Console.WriteLine("\tExecuting script " + deployScript);
+            _logWriter.WriteLine("\tExecuting script " + deployScript);
             scripting.ExecuteScript(deployScript);
 
         }
@@ -144,7 +146,7 @@ namespace CaasDeploy.Library
                 {
                     if (resource.details != null)
                     {
-                        var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType, accountDetails);
+                        var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType, accountDetails, new ConsoleTraceListener());
                         var caasId = resource.details["id"].Value<string>();
                         await deployer.DeleteAndWait(caasId);
                     }

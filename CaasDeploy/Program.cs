@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CaasDeploy.Library.Models;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace CaasDeploy
 {
@@ -97,7 +98,7 @@ namespace CaasDeploy
 
             try
             {
-                var d = new Deployment();
+                var d = new Deployment(new ConsoleTraceListener());
 
                 if (arguments["action"].ToLower() == "deploy")
                 {
