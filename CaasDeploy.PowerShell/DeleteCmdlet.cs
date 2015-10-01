@@ -54,7 +54,7 @@ namespace CaasDeploy.PowerShell
         private async Task BeginProcessingAsync()
         {
             var accountDetails = await CaasAuthentication.Authenticate(UserName, Password, Region);
-            var d = new Deployment(new ConsoleTraceListener());
+            var d = new Deployment(new ConsoleLogProvider());
 
             var log = TemplateParser.ParseDeploymentLog(ResolvePath(DeploymentLog));
             await d.Delete(log, accountDetails);

@@ -77,6 +77,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleLogProvider.cs" />
+    <Compile Include="Docs\DocsApiClient.cs" />
+    <Compile Include="Docs\DocsOrchestrationProvider.cs" />
+    <Compile Include="ILogProvider.cs" />
+    <Compile Include="IOrchestrationProvider.cs" />
     <Compile Include="Models\CaasAccountDetails.cs" />
     <Compile Include="CaasApiUrls.cs" />
     <Compile Include="CaasAuthentication.cs" />
@@ -95,6 +100,7 @@
     <Compile Include="Models\Resource.cs" />
     <Compile Include="ResourceDeployer.cs" />
     <Compile Include="TemplateParser.cs" />
+    <Compile Include="Utilities\TokenHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -1,5 +1,8 @@
 ﻿{
   "parameters": {
+    "vmName": {
+      "value": "Toms Test VM"
+    },
     "myVMName": {
       "value": "Toms Test VM"
     },

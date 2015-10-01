@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="DeleteCmdlet.cs" />
     <Compile Include="DeployCmdlet.cs" />
+    <Compile Include="PowerShellLogProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

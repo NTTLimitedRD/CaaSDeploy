@@ -69,7 +69,7 @@ namespace CaasDeploy.PowerShell
         private async Task BeginProcessingAsync()
         {
             var accountDetails = await CaasAuthentication.Authenticate(UserName, Password, Region);
-            var d = new Deployment(new ConsoleTraceListener());
+            var d = new Deployment(new ConsoleLogProvider());
 
             var parameters = TemplateParser.ParseParameters(ResolvePath(Parameters));
 

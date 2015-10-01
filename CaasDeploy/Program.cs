@@ -98,7 +98,7 @@ namespace CaasDeploy
 
             try
             {
-                var d = new Deployment(new ConsoleTraceListener());
+                var d = new Deployment(new ConsoleLogProvider());
 
                 if (arguments["action"].ToLower() == "deploy")
                 {

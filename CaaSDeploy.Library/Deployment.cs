@@ -16,12 +16,10 @@ namespace CaasDeploy.Library
 {
     public class Deployment
     {
-        private Regex _parameterRegex = new Regex("\\$parameters\\['([^']*)'\\]");
-        private Regex _resourcePropertyRegex = new Regex("\\$resources\\['(.*)'\\]\\.(.*)");
         private string _scriptPath;
-        private TraceListener _logWriter;
+        private ILogProvider _logWriter;
 
-        public Deployment(TraceListener logWriter)
+        public Deployment(ILogProvider logWriter)
         {
             _logWriter = logWriter;
         }
@@ -33,7 +31,6 @@ namespace CaasDeploy.Library
 
             Dictionary<string, JObject> resourcesProperties = new Dictionary<string, JObject>();
 
-            var sortedResources = ResourceDependencies.DependencySort(template.resources).Reverse();
             var log = new DeploymentLog()
             {
                 deploymentTime = DateTime.Now,
@@ -43,12 +40,13 @@ namespace CaasDeploy.Library
                 resources = new List<ResourceLog>(),
             };
 
+            var sortedResources = ResourceDependencies.DependencySort(template.resources).Reverse();
             foreach (var resource in sortedResources)
             {
                 try
                 {
-                    SubstituteTokens(resource.resourceDefinition, parameters, resourcesProperties);
-                    var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType,  accountDetails, new ConsoleTraceListener());
+                    TokenHelper.SubstituteTokensInJObject(resource.resourceDefinition, parameters, resourcesProperties);
+                    var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType,  accountDetails, _logWriter);
                     var resourceLog = await deployer.DeployAndWait(resource.resourceDefinition.ToString());
                     log.resources.Add(resourceLog);
 
@@ -72,13 +70,34 @@ namespace CaasDeploy.Library
                     return log;
                 }
             }
+
+            if (template.orchestration != null)
+            {
+                await RunOrchestration(template.orchestration, parameters, resourcesProperties);
+            }
+
+
             log.status = "Success";
             return log;
         }
 
+        private async Task RunOrchestration(JObject orchestration, Dictionary<string, string> parameters, Dictionary<string, JObject> resourcesProperties)
+        {
+            var providerTypeName = orchestration["provider"].Value<String>();
+            var providerType = Type.GetType(providerTypeName);
+            if (providerType == null)
+            {
+                _logWriter.LogError($"Unable to create Orchestration Provider of type {providerTypeName}.");
+                return;
+            }
+            var provider = (IOrchestrationProvider)Activator.CreateInstance(providerType);
+            _logWriter.LogMessage($"Running Orchestration Provider '{providerTypeName}'.");
+            await provider.RunOrchestration(orchestration, parameters, resourcesProperties, _logWriter);
+        }
+
         private void CopyAndRunScripts(Resource resource, JObject details, Dictionary<string, string> parameters)
         {
-            _logWriter.WriteLine($"Running deployment scripts.");
+            _logWriter.LogMessage($"Running deployment scripts.");
             string ipv6Address = details["networkInfo"]["primaryNic"]["ipv6"].Value<string>();
             string ipv6Unc = IPv6ToUnc(ipv6Address);
             PostDeployScripting.OSType osType = details["operatingSystem"]["family"].Value<string>() == "WINDOWS" ?
@@ -93,33 +112,19 @@ namespace CaasDeploy.Library
             var scriptDirectory = new DirectoryInfo(scriptPath);
             foreach (var scriptFile in scriptDirectory.EnumerateFiles())
             {
-                _logWriter.WriteLine("\tCopying file " + scriptFile.Name);
+                _logWriter.LogMessage("\tCopying file " + scriptFile.Name);
                 scripting.UploadScript(scriptFile.FullName);
                 scriptFile.Delete();
             }
             scriptDirectory.Delete();
 
-            string deployScript = SubstituteTokensInCommandLine(resource.scripts.onDeploy, parameters);
-            _logWriter.WriteLine("\tExecuting script " + deployScript);
+            string deployScript = TokenHelper.SubstitutePropertyTokensInString(resource.scripts.onDeploy, parameters);
+            _logWriter.LogMessage("\tExecuting script " + deployScript);
             scripting.ExecuteScript(deployScript);
 
         }
 
-        private string SubstituteTokensInCommandLine(string commandLine, Dictionary<string, string> parameters)
-        {
-            var paramsMatches = _parameterRegex.Matches(commandLine);
-            string newCommandLine = commandLine;
-            if (paramsMatches.Count > 0)
-            {
-                foreach (Match paramsMatch in paramsMatches)
-                {
-                    string newValue = parameters[paramsMatch.Groups[1].Value];
-                    newCommandLine = newCommandLine.Replace(paramsMatch.Groups[0].Value, newValue);
-                }
 
-            }
-            return newCommandLine;
-        }
 
         private string UnzipScriptBundle(string bundleFile)
         {
@@ -146,7 +151,7 @@ namespace CaasDeploy.Library
                 {
                     if (resource.details != null)
                     {
-                        var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType, accountDetails, new ConsoleTraceListener());
+                        var deployer = new ResourceDeployer(resource.resourceId, resource.resourceType, accountDetails, new ConsoleLogProvider());
                         var caasId = resource.details["id"].Value<string>();
                         await deployer.DeleteAndWait(caasId);
                     }
@@ -168,37 +173,6 @@ namespace CaasDeploy.Library
         }
 
 
-        private void SubstituteTokens(JObject resourceDefinition, Dictionary<string, string> parameters, Dictionary<string, JObject> resourcesProperties)
-        {
-            foreach (var parameter in resourceDefinition)
-            {
-                if (parameter.Value is JObject)
-                {
-                    SubstituteTokens((JObject)parameter.Value, parameters, resourcesProperties);
-                }
-                else if (parameter.Value is JValue)
-                {
-                    string tokenValue = parameter.Value.Value<string>();
-                    var paramsMatch = _parameterRegex.Match(tokenValue);
-                    if (paramsMatch.Success)
-                    {
-                        string newValue = parameters[paramsMatch.Groups[1].Value];
-                        parameter.Value.Replace(new JValue(newValue));
-                    }
-
-                    if (resourcesProperties != null)
-                    {
-                        var propsMatch = _resourcePropertyRegex.Match(tokenValue);
-                        if (propsMatch.Success)
-                        {
-                            string resourceId = propsMatch.Groups[1].Value;
-                            string property = propsMatch.Groups[2].Value;
-                            var newValue = resourcesProperties[resourceId].SelectToken(property).Value<string>();
-                            parameter.Value.Replace(new JValue(newValue));
-                        }
-                    }
-                }
-            }
-        }
+       
     }
 }

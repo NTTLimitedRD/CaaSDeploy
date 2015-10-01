@@ -51,9 +51,9 @@ namespace CaasDeploy.Library
         private string _apiBaseUrl;
         private const int _pollingDelaySeconds = 30;
         private const int _pollingTimeOutMinutes = 20;
-        private TraceListener _logWriter;
+        private ILogProvider _logWriter;
 
-        public ResourceDeployer(string resourceId, string resourceType, CaasAccountDetails accountDetails, TraceListener logWriter)
+        public ResourceDeployer(string resourceId, string resourceType, CaasAccountDetails accountDetails, ILogProvider logWriter)
         {
             _resourceId = resourceId;
             _resourceType = resourceType;
@@ -75,7 +75,7 @@ namespace CaasDeploy.Library
 
         private async Task<string> Deploy(string jsonPayload)
         {
-            _logWriter.Write($"Deploying {_resourceType}: '{_resourceId}' ");
+            _logWriter.LogMessage($"Deploying {_resourceType}: '{_resourceId}' ");
 
             using (var client = GetHttpClient())
             {
@@ -105,7 +105,7 @@ namespace CaasDeploy.Library
                     {
                         if (_resourceApi.EditUrl == null)
                         {
-                            _logWriter.WriteLine($"Resource '{_resourceId}' already exists and cannot be updated. Using existing resource even if its definition doesn't match the template.");
+                            _logWriter.LogMessage($"Resource '{_resourceId}' already exists and cannot be updated. Using existing resource even if its definition doesn't match the template.");
                             response.details = existingResourceDetails;
                             response.deploymentStatus = ResourceLog.DeploymentStatusUsedExisting;
                             return response;
@@ -137,7 +137,7 @@ namespace CaasDeploy.Library
 
         private async Task UpdateExistingResource(string existingId, JObject resourceDefinition)
         {
-            _logWriter.WriteLine($"Updating existing {_resourceType}: '{_resourceId}' ");
+            _logWriter.LogMessage($"Updating existing {_resourceType}: '{_resourceId}' ");
 
             using (var client = GetHttpClient())
             {
@@ -177,7 +177,7 @@ namespace CaasDeploy.Library
 
         private async Task<bool> Delete(string id) // Returns true if waiting is required
         {
-            _logWriter.Write($"Deleting {_resourceType}: '{_resourceId}' (ID: {id}) ");
+            _logWriter.LogMessage($"Deleting {_resourceType}: '{_resourceId}' (ID: {id}) ");
             using (var client = GetHttpClient())
             {
                 try
@@ -193,7 +193,7 @@ namespace CaasDeploy.Library
                     // Check detail
                     if (ex.ResponseCode == "RESOURCE_NOT_FOUND")
                     {
-                        _logWriter.WriteLine("Not found.");
+                        _logWriter.LogMessage("Not found.");
                         return false;
                     }
                     throw;
@@ -238,10 +238,10 @@ namespace CaasDeploy.Library
                 var props = await Get(id);
                 if (props["state"].Value<string>() == "NORMAL")
                 {
-                    _logWriter.WriteLine("Done!");
+                    _logWriter.CompleteProgress();
                     return props;
                 }
-                _logWriter.Write(".");
+                _logWriter.IncrementProgress();
                 await Task.Delay(TimeSpan.FromSeconds(_pollingDelaySeconds));
             }
 
@@ -267,12 +267,12 @@ namespace CaasDeploy.Library
                     // Check detail
                     if (ex.ResponseCode == "RESOURCE_NOT_FOUND")
                     {
-                        _logWriter.WriteLine("Done!");
+                        _logWriter.CompleteProgress();
                         return;
                     }
                     throw;
                 }
-                _logWriter.Write(".");
+                _logWriter.IncrementProgress();
                 await Task.Delay(TimeSpan.FromSeconds(_pollingDelaySeconds));
             }
 

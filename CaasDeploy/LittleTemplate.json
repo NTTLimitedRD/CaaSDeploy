@@ -1,8 +1,8 @@
 ﻿{
-    "metadata": {
+  "metadata": {
     "schemaVersion": "0.1",
     "templateName": "The littlest template",
-    "templateDescription":  "Just for fun"
+    "templateDescription": "Just for fun"
   },
   "parameters": {
     "vmName": {
@@ -13,7 +13,7 @@
     }
   },
   "resources": [
-    {
+   /* {
       "resourceType": "Server",
       "resourceId": "MyVM",
       "resourceDefinition": {
@@ -39,6 +39,36 @@
         "onDeploy": "powershell.exe test1.ps1 -foo $parameters['message']"
       },
       "dependsOn": [ ]
-    }
-  ]
+    } */
+  ],
+  "orchestration": {
+    "provider": "CaasDeploy.Library.Docs.DocsOrchestrationProvider, CaasDeploy.Library",
+    "configuration": [
+      {
+        "scope": "/ROOT/foo",
+        "properties": {
+          "bar": "ConstantValue",
+          "baz": "$parameters['vmName']",
+          "spong": "?resources['MyVM'].id"
+        }
+      },
+      {
+        "scope": "/ROOT/foo/$parameters['vmName']",
+        "properties": {
+          "baz": "w00t"
+        }
+      }
+    ],
+
+    "environment": {
+      "customer": "FOO",
+      "environmentName": "Bar",
+      "environmentScope": "/ROOT/foo",
+      "serverScopes": {
+        "MyVM": "/ROOT/foo/$parameters['vmName']"
+      }
+    },
+    "runbook": "DeploySomeStuff"
+  }
+
 }
