@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,5 +65,46 @@ namespace CaasDeploy.Library.Docs
             return JObject.Parse(respsonse);
         }
 
+        public async Task AddConfigProperties(string scopeName, JObject properties)
+        {
+            var response = await CallService(HttpMethod.Post, $"api/Scope/{scopeName}/ConfigValues", properties.ToString());
+        }
+
+        public async Task<JObject> GetCustomer(string code)
+        {
+            var response = await CallService(HttpMethod.Get, $"api/customer/{Uri.EscapeDataString(code)}", null, false);
+            if (String.IsNullOrWhiteSpace(response))
+            {
+                return null;
+            }
+            return JObject.Parse(response);
+        }
+
+        public async Task AddEnvironment(string name, string dataCentre, Guid customerId, Guid configScopeId)
+        {
+            var payloadObject = new
+            {
+                Name = name,
+                Datacentre = dataCentre,
+                CustomerId = customerId,
+                ConfigScopeId = configScopeId,
+            };
+            var payload = JsonConvert.SerializeObject(payloadObject);
+            var response = await CallService(HttpMethod.Post, "api/Environment", payload);
+        }
+
+        public async Task AddServer(string environmentName, string serverName, string ipAddress, string adminUser, string adminPassword, Guid scopeId)
+        {
+            var payloadObject = new
+            {
+                Name = serverName,
+                IpAddress = ipAddress,
+                Username = adminUser,
+                Password = adminPassword,
+                ConfigScopeId = scopeId,
+            };
+            var payload = JsonConvert.SerializeObject(payloadObject);
+            var response = await CallService(HttpMethod.Post, $"api/Environment/{environmentName}/Server?encrypt=false", payload);
+        }
     }
 }

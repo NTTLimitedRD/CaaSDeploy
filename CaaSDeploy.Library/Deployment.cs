@@ -73,7 +73,7 @@ namespace CaasDeploy.Library
 
             if (template.orchestration != null)
             {
-                await RunOrchestration(template.orchestration, parameters, resourcesProperties);
+                await RunOrchestration(template.orchestration, parameters, sortedResources, resourcesProperties);
             }
 
 
@@ -81,7 +81,7 @@ namespace CaasDeploy.Library
             return log;
         }
 
-        private async Task RunOrchestration(JObject orchestration, Dictionary<string, string> parameters, Dictionary<string, JObject> resourcesProperties)
+        private async Task RunOrchestration(JObject orchestration, Dictionary<string, string> parameters, IEnumerable<Resource> resources, Dictionary<string, JObject> resourcesProperties)
         {
             var providerTypeName = orchestration["provider"].Value<String>();
             var providerType = Type.GetType(providerTypeName);
@@ -92,7 +92,7 @@ namespace CaasDeploy.Library
             }
             var provider = (IOrchestrationProvider)Activator.CreateInstance(providerType);
             _logWriter.LogMessage($"Running Orchestration Provider '{providerTypeName}'.");
-            await provider.RunOrchestration(orchestration, parameters, resourcesProperties, _logWriter);
+            await provider.RunOrchestration(orchestration, parameters, resources, resourcesProperties, _logWriter);
         }
 
         private void CopyAndRunScripts(Resource resource, JObject details, Dictionary<string, string> parameters)

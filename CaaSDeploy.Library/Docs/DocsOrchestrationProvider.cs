@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using CaasDeploy.Library.Utilities;
 using System.Net.Http;
+using CaasDeploy.Library.Models;
 
 namespace CaasDeploy.Library.Docs
 {
@@ -13,19 +14,23 @@ namespace CaasDeploy.Library.Docs
     {
         private DocsApiClient _docsApiClient = new DocsApiClient();
 
-        public async Task RunOrchestration(JObject orchestrationObject, Dictionary<string, string> parameters, Dictionary<string, JObject> resourcesProperties, ILogProvider logProvider)
+        public async Task RunOrchestration(JObject orchestrationObject, Dictionary<string, string> parameters, IEnumerable<Resource> resources, 
+            Dictionary<string, JObject> resourcesProperties, ILogProvider logProvider)
         {
             TokenHelper.SubstituteTokensInJObject(orchestrationObject, parameters, resourcesProperties);
 
             await SendConfiguration((JArray)orchestrationObject["configuration"]);
+            await SendEnvironment((JObject)orchestrationObject["environment"], resources, resourcesProperties);
         }
+
 
         private async Task SendConfiguration(JArray configuration)
         {
             foreach (var scope in configuration)
             {
-                await CreateScopes(scope["scope"].Value<string>());
-                //await CreateProperty(property.Name, property.Value.Value<string>());
+                string scopePath = scope["scopePath"].Value<string>();
+                await CreateScopes(scopePath);
+                await AddProperties(scopePath.Split('/').Last(), (JObject) scope["properties"]);
             }
         }
 
@@ -50,11 +55,48 @@ namespace CaasDeploy.Library.Docs
             
         }
 
-        private async Task CreateProperty(string name, string v)
+        private async Task AddProperties(string scopeName, JObject properties)
         {
-            throw new NotImplementedException();
+            await _docsApiClient.AddConfigProperties(scopeName, properties);
         }
 
-       
+        private async Task SendEnvironment(JObject environmentObject, IEnumerable<Resource> resources, Dictionary<string, JObject> resourcesProperties)
+        {
+            await CreateEnvironment(environmentObject);
+            await CreateServers(environmentObject["environmentName"].Value<String>(), 
+                (JObject) environmentObject["serverScopes"], resources, resourcesProperties);
+        }
+
+        private async Task CreateEnvironment(JObject environmentObject)
+        {
+            var customerCode = environmentObject["customerCode"].Value<string>();
+            var customer = await _docsApiClient.GetCustomer(customerCode);
+            var customerId = customer["Id"].Value<string>();
+
+            var scopeName =  environmentObject["environmentScope"].Value<string>();
+            var scope = await _docsApiClient.GetScope(scopeName);
+            var scopeId = scope["Id"].Value<string>();
+
+            await _docsApiClient.AddEnvironment(environmentObject["environmentName"].Value<String>(),
+                environmentObject["environmentDatacentre"].Value<String>(),
+                Guid.Parse(customerId), Guid.Parse(scopeId));
+        }
+
+        private async Task CreateServers(string environmentName, JObject serverScopesObject, IEnumerable<Resource> resources, Dictionary<string, JObject> resourcesProperties)
+        {
+            foreach (var prop in serverScopesObject.Properties())
+            {
+                string serverName = resourcesProperties[prop.Name]["name"].Value<string>();
+                string ipAddress = resourcesProperties[prop.Name]["networkInfo"]["primaryNic"]["privateIpv4"].Value<string>();
+                string osFamily = resourcesProperties[prop.Name]["operatingSystem"]["family"].Value<string>();
+                string adminUser = osFamily.ToLower() == "windows" ? "administrator" : "root";
+                string adminPassword = resources.Where(r => r.resourceId == prop.Name).Single().resourceDefinition["administratorPassword"].Value<string>();
+
+                var scopeName = prop.Value.Value<string>();
+                var scope = await _docsApiClient.GetScope(scopeName);
+                var scopeId = scope["Id"].Value<string>();
+                await _docsApiClient.AddServer(environmentName, serverName, ipAddress, adminUser, adminPassword, Guid.Parse(scopeId));
+            }
+        }
     }
 }

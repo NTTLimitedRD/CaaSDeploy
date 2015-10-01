@@ -13,7 +13,7 @@
     }
   },
   "resources": [
-   /* {
+   {
       "resourceType": "Server",
       "resourceId": "MyVM",
       "resourceDefinition": {
@@ -39,21 +39,21 @@
         "onDeploy": "powershell.exe test1.ps1 -foo $parameters['message']"
       },
       "dependsOn": [ ]
-    } */
+    } 
   ],
   "orchestration": {
     "provider": "CaasDeploy.Library.Docs.DocsOrchestrationProvider, CaasDeploy.Library",
     "configuration": [
       {
-        "scope": "/ROOT/foo",
+        "scopePath": "/ROOT/foo",
         "properties": {
           "bar": "ConstantValue",
           "baz": "$parameters['vmName']",
-          "spong": "?resources['MyVM'].id"
+          "spong": "$resources['MyVM'].id"
         }
       },
       {
-        "scope": "/ROOT/foo/$parameters['vmName']",
+        "scopePath": "/ROOT/foo/$parameters['vmName']",
         "properties": {
           "baz": "w00t"
         }
@@ -61,11 +61,12 @@
     ],
 
     "environment": {
-      "customer": "FOO",
-      "environmentName": "Bar",
-      "environmentScope": "/ROOT/foo",
+      "customerCode": "FOO",
+      "environmentName": "Bar Environment",
+      "environmentScope": "foo",
+      "environmentDatacentre": "$resources['MyVM'].datacenterId",
       "serverScopes": {
-        "MyVM": "/ROOT/foo/$parameters['vmName']"
+        "MyVM": "$parameters['vmName']"
       }
     },
     "runbook": "DeploySomeStuff"
