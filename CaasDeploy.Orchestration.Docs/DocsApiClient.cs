@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CaasDeploy.Library.Docs
+namespace CaasDeploy.Orchestration.Docs
 {
     class DocsApiClient
     {

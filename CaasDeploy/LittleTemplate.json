@@ -42,7 +42,7 @@
     } 
   ],
   "orchestration": {
-    "provider": "CaasDeploy.Library.Docs.DocsOrchestrationProvider, CaasDeploy.Library",
+    "provider": "CaasDeploy.Orchestration.Docs.DocsOrchestrationProvider, CaasDeploy.Orchestration.Docs",
     "configuration": [
       {
         "scopePath": "/ROOT/foo",
@@ -59,7 +59,6 @@
         }
       }
     ],
-
     "environment": {
       "customerCode": "FOO",
       "environmentName": "Bar Environment",
@@ -69,7 +68,7 @@
         "MyVM": "$parameters['vmName']"
       }
     },
-    "runbook": "DeploySomeStuff"
+    "runbook": "09c6caf8-f701-4dfb-8ea7-cd5411e86273"
   }
 
 }

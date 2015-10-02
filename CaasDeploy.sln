@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaasDeploy.Library.Tests", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaasDeploy.PowerShell", "CaasDeploy.PowerShell\CaasDeploy.PowerShell.csproj", "{A86F972D-CA65-498C-8C94-0600CAE944B0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaasDeploy.Orchestration.Docs", "CaasDeploy.Orchestration.Docs\CaasDeploy.Orchestration.Docs.csproj", "{4EAAD5FD-B85D-41FE-9A43-3E1CCD2E9165}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{A86F972D-CA65-498C-8C94-0600CAE944B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A86F972D-CA65-498C-8C94-0600CAE944B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A86F972D-CA65-498C-8C94-0600CAE944B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EAAD5FD-B85D-41FE-9A43-3E1CCD2E9165}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EAAD5FD-B85D-41FE-9A43-3E1CCD2E9165}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EAAD5FD-B85D-41FE-9A43-3E1CCD2E9165}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EAAD5FD-B85D-41FE-9A43-3E1CCD2E9165}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

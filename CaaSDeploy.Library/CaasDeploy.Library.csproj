@@ -78,8 +78,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleLogProvider.cs" />
-    <Compile Include="Docs\DocsApiClient.cs" />
-    <Compile Include="Docs\DocsOrchestrationProvider.cs" />
     <Compile Include="ILogProvider.cs" />
     <Compile Include="IOrchestrationProvider.cs" />
     <Compile Include="Models\CaasAccountDetails.cs" />

@@ -90,6 +90,10 @@
       <Project>{ba304b6f-b2c3-4f65-a9de-5a1a5e4951ef}</Project>
       <Name>CaasDeploy.Library</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CaasDeploy.Orchestration.Docs\CaasDeploy.Orchestration.Docs.csproj">
+      <Project>{4eaad5fd-b85d-41fe-9a43-3e1ccd2e9165}</Project>
+      <Name>CaasDeploy.Orchestration.Docs</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />

@@ -1,0 +1,510 @@
+﻿<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx">
+  <edmx:DataServices xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" m:DataServiceVersion="1.0">
+    <Schema Namespace="Microsoft.SystemCenter.Orchestrator.WebService" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+      <EntityContainer Name="OrchestratorContext" p7:LazyLoadingEnabled="true" m:IsDefaultEntityContainer="true" xmlns:p7="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
+        <FunctionImport Name="GetStatisticsSummaryByPath" EntitySet="Statistics" ReturnType="Collection(Microsoft.SystemCenter.Orchestrator.WebService.Statistic)" m:HttpMethod="GET">
+          <Parameter Name="path" Type="Edm.String" Mode="In" />
+        </FunctionImport>
+        <EntitySet Name="Folders" EntityType="Microsoft.SystemCenter.Orchestrator.WebService.Folder" />
+        <EntitySet Name="Runbooks" EntityType="Microsoft.SystemCenter.Orchestrator.WebService.Runbook" />
+        <EntitySet Name="RunbookParameters" EntityType="Microsoft.SystemCenter.Orchestrator.WebService.RunbookParameter" />
+        <EntitySet Name="Activities" EntityType="Microsoft.SystemCenter.Orchestrator.WebService.Activity" />
+        <EntitySet Name="Jobs" EntityType="Microsoft.SystemCenter.Orchestrator.WebService.Job" />
+        <EntitySet Name="RunbookInstances" EntityType="Microsoft.SystemCenter.Orchestrator.WebService.RunbookInstance" />
+        <EntitySet Name="RunbookInstanceParameters" EntityType="Microsoft.SystemCenter.Orchestrator.WebService.RunbookInstanceParameter" />
+        <EntitySet Name="ActivityInstances" EntityType="Microsoft.SystemCenter.Orchestrator.WebService.ActivityInstance" />
+        <EntitySet Name="ActivityInstanceData" EntityType="Microsoft.SystemCenter.Orchestrator.WebService.ActivityInstanceData" />
+        <EntitySet Name="RunbookServers" EntityType="Microsoft.SystemCenter.Orchestrator.WebService.RunbookServer" />
+        <EntitySet Name="RunbookDiagrams" EntityType="Microsoft.SystemCenter.Orchestrator.WebService.RunbookDiagram" />
+        <EntitySet Name="Statistics" EntityType="Microsoft.SystemCenter.Orchestrator.WebService.Statistic" />
+        <EntitySet Name="Events" EntityType="Microsoft.SystemCenter.Orchestrator.WebService.Event" />
+        <AssociationSet Name="FK_Folder_Subfolder" Association="Microsoft.SystemCenter.Orchestrator.WebService.FK_Folder_Subfolder">
+          <End Role="Parent" EntitySet="Folders" />
+          <End Role="Child" EntitySet="Folders" />
+        </AssociationSet>
+        <AssociationSet Name="FK_Folder_Runbook" Association="Microsoft.SystemCenter.Orchestrator.WebService.FK_Folder_Runbook">
+          <End Role="Parent" EntitySet="Folders" />
+          <End Role="Child" EntitySet="Runbooks" />
+        </AssociationSet>
+        <AssociationSet Name="FK_Runbook_Parameter" Association="Microsoft.SystemCenter.Orchestrator.WebService.FK_Runbook_Parameter">
+          <End Role="Parent" EntitySet="Runbooks" />
+          <End Role="Child" EntitySet="RunbookParameters" />
+        </AssociationSet>
+        <AssociationSet Name="FK_Runbook_Activity" Association="Microsoft.SystemCenter.Orchestrator.WebService.FK_Runbook_Activity">
+          <End Role="Parent" EntitySet="Runbooks" />
+          <End Role="Child" EntitySet="Activities" />
+        </AssociationSet>
+        <AssociationSet Name="FK_Runbook_Job" Association="Microsoft.SystemCenter.Orchestrator.WebService.FK_Runbook_Job">
+          <End Role="Parent" EntitySet="Runbooks" />
+          <End Role="Child" EntitySet="Jobs" />
+        </AssociationSet>
+        <AssociationSet Name="FK_Runbook_Instance" Association="Microsoft.SystemCenter.Orchestrator.WebService.FK_Runbook_Instance">
+          <End Role="Parent" EntitySet="Runbooks" />
+          <End Role="Child" EntitySet="RunbookInstances" />
+        </AssociationSet>
+        <AssociationSet Name="FK_Runbook_Diagram" Association="Microsoft.SystemCenter.Orchestrator.WebService.FK_Runbook_Diagram">
+          <End Role="Parent" EntitySet="Runbooks" />
+          <End Role="Child" EntitySet="RunbookDiagrams" />
+        </AssociationSet>
+        <AssociationSet Name="FK_Runbook_Statistic" Association="Microsoft.SystemCenter.Orchestrator.WebService.FK_Runbook_Statistic">
+          <End Role="Parent" EntitySet="Runbooks" />
+          <End Role="Child" EntitySet="Statistics" />
+        </AssociationSet>
+        <AssociationSet Name="FK_Job_Instance" Association="Microsoft.SystemCenter.Orchestrator.WebService.FK_Job_Instance">
+          <End Role="Parent" EntitySet="Jobs" />
+          <End Role="Child" EntitySet="RunbookInstances" />
+        </AssociationSet>
+        <AssociationSet Name="FK_Job_Statistic" Association="Microsoft.SystemCenter.Orchestrator.WebService.FK_Job_Statistic">
+          <End Role="Parent" EntitySet="Jobs" />
+          <End Role="Child" EntitySet="Statistics" />
+        </AssociationSet>
+        <AssociationSet Name="FK_RunbookServer_Instance" Association="Microsoft.SystemCenter.Orchestrator.WebService.FK_RunbookServer_Instance">
+          <End Role="Parent" EntitySet="RunbookServers" />
+          <End Role="Child" EntitySet="RunbookInstances" />
+        </AssociationSet>
+        <AssociationSet Name="FK_RunbookInstance_Parameter" Association="Microsoft.SystemCenter.Orchestrator.WebService.FK_RunbookInstance_Parameter">
+          <End Role="Parent" EntitySet="RunbookInstances" />
+          <End Role="Child" EntitySet="RunbookInstanceParameters" />
+        </AssociationSet>
+        <AssociationSet Name="FK_RunbookInstance_ActivityInstance" Association="Microsoft.SystemCenter.Orchestrator.WebService.FK_RunbookInstance_ActivityInstance">
+          <End Role="Parent" EntitySet="RunbookInstances" />
+          <End Role="Child" EntitySet="ActivityInstances" />
+        </AssociationSet>
+        <AssociationSet Name="FK_RunbookParameter_Instance" Association="Microsoft.SystemCenter.Orchestrator.WebService.FK_RunbookParameter_Instance">
+          <End Role="Parent" EntitySet="RunbookParameters" />
+          <End Role="Child" EntitySet="RunbookInstanceParameters" />
+        </AssociationSet>
+        <AssociationSet Name="FK_RunbookServer_Job" Association="Microsoft.SystemCenter.Orchestrator.WebService.FK_RunbookServer_Job">
+          <End Role="Parent" EntitySet="RunbookServers" />
+          <End Role="Child" EntitySet="Jobs" />
+        </AssociationSet>
+        <AssociationSet Name="FK_RunbookServer_Event" Association="Microsoft.SystemCenter.Orchestrator.WebService.FK_RunbookServer_Event">
+          <End Role="Parent" EntitySet="RunbookServers" />
+          <End Role="Child" EntitySet="Events" />
+        </AssociationSet>
+        <AssociationSet Name="FK_Activity_Instance" Association="Microsoft.SystemCenter.Orchestrator.WebService.FK_Activity_Instance">
+          <End Role="Parent" EntitySet="Activities" />
+          <End Role="Child" EntitySet="ActivityInstances" />
+        </AssociationSet>
+        <AssociationSet Name="FK_ActivityInstance_Data" Association="Microsoft.SystemCenter.Orchestrator.WebService.FK_ActivityInstance_Data">
+          <End Role="Parent" EntitySet="ActivityInstances" />
+          <End Role="Child" EntitySet="ActivityInstanceData" />
+        </AssociationSet>
+      </EntityContainer>
+      <EntityType Name="Folder">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Guid" Nullable="false" />
+        <Property Name="ParentId" Type="Edm.Guid" Nullable="true" />
+        <Property Name="Name" Type="Edm.String" Nullable="false" MaxLength="200" Unicode="true" FixedLength="false" m:FC_TargetPath="SyndicationTitle" m:FC_KeepInContext="true" />
+        <Property Name="CreatedBy" Type="Edm.String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="CreationTime" Type="Edm.DateTime" Nullable="false" p8:StoreGeneratedPattern="Computed" m:FC_TargetPath="SyndicationPublished" m:FC_KeepInContext="true" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="LastModifiedBy" Type="Edm.String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="LastModifiedTime" Type="Edm.DateTime" Nullable="false" ConcurrencyMode="Fixed" p8:StoreGeneratedPattern="Computed" m:FC_TargetPath="SyndicationUpdated" m:FC_KeepInContext="true" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="Path" Type="Edm.String" Nullable="false" MaxLength="4000" Unicode="true" FixedLength="false" />
+        <NavigationProperty Name="Parent" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_Folder_Subfolder" FromRole="Child" ToRole="Parent" />
+        <NavigationProperty Name="Subfolders" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_Folder_Subfolder" FromRole="Parent" ToRole="Child" />
+        <NavigationProperty Name="Runbooks" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_Folder_Runbook" FromRole="Parent" ToRole="Child" />
+      </EntityType>
+      <EntityType Name="Runbook">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Guid" Nullable="false" />
+        <Property Name="FolderId" Type="Edm.Guid" Nullable="false" />
+        <Property Name="Name" Type="Edm.String" Nullable="false" MaxLength="200" Unicode="true" FixedLength="false" m:FC_TargetPath="SyndicationTitle" m:FC_KeepInContext="true" />
+        <Property Name="Description" Type="Edm.String" Nullable="true" MaxLength="2000" Unicode="true" FixedLength="false" />
+        <Property Name="CreatedBy" Type="Edm.String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="CreationTime" Type="Edm.DateTime" Nullable="false" p8:StoreGeneratedPattern="Computed" m:FC_TargetPath="SyndicationPublished" m:FC_KeepInContext="true" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="LastModifiedBy" Type="Edm.String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="LastModifiedTime" Type="Edm.DateTime" Nullable="false" ConcurrencyMode="Fixed" p8:StoreGeneratedPattern="Computed" m:FC_TargetPath="SyndicationUpdated" m:FC_KeepInContext="true" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="IsMonitor" Type="Edm.Boolean" Nullable="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="Path" Type="Edm.String" Nullable="false" MaxLength="4000" Unicode="true" FixedLength="false" />
+        <Property Name="CheckedOutBy" Type="Edm.String" Nullable="true" MaxLength="50" Unicode="true" FixedLength="false" />
+        <Property Name="CheckedOutTime" Type="Edm.DateTime" Nullable="true" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <NavigationProperty Name="Folder" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_Folder_Runbook" FromRole="Child" ToRole="Parent" />
+        <NavigationProperty Name="Parameters" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_Runbook_Parameter" FromRole="Parent" ToRole="Child" />
+        <NavigationProperty Name="Activities" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_Runbook_Activity" FromRole="Parent" ToRole="Child" />
+        <NavigationProperty Name="Jobs" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_Runbook_Job" FromRole="Parent" ToRole="Child" />
+        <NavigationProperty Name="Instances" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_Runbook_Instance" FromRole="Parent" ToRole="Child" />
+        <NavigationProperty Name="Diagram" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_Runbook_Diagram" FromRole="Parent" ToRole="Child" />
+        <NavigationProperty Name="Statistics" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_Runbook_Statistic" FromRole="Parent" ToRole="Child" />
+      </EntityType>
+      <EntityType Name="RunbookParameter">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Guid" Nullable="false" />
+        <Property Name="RunbookId" Type="Edm.Guid" Nullable="false" />
+        <Property Name="Name" Type="Edm.String" Nullable="false" MaxLength="200" Unicode="true" FixedLength="false" m:FC_TargetPath="SyndicationTitle" m:FC_KeepInContext="true" />
+        <Property Name="Type" Type="Edm.String" Nullable="false" MaxLength="200" Unicode="true" FixedLength="false" />
+        <Property Name="Description" Type="Edm.String" Nullable="true" MaxLength="200" Unicode="true" FixedLength="false" />
+        <Property Name="Direction" Type="Edm.String" Nullable="false" MaxLength="10" Unicode="true" FixedLength="false" />
+        <NavigationProperty Name="Runbook" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_Runbook_Parameter" FromRole="Child" ToRole="Parent" />
+        <NavigationProperty Name="Instances" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_RunbookParameter_Instance" FromRole="Parent" ToRole="Child" />
+      </EntityType>
+      <EntityType Name="Activity">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Guid" Nullable="false" />
+        <Property Name="RunbookId" Type="Edm.Guid" Nullable="false" />
+        <Property Name="Name" Type="Edm.String" Nullable="false" MaxLength="500" Unicode="true" FixedLength="false" m:FC_TargetPath="SyndicationTitle" m:FC_KeepInContext="true" />
+        <Property Name="TypeName" Type="Edm.String" Nullable="false" MaxLength="200" Unicode="true" FixedLength="false" />
+        <Property Name="Description" Type="Edm.String" Nullable="true" Unicode="true" FixedLength="false" />
+        <Property Name="CreationTime" Type="Edm.DateTime" Nullable="false" p8:StoreGeneratedPattern="Computed" m:FC_TargetPath="SyndicationPublished" m:FC_KeepInContext="true" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="CreatedBy" Type="Edm.String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="LastModifiedTime" Type="Edm.DateTime" Nullable="false" ConcurrencyMode="Fixed" p8:StoreGeneratedPattern="Computed" m:FC_TargetPath="SyndicationUpdated" m:FC_KeepInContext="true" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="LastModifiedBy" Type="Edm.String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="Enabled" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="PositionX" Type="Edm.Int32" Nullable="true" />
+        <Property Name="PositionY" Type="Edm.Int32" Nullable="true" />
+        <NavigationProperty Name="Runbook" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_Runbook_Activity" FromRole="Child" ToRole="Parent" />
+        <NavigationProperty Name="Instances" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_Activity_Instance" FromRole="Parent" ToRole="Child" />
+      </EntityType>
+      <EntityType Name="Job">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Guid" Nullable="false" />
+        <Property Name="RunbookId" Type="Edm.Guid" Nullable="false" />
+        <Property Name="Parameters" Type="Edm.String" Nullable="true" Unicode="true" FixedLength="false" />
+        <Property Name="RunbookServers" Type="Edm.String" Nullable="true" MaxLength="2000" Unicode="true" FixedLength="false" />
+        <Property Name="RunbookServerId" Type="Edm.Guid" Nullable="true" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="ParentId" Type="Edm.Guid" Nullable="true" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="ParentIsWaiting" Type="Edm.Boolean" Nullable="true" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="Status" Type="Edm.String" Nullable="true" MaxLength="64" Unicode="true" FixedLength="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="CreatedBy" Type="Edm.String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="CreationTime" Type="Edm.DateTime" Nullable="false" p8:StoreGeneratedPattern="Computed" m:FC_TargetPath="SyndicationPublished" m:FC_KeepInContext="true" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="LastModifiedBy" Type="Edm.String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="LastModifiedTime" Type="Edm.DateTime" Nullable="false" ConcurrencyMode="Fixed" p8:StoreGeneratedPattern="Computed" m:FC_TargetPath="SyndicationUpdated" m:FC_KeepInContext="true" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <NavigationProperty Name="Runbook" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_Runbook_Job" FromRole="Child" ToRole="Parent" />
+        <NavigationProperty Name="Instances" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_Job_Instance" FromRole="Parent" ToRole="Child" />
+        <NavigationProperty Name="RunbookServer" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_RunbookServer_Job" FromRole="Child" ToRole="Parent" />
+        <NavigationProperty Name="Statistics" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_Job_Statistic" FromRole="Parent" ToRole="Child" />
+      </EntityType>
+      <EntityType Name="RunbookInstance">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Guid" Nullable="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="RunbookId" Type="Edm.Guid" Nullable="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="JobId" Type="Edm.Guid" Nullable="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="RunbookServerId" Type="Edm.Guid" Nullable="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="Status" Type="Edm.String" Nullable="false" MaxLength="64" Unicode="true" FixedLength="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="CreationTime" Type="Edm.DateTime" Nullable="false" p8:StoreGeneratedPattern="Computed" m:FC_TargetPath="SyndicationPublished" m:FC_KeepInContext="true" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="CompletionTime" Type="Edm.DateTime" Nullable="true" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <NavigationProperty Name="Runbook" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_Runbook_Instance" FromRole="Child" ToRole="Parent" />
+        <NavigationProperty Name="Job" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_Job_Instance" FromRole="Child" ToRole="Parent" />
+        <NavigationProperty Name="Parameters" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_RunbookInstance_Parameter" FromRole="Parent" ToRole="Child" />
+        <NavigationProperty Name="ActivityInstances" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_RunbookInstance_ActivityInstance" FromRole="Parent" ToRole="Child" />
+        <NavigationProperty Name="RunbookServer" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_RunbookServer_Instance" FromRole="Child" ToRole="Parent" />
+      </EntityType>
+      <EntityType Name="RunbookInstanceParameter">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Guid" Nullable="false" />
+        <Property Name="RunbookInstanceId" Type="Edm.Guid" Nullable="false" />
+        <Property Name="RunbookParameterId" Type="Edm.Guid" Nullable="false" />
+        <Property Name="Name" Type="Edm.String" Nullable="false" MaxLength="200" Unicode="true" FixedLength="false" m:FC_TargetPath="SyndicationTitle" m:FC_KeepInContext="true" />
+        <Property Name="Value" Type="Edm.String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+        <Property Name="GroupId" Type="Edm.Int32" Nullable="true" />
+        <Property Name="Direction" Type="Edm.String" Nullable="false" MaxLength="10" Unicode="true" FixedLength="false" />
+        <NavigationProperty Name="RunbookInstance" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_RunbookInstance_Parameter" FromRole="Child" ToRole="Parent" />
+        <NavigationProperty Name="RunbookParameter" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_RunbookParameter_Instance" FromRole="Child" ToRole="Parent" />
+      </EntityType>
+      <EntityType Name="ActivityInstance">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Guid" Nullable="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="RunbookInstanceId" Type="Edm.Guid" Nullable="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="ActivityId" Type="Edm.Guid" Nullable="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="SequenceNumber" Type="Edm.Int32" Nullable="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="Status" Type="Edm.String" Nullable="true" MaxLength="64" Unicode="true" FixedLength="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="StartTime" Type="Edm.DateTime" Nullable="false" p8:StoreGeneratedPattern="Computed" m:FC_TargetPath="SyndicationPublished" m:FC_KeepInContext="true" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="EndTime" Type="Edm.DateTime" Nullable="true" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <NavigationProperty Name="Activity" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_Activity_Instance" FromRole="Child" ToRole="Parent" />
+        <NavigationProperty Name="RunbookInstance" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_RunbookInstance_ActivityInstance" FromRole="Child" ToRole="Parent" />
+        <NavigationProperty Name="Data" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_ActivityInstance_Data" FromRole="Parent" ToRole="Child" />
+      </EntityType>
+      <EntityType Name="ActivityInstanceData">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Guid" Nullable="false" />
+        <Property Name="ActivityInstanceId" Type="Edm.Guid" Nullable="false" />
+        <Property Name="Name" Type="Edm.String" Nullable="false" MaxLength="200" Unicode="true" FixedLength="false" m:FC_TargetPath="SyndicationTitle" m:FC_KeepInContext="true" />
+        <Property Name="Value" Type="Edm.String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
+        <Property Name="GroupId" Type="Edm.Int32" Nullable="true" />
+        <NavigationProperty Name="ActivityInstance" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_ActivityInstance_Data" FromRole="Child" ToRole="Parent" />
+      </EntityType>
+      <EntityType Name="RunbookServer">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Guid" Nullable="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="Name" Type="Edm.String" Nullable="false" MaxLength="200" Unicode="true" m:FC_TargetPath="SyndicationTitle" m:FC_KeepInContext="true" />
+        <NavigationProperty Name="Instances" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_RunbookServer_Instance" FromRole="Parent" ToRole="Child" />
+        <NavigationProperty Name="Jobs" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_RunbookServer_Job" FromRole="Parent" ToRole="Child" />
+        <NavigationProperty Name="Events" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_RunbookServer_Event" FromRole="Parent" ToRole="Child" />
+      </EntityType>
+      <EntityType Name="RunbookDiagram" m:HasStream="true">
+        <Key>
+          <PropertyRef Name="RunbookId" />
+        </Key>
+        <Property Name="RunbookId" Type="Edm.Guid" Nullable="false" p9:StoreGeneratedPattern="Computed" xmlns:p9="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="LastModifiedTime" Type="Edm.DateTime" Nullable="false" p9:StoreGeneratedPattern="Computed" xmlns:p9="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="ContentType" Type="Edm.String" Nullable="false" MaxLength="64" Unicode="true" FixedLength="false" p9:StoreGeneratedPattern="Computed" xmlns:p9="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <NavigationProperty Name="Runbook" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_Runbook_Diagram" FromRole="Child" ToRole="Parent" />
+      </EntityType>
+      <EntityType Name="Statistic">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Guid" Nullable="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="RunbookId" Type="Edm.Guid" Nullable="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="RunbookPath" Type="Edm.String" Nullable="false" MaxLength="4000" Unicode="true" FixedLength="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="ResourceId" Type="Edm.Guid" Nullable="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="ResourceType" Type="Edm.String" Nullable="false" MaxLength="64" Unicode="true" FixedLength="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="Counter" Type="Edm.String" Nullable="false" MaxLength="64" Unicode="true" FixedLength="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="Criteria" Type="Edm.String" Nullable="false" MaxLength="64" Unicode="true" FixedLength="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="Value" Type="Edm.Int32" Nullable="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="StartTime" Type="Edm.DateTime" Nullable="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="EndTime" Type="Edm.DateTime" Nullable="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <NavigationProperty Name="Runbook" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_Runbook_Statistic" FromRole="Child" ToRole="Parent" />
+      </EntityType>
+      <EntityType Name="Event">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Guid" Nullable="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="Type" Type="Edm.String" Nullable="false" MaxLength="32" Unicode="true" FixedLength="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="SourceName" Type="Edm.String" Nullable="true" MaxLength="64" Unicode="true" FixedLength="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="SourceId" Type="Edm.Guid" Nullable="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="CreationTime" Type="Edm.DateTime" Nullable="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="Summary" Type="Edm.String" Nullable="true" MaxLength="200" Unicode="true" FixedLength="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <Property Name="Description" Type="Edm.String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" p8:StoreGeneratedPattern="Computed" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+        <NavigationProperty Name="RunbookServer" Relationship="Microsoft.SystemCenter.Orchestrator.WebService.FK_RunbookServer_Event" FromRole="Child" ToRole="Parent" />
+      </EntityType>
+      <Association Name="FK_Folder_Subfolder">
+        <End Role="Parent" Type="Microsoft.SystemCenter.Orchestrator.WebService.Folder" Multiplicity="0..1" />
+        <End Role="Child" Type="Microsoft.SystemCenter.Orchestrator.WebService.Folder" Multiplicity="*" />
+        <ReferentialConstraint>
+          <Principal Role="Parent">
+            <PropertyRef Name="Id" />
+          </Principal>
+          <Dependent Role="Child">
+            <PropertyRef Name="ParentId" />
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Association Name="FK_Folder_Runbook">
+        <End Role="Parent" Type="Microsoft.SystemCenter.Orchestrator.WebService.Folder" Multiplicity="1" />
+        <End Role="Child" Type="Microsoft.SystemCenter.Orchestrator.WebService.Runbook" Multiplicity="*" />
+        <ReferentialConstraint>
+          <Principal Role="Parent">
+            <PropertyRef Name="Id" />
+          </Principal>
+          <Dependent Role="Child">
+            <PropertyRef Name="FolderId" />
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Association Name="FK_Runbook_Parameter">
+        <End Role="Parent" Type="Microsoft.SystemCenter.Orchestrator.WebService.Runbook" Multiplicity="1" />
+        <End Role="Child" Type="Microsoft.SystemCenter.Orchestrator.WebService.RunbookParameter" Multiplicity="*" />
+        <ReferentialConstraint>
+          <Principal Role="Parent">
+            <PropertyRef Name="Id" />
+          </Principal>
+          <Dependent Role="Child">
+            <PropertyRef Name="RunbookId" />
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Association Name="FK_Runbook_Activity">
+        <End Role="Parent" Type="Microsoft.SystemCenter.Orchestrator.WebService.Runbook" Multiplicity="1" />
+        <End Role="Child" Type="Microsoft.SystemCenter.Orchestrator.WebService.Activity" Multiplicity="*" />
+        <ReferentialConstraint>
+          <Principal Role="Parent">
+            <PropertyRef Name="Id" />
+          </Principal>
+          <Dependent Role="Child">
+            <PropertyRef Name="RunbookId" />
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Association Name="FK_Runbook_Job">
+        <End Role="Parent" Type="Microsoft.SystemCenter.Orchestrator.WebService.Runbook" Multiplicity="1" />
+        <End Role="Child" Type="Microsoft.SystemCenter.Orchestrator.WebService.Job" Multiplicity="*" />
+        <ReferentialConstraint>
+          <Principal Role="Parent">
+            <PropertyRef Name="Id" />
+          </Principal>
+          <Dependent Role="Child">
+            <PropertyRef Name="RunbookId" />
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Association Name="FK_Runbook_Instance">
+        <End Role="Parent" Type="Microsoft.SystemCenter.Orchestrator.WebService.Runbook" Multiplicity="1" />
+        <End Role="Child" Type="Microsoft.SystemCenter.Orchestrator.WebService.RunbookInstance" Multiplicity="*" />
+        <ReferentialConstraint>
+          <Principal Role="Parent">
+            <PropertyRef Name="Id" />
+          </Principal>
+          <Dependent Role="Child">
+            <PropertyRef Name="RunbookId" />
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Association Name="FK_Runbook_Diagram">
+        <End Role="Parent" Type="Microsoft.SystemCenter.Orchestrator.WebService.Runbook" Multiplicity="1" />
+        <End Role="Child" Type="Microsoft.SystemCenter.Orchestrator.WebService.RunbookDiagram" Multiplicity="0..1" />
+        <ReferentialConstraint>
+          <Principal Role="Parent">
+            <PropertyRef Name="Id" />
+          </Principal>
+          <Dependent Role="Child">
+            <PropertyRef Name="RunbookId" />
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Association Name="FK_Runbook_Statistic">
+        <End Role="Parent" Type="Microsoft.SystemCenter.Orchestrator.WebService.Runbook" Multiplicity="1" />
+        <End Role="Child" Type="Microsoft.SystemCenter.Orchestrator.WebService.Statistic" Multiplicity="*" />
+        <ReferentialConstraint>
+          <Principal Role="Parent">
+            <PropertyRef Name="Id" />
+          </Principal>
+          <Dependent Role="Child">
+            <PropertyRef Name="ResourceId" />
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Association Name="FK_Job_Instance">
+        <End Role="Parent" Type="Microsoft.SystemCenter.Orchestrator.WebService.Job" Multiplicity="1" />
+        <End Role="Child" Type="Microsoft.SystemCenter.Orchestrator.WebService.RunbookInstance" Multiplicity="*" />
+        <ReferentialConstraint>
+          <Principal Role="Parent">
+            <PropertyRef Name="Id" />
+          </Principal>
+          <Dependent Role="Child">
+            <PropertyRef Name="JobId" />
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Association Name="FK_Job_Statistic">
+        <End Role="Parent" Type="Microsoft.SystemCenter.Orchestrator.WebService.Job" Multiplicity="1" />
+        <End Role="Child" Type="Microsoft.SystemCenter.Orchestrator.WebService.Statistic" Multiplicity="*" />
+        <ReferentialConstraint>
+          <Principal Role="Parent">
+            <PropertyRef Name="Id" />
+          </Principal>
+          <Dependent Role="Child">
+            <PropertyRef Name="ResourceId" />
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Association Name="FK_RunbookServer_Instance">
+        <End Role="Parent" Type="Microsoft.SystemCenter.Orchestrator.WebService.RunbookServer" Multiplicity="1" />
+        <End Role="Child" Type="Microsoft.SystemCenter.Orchestrator.WebService.RunbookInstance" Multiplicity="*" />
+        <ReferentialConstraint>
+          <Principal Role="Parent">
+            <PropertyRef Name="Id" />
+          </Principal>
+          <Dependent Role="Child">
+            <PropertyRef Name="RunbookServerId" />
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Association Name="FK_RunbookInstance_Parameter">
+        <End Role="Parent" Type="Microsoft.SystemCenter.Orchestrator.WebService.RunbookInstance" Multiplicity="1" />
+        <End Role="Child" Type="Microsoft.SystemCenter.Orchestrator.WebService.RunbookInstanceParameter" Multiplicity="*" />
+        <ReferentialConstraint>
+          <Principal Role="Parent">
+            <PropertyRef Name="Id" />
+          </Principal>
+          <Dependent Role="Child">
+            <PropertyRef Name="RunbookInstanceId" />
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Association Name="FK_RunbookInstance_ActivityInstance">
+        <End Role="Parent" Type="Microsoft.SystemCenter.Orchestrator.WebService.RunbookInstance" Multiplicity="1" />
+        <End Role="Child" Type="Microsoft.SystemCenter.Orchestrator.WebService.ActivityInstance" Multiplicity="*" />
+        <ReferentialConstraint>
+          <Principal Role="Parent">
+            <PropertyRef Name="Id" />
+          </Principal>
+          <Dependent Role="Child">
+            <PropertyRef Name="RunbookInstanceId" />
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Association Name="FK_RunbookParameter_Instance">
+        <End Role="Parent" Type="Microsoft.SystemCenter.Orchestrator.WebService.RunbookParameter" Multiplicity="1" />
+        <End Role="Child" Type="Microsoft.SystemCenter.Orchestrator.WebService.RunbookInstanceParameter" Multiplicity="*" />
+        <ReferentialConstraint>
+          <Principal Role="Parent">
+            <PropertyRef Name="Id" />
+          </Principal>
+          <Dependent Role="Child">
+            <PropertyRef Name="RunbookParameterId" />
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Association Name="FK_RunbookServer_Job">
+        <End Role="Parent" Type="Microsoft.SystemCenter.Orchestrator.WebService.RunbookServer" Multiplicity="0..1" />
+        <End Role="Child" Type="Microsoft.SystemCenter.Orchestrator.WebService.Job" Multiplicity="*" />
+        <ReferentialConstraint>
+          <Principal Role="Parent">
+            <PropertyRef Name="Id" />
+          </Principal>
+          <Dependent Role="Child">
+            <PropertyRef Name="RunbookServerId" />
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Association Name="FK_RunbookServer_Event">
+        <End Role="Parent" Type="Microsoft.SystemCenter.Orchestrator.WebService.RunbookServer" Multiplicity="1" />
+        <End Role="Child" Type="Microsoft.SystemCenter.Orchestrator.WebService.Event" Multiplicity="*" />
+        <ReferentialConstraint>
+          <Principal Role="Parent">
+            <PropertyRef Name="Id" />
+          </Principal>
+          <Dependent Role="Child">
+            <PropertyRef Name="SourceId" />
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Association Name="FK_Activity_Instance">
+        <End Role="Parent" Type="Microsoft.SystemCenter.Orchestrator.WebService.Activity" Multiplicity="1" />
+        <End Role="Child" Type="Microsoft.SystemCenter.Orchestrator.WebService.ActivityInstance" Multiplicity="*" />
+        <ReferentialConstraint>
+          <Principal Role="Parent">
+            <PropertyRef Name="Id" />
+          </Principal>
+          <Dependent Role="Child">
+            <PropertyRef Name="ActivityId" />
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Association Name="FK_ActivityInstance_Data">
+        <End Role="Parent" Type="Microsoft.SystemCenter.Orchestrator.WebService.ActivityInstance" Multiplicity="1" />
+        <End Role="Child" Type="Microsoft.SystemCenter.Orchestrator.WebService.ActivityInstanceData" Multiplicity="*" />
+        <ReferentialConstraint>
+          <Principal Role="Parent">
+            <PropertyRef Name="Id" />
+          </Principal>
+          <Dependent Role="Child">
+            <PropertyRef Name="ActivityInstanceId" />
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

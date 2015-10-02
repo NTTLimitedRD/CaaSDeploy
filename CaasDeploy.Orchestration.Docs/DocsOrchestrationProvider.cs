@@ -7,25 +7,63 @@ using Newtonsoft.Json.Linq;
 using CaasDeploy.Library.Utilities;
 using System.Net.Http;
 using CaasDeploy.Library.Models;
+using CaasDeploy.Library;
 
-namespace CaasDeploy.Library.Docs
+namespace CaasDeploy.Orchestration.Docs
 {
+    /// <summary>
+    /// Runs an orchestration using the R&D configuration managment and orchestration solution.
+    /// This provider requires an orchestration element in the template with the following structure.
+    /// 
+    /// "orchestration": {
+    ///   "provider": "CaasDeploy.Orchestration.Docs.DocsOrchestrationProvider, CaasDeploy.Orchestration.Docs",
+    ///   "configuration": [
+    ///     {
+    ///       "scopePath": "/ROOT/foo",
+    ///       "properties": {
+    ///         "bar": "ConstantValue",
+    ///         "baz": "$parameters['vmName']",
+    ///         "spong": "$resources['MyVM'].id"
+    ///       }
+    ///     },
+    ///     {
+    ///       "scopePath": "/ROOT/foo/$parameters['vmName']",
+    ///       "properties": {
+    ///         "baz": "w00t"
+    ///       }
+    ///     }
+    ///   ],
+    ///   "environment": {
+    ///     "customerCode": "FOO",
+    ///     "environmentName": "Bar Environment",
+    ///     "environmentScope": "foo",
+    ///     "environmentDatacentre": "$resources['MyVM'].datacenterId",
+    ///     "serverScopes": {
+    ///       "MyVM": "$parameters['vmName']"
+    ///     }
+    ///   },
+    ///   "runbook": "DeploySomeStuff"
+    /// </summary>
     public class DocsOrchestrationProvider : IOrchestrationProvider
     {
         private DocsApiClient _docsApiClient = new DocsApiClient();
+        private ILogProvider _logProvider;
 
         public async Task RunOrchestration(JObject orchestrationObject, Dictionary<string, string> parameters, IEnumerable<Resource> resources, 
             Dictionary<string, JObject> resourcesProperties, ILogProvider logProvider)
         {
+            _logProvider = logProvider;
             TokenHelper.SubstituteTokensInJObject(orchestrationObject, parameters, resourcesProperties);
 
             await SendConfiguration((JArray)orchestrationObject["configuration"]);
             await SendEnvironment((JObject)orchestrationObject["environment"], resources, resourcesProperties);
+            LaunchRunbook(orchestrationObject["runbook"].Value<string>());
         }
 
 
         private async Task SendConfiguration(JArray configuration)
         {
+            _logProvider.LogMessage("Sending configuration information to DOCS");
             foreach (var scope in configuration)
             {
                 string scopePath = scope["scopePath"].Value<string>();
@@ -62,6 +100,7 @@ namespace CaasDeploy.Library.Docs
 
         private async Task SendEnvironment(JObject environmentObject, IEnumerable<Resource> resources, Dictionary<string, JObject> resourcesProperties)
         {
+            _logProvider.LogMessage("Sending environment information to DOCS");
             await CreateEnvironment(environmentObject);
             await CreateServers(environmentObject["environmentName"].Value<String>(), 
                 (JObject) environmentObject["serverScopes"], resources, resourcesProperties);
@@ -98,5 +137,14 @@ namespace CaasDeploy.Library.Docs
                 await _docsApiClient.AddServer(environmentName, serverName, ipAddress, adminUser, adminPassword, Guid.Parse(scopeId));
             }
         }
+
+        private void LaunchRunbook(string runbook)
+        {
+            _logProvider.LogMessage($"Launching runbook '{runbook}'");
+            var orchApi = new OrchestratorApiClient();
+            var jobId = orchApi.StartRunbookWithParameters(Guid.Parse(runbook), null);
+            _logProvider.LogMessage($"Running... job id is {jobId}");
+        }
+
     }
 }
