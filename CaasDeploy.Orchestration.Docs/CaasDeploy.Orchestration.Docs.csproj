@@ -80,6 +80,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Package.nuspec" />
     <None Include="packages.config" />
     <None Include="Service References\OrchestratorWebService\service.edmx" />
   </ItemGroup>

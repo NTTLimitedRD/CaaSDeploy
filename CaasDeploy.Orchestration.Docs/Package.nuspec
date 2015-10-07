@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
-    <id>CaasDeploy.Library</id>
-    <version>$version$</version>
-    <title>CaasDeploy Library</title>
+    <id>CaasDeploy.Library.Orchestration.Docs</id>
+    <version>1.0</version>
+    <title>CaasDeploy DOCS Orchestration</title>
     <authors>Dimension Data</authors>
     <owners>tom.hollander@dimensiondata.com</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Library for deploying templates to CaaS</description>
+    <description>CaasDeploy plug-in for DOCS and Orcheatrator</description>
     <iconUrl>http://aperturewebcontent.blob.core.windows.net/web-images/ApertureLogoTiny.png</iconUrl>
-    <summary>Library for deploying templates to CaaS</summary>
+    <summary>CaasDeploy plug-in for DOCS and Orcheatrator</summary>
     <copyright>2015 (c) Dimension Data</copyright>
     <language>en-AU</language>
     <tags>aperture</tags>
@@ -17,12 +17,12 @@
       <frameworkAssembly assemblyName="System" targetFramework="net451" />
     </frameworkAssemblies>
     <dependencies>
-      <dependency id="JetBrains.Annotations" version="9.2.0" />
-      <dependency id="Microsoft.Bcl" version="1.1.10" />
-      <dependency id="Microsoft.Bcl.Build" version="1.0.14" />
-      <dependency id="Microsoft.Net.Http" version="2.2.29" />
+      <dependency id="CaasDeploy.Library" version="1.0.0" />
+      <dependency id="Microsoft.Data.Edm" version="5.6.4" />
+      <dependency id="Microsoft.Data.OData" version="5.6.4" />
+      <dependency id="Microsoft.Data.Services.Client" />
       <dependency id="Newtonsoft.Json" version="7.0.1" />
-      <dependency id="QuickGraph" version="3.6.61119.7" />
+      <dependency id="System.Spatial" version="5.6.4" />
     </dependencies>
   </metadata>
 </package>
