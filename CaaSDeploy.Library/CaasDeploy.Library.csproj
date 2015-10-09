@@ -87,6 +87,7 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="Models\DeploymentLog.cs" />
     <Compile Include="Models\DeploymentTemplateMetadata.cs" />
+    <Compile Include="Models\ExistingResource.cs" />
     <Compile Include="Models\ResourceLog.cs" />
     <Compile Include="Models\Scripts.cs" />
     <Compile Include="PostDeployScripting.cs" />

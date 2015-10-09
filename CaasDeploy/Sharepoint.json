@@ -1,0 +1,359 @@
+﻿{
+  "metadata": {
+    "schemaVersion": "0.1",
+    "templateName": "Sharepoint",
+    "templateDescription": "Deploys a 3 node SharePoint 2013 cluster into an existing VNET"
+  },
+  "parameters": {
+    "networkDomainId": {
+      "title": "Network Domain",
+      "description": "The network domain to use",
+      "type": "caas.networkDomainId"
+    },
+    "vlanId": {
+      "title": "VLAN",
+      "description": "The virtual network to use",
+      "type": "caas.vlanId"
+    },
+    "customerRegion": {
+      "title": "Customer Region",
+      "description": "",
+      "type": "string",
+      "enum": [ "NorthAmerica_NA", "Europe_EU", "Australia_AU", "Africa_AF", "AsiaPacific_AP", "SouthAmerica_SA", "Canada_CA", "Indonesia_ID", "India_IN" ]
+    },
+    "adServerName": {
+      "title": "AD Server name",
+      "description": "The name to use for the Active Directory server",
+      "type": "string"
+    },
+    "webServerName": {
+      "title": "Web Server name",
+      "description": "The name to use for the Web server",
+      "type": "string"
+    },
+    "appServerName": {
+      "title": "App Server name",
+      "description": "The name to use for the App server",
+      "type": "string"
+    },
+    "sqlServerName": {
+      "title": "SQL Server name",
+      "description": "The name to use for the SQL server",
+      "type": "string"
+    },
+    "adminPassword": {
+      "title": "Administrator password",
+      "description": "The admin password to use on all servers",
+      "type": "string"
+    },
+    "serviceAccountPassword": {
+      "title": "Service account password",
+      "description": "The password to for all service accounts",
+      "type": "string"
+    },
+    "domainFQName": {
+      "title": "Domain fully-qualified name",
+      "description": "The fully-qualified domain name for the AD domain",
+      "type": "string"
+    },
+    "domainName": {
+      "title": "Domain NETBIOS name",
+      "description": "The NETBIOS domain name for the AD domain",
+      "type": "string"
+    },
+    "region": {
+      "title": "Region name",
+      "description": "The code for the region to deploy to",
+      "type": "string",
+      "enum": [ "EST", "STG", "NAT" ]
+    }
+  },
+  "existingResources": [
+    {
+      "resourceType": "NetworkDomain",
+      "resourceId": "networkDomain",
+      "caasId": "$parameters['networkDomainId']"
+    },
+    {
+      "resourceType": "Vlan",
+      "resourceId": "vlan",
+      "caasId": "$parameters['vlanId']"
+    }
+    // TEST 
+    /*,
+    {
+      "resourceType": "Server",
+      "resourceId": "adServer",
+      "caasId": "3d052ff8-5f6e-4e1d-83a7-985792a9a697"
+    },
+    {
+      "resourceType": "Server",
+      "resourceId": "webServer",
+      "caasId": "3d052ff8-5f6e-4e1d-83a7-985792a9a697"
+    },
+    {
+      "resourceType": "Server",
+      "resourceId": "appServer",
+      "caasId": "3d052ff8-5f6e-4e1d-83a7-985792a9a697"
+    },
+        {
+      "resourceType": "Server",
+      "resourceId": "sqlServer",
+      "caasId": "3d052ff8-5f6e-4e1d-83a7-985792a9a697"
+    },
+
+    // END TEST */
+  ],
+  "resources": [
+    {
+      "resourceType": "FirewallRule",
+      "resourceId": "AllowHTTPFirewallRule",
+      "resourceDefinition": {
+        "networkDomainId": "parameters['networkDomainId']",
+        "name": "AllowHTTPFirewallRule",
+        "action": "ACCEPT_DECISIVELY",
+        "ipVersion": "IPV4",
+        "protocol": "TCP",
+        "source": {
+          "ip": {
+            "address": "ANY"
+          }
+        },
+        "destination": {
+          "ip": { "address": "$resources['PublicIpBlock'].baseIp" },
+          "port": {
+            "begin": "80",
+            "end": "80"
+          }
+        },
+        "enabled": "true",
+        "placement": {
+          "position": "FIRST"
+        }
+      },
+      "dependsOn": [
+        "PublicIpBlock"
+      ]
+    },
+    {
+      "resourceType": "Server",
+      "resourceId": "webServer",
+      "resourceDefinition": {
+        "name": "$parameters['webServerName']",
+        "description": "SharePoint Web Server",
+        "imageId": "8bc629a9-8d71-4b1b-8b26-acdc077edab1",
+        "start": true,
+        "administratorPassword": "$parameters['adminPassword']",
+        "networkInfo": {
+          "networkDomainId": "$parameters['networkDomainId']",
+          "primaryNic": { "vlanId": "$parameters['vlanId']" },
+          "additionalNic": [ ]
+        },
+        "disk": [
+          {
+            "scsiId": "0",
+            "speed": "STANDARD"
+          }
+        ]
+      },
+      "dependsOn": [
+      ]
+    },
+    {
+      "resourceType": "Server",
+      "resourceId": "appServer",
+      "resourceDefinition": {
+        "name": "$parameters['appServerName']",
+        "description": "SharePoint Web Server",
+        "imageId": "8bc629a9-8d71-4b1b-8b26-acdc077edab1",
+        "start": true,
+        "administratorPassword": "$parameters['adminPassword']",
+        "networkInfo": {
+          "networkDomainId": "$parameters['networkDomainId']",
+          "primaryNic": { "vlanId": "$parameters['vlanId']" },
+          "additionalNic": [ ]
+        },
+        "disk": [
+          {
+            "scsiId": "0",
+            "speed": "STANDARD"
+          }
+        ]
+      },
+      "dependsOn": [
+      ]
+    },
+    {
+      "resourceType": "Server",
+      "resourceId": "adServer",
+      "resourceDefinition": {
+        "name": "$parameters['adServerName']",
+        "description": "SharePoint AD Server",
+        "imageId": "8bc629a9-8d71-4b1b-8b26-acdc077edab1",
+        "start": true,
+        "administratorPassword": "$parameters['adminPassword']",
+        "networkInfo": {
+          "networkDomainId": "$parameters['networkDomainId']",
+          "primaryNic": { "vlanId": "$parameters['vlanId']" },
+          "additionalNic": [ ]
+        },
+        "disk": [
+          {
+            "scsiId": "0",
+            "speed": "STANDARD"
+          }
+        ]
+      },
+      "dependsOn": [
+      ]
+    },
+    {
+      "resourceType": "Server",
+      "resourceId": "sqlServer",
+      "resourceDefinition": {
+        "name": "$parameters['sqlServerName']",
+        "description": "SharePoint SQL Server",
+        "imageId": "8bc629a9-8d71-4b1b-8b26-acdc077edab1",
+        "start": true,
+        "administratorPassword": "$parameters['adminPassword']",
+        "networkInfo": {
+          "networkDomainId": "$parameters['networkDomainId']",
+          "primaryNic": { "vlanId": "$parameters['vlanId']" },
+          "additionalNic": [ ]
+        },
+        "disk": [
+          {
+            "scsiId": "0",
+            "speed": "STANDARD"
+          }
+        ]
+      },
+      "dependsOn": [
+      ]
+    },
+    {
+      "resourceType": "PublicIpBlock",
+      "resourceId": "PublicIpBlock",
+      "dependsOn": [ "webServer" ],
+      "resourceDefinition": {
+        "networkDomainId": "parameters['networkDomainId']"
+      }
+    },
+    {
+      "resourceType": "NatRule",
+      "resourceId": "nat",
+      "dependsOn": [ "PublicIpBlock", "webServer" ],
+      "resourceDefinition": {
+        "networkDomainId": "parameters['networkDomainId']",
+        "internalIp": "$resources['webServer'].networkInfo.primaryNic.privateIpv4",
+        "externalIp": "$resources['PublicIpBlock'].baseIp"
+      }
+    } 
+  ],
+  "orchestration": {
+    "provider": "CaasDeploy.Orchestration.Docs.DocsOrchestrationProvider, CaasDeploy.Orchestration.Docs",
+    "configuration": [
+      {
+        // Region Scope
+        "scopePath": "/ROOT/Region_$parameters['region']",
+        "properties": { }
+      },
+      {
+        // Environment Scope
+        "scopePath": "/ROOT/Region_$parameters['region']/$parameters['domainName']_$parameters['region']$resources['networkDomain'].datacenterId_Env",
+        "properties": {
+          "EnvironmentTimeZone": "AUS Eastern Standard Time",
+          "EnvironmentDomainFqdn": "$parameters['domainFQName']",
+          "EnvironmentDomainNetBIOS": "$parameters['domainName']",
+          "CustomerRegionName": "$parameters['customerRegion']",
+          "Vendor": "DimensionData",
+          "GlobalDomain": "gmgmtdev",
+          "ExchangeService": "FALSE",
+          "LyncService": "FALSE",
+          "SharepointService": "TRUE",
+          "RegionConfig": "$parameters['region']",
+          "ServiceAccountPassword": "$parameters['serviceAccountPassword']",
+          "McpRegionCode": "$resources['networkDomain'].datacenterId",
+          "RegionCode": "$resources['networkDomain'].datacenterId"
+        }
+      },
+      {
+        // Network Scope
+        "scopePath": "/ROOT/Region_$parameters['region']/$parameters['domainName']_$parameters['region']$resources['networkDomain'].datacenterId_Env/$resources['networkDomain'].datacenterId_$resources['networkDomain'].name_MCP2_Network",
+        "properties": {
+          "NetworkType": "MCP2",
+          "NetworkName": "resources['networkDomain'].name $resources['networkDomain'].datacenterId",
+          "NetworkLocation": "$resources['networkDomain'].datacenterId",
+          "NetworkDescription": "resources['networkDomain'].name $resources['networkDomain'].datacenterId",
+          "PrimarySite": "$resources['networkDomain'].datacenterId",
+          "NetworkId": "$parameters['networkDomainId']",
+          "NetworkSnatIPv4Address": "$resources['networkDomain'].snatIpv4Address",
+          "SecondarySite": "?"
+        }
+      },
+      {
+        // VLAN Scope: 
+        "scopePath": "/ROOT/Region_$parameters['region']/$parameters['domainName']_$parameters['region']$resources['networkDomain'].datacenterId_Env/$resources['networkDomain'].datacenterId_$resources['networkDomain'].name_MCP2_Network/$resources['networkDomain'].datacenterId_$resources['networkDomain'].name_MCP2_$resources['vlan'].name_VLAN",
+        "properties": {
+          "VLANName": "$resources['vlan'].name",
+          "BaseIPV4": "$resources['vlan'].privateIpv4Range.address",
+          "SubnetMaskIPV4": "255.255.255.0",
+          "VLANId": "$resources['vlan'].id"
+        }
+      },
+      {
+        // Server Scope: AD server
+        "scopePath": "/ROOT/Region_$parameters['region']/$parameters['domainName']_$parameters['region']$resources['networkDomain'].datacenterId_Env/$resources['networkDomain'].datacenterId_$resources['networkDomain'].name_MCP2_Network/$resources['networkDomain'].datacenterId_$resources['networkDomain'].name_MCP2_$resources['vlan'].name_VLAN/$parameters['adServerName']_Server",
+        "properties": {
+          "ServerLegacyRole": "DC01",
+          "ServerIPV4": "$resources['adServer'].networkInfo.primaryNic.privateIpv4",
+          "ServerId": "$resources['adServer'].id",
+          "ServerIPV6": "$resources['adServer'].networkInfo.primaryNic.ipv6"
+        }
+      },
+      {
+        // Server Scope: App server
+        "scopePath": "/ROOT/Region_$parameters['region']/$parameters['domainName']_$parameters['region']$resources['networkDomain'].datacenterId_Env/$resources['networkDomain'].datacenterId_$resources['networkDomain'].name_MCP2_Network/$resources['networkDomain'].datacenterId_$resources['networkDomain'].name_MCP2_$resources['vlan'].name_VLAN/$parameters['appServerName']_Server",
+        "properties": {
+          "ServerLegacyRole": "SPA01",
+          "ServerIPV4": "$resources['appServer'].networkInfo.primaryNic.privateIpv4",
+          "ServerId": "$resources['appServer'].id",
+          "ServerIPV6": "$resources['appServer'].networkInfo.primaryNic.ipv6"
+        }
+      },
+      {
+        // Server Scope: Web Server
+        "scopePath": "/ROOT/Region_$parameters['region']/$parameters['domainName']_$parameters['region']$resources['networkDomain'].datacenterId_Env/$resources['networkDomain'].datacenterId_$resources['networkDomain'].name_MCP2_Network/$resources['networkDomain'].datacenterId_$resources['networkDomain'].name_MCP2_$resources['vlan'].name_VLAN/$parameters['webServerName']_Server",
+        "properties": {
+          "ServerLegacyRole": "SPW01",
+          "ServerIPV4": "$resources['webServer'].networkInfo.primaryNic.privateIpv4",
+          "ServerId": "$resources['webServer'].id",
+          "ServerIPV6": "$resources['webServer'].networkInfo.primaryNic.ipv6"
+        }
+      },
+      {
+        // Server Scope: SQL Server
+        "scopePath": "/ROOT/Region_$parameters['region']/$parameters['domainName']_$parameters['region']$resources['networkDomain'].datacenterId_Env/$resources['networkDomain'].datacenterId_$resources['networkDomain'].name_MCP2_Network/$resources['networkDomain'].datacenterId_$resources['networkDomain'].name_MCP2_$resources['vlan'].name_VLAN/$parameters['sqlServerName']_Server",
+        "properties": {
+          "ServerLegacyRole": "SQL01",
+          "ServerIPV4": "$resources['sqlServer'].networkInfo.primaryNic.privateIpv4",
+          "ServerId": "$resources['sqlServer'].id",
+          "ServerIPV6": "$resources['sqlServer'].networkInfo.primaryNic.ipv6"
+        }
+      }
+    ],
+    "environment": {
+      "customerCode": "FOO",
+      "environmentName": "SharePoint Environment",
+      "environmentScope": "$parameters['domainName']_$parameters['region']$resources['networkDomain'].datacenterId_Env",
+      "environmentDatacentre": "$resources['adServer'].datacenterId",
+      "serverScopes": {
+        "adServer": "$parameters['adServerName']_Server",
+        "appServer": "$parameters['appServerName']_Server",
+        "webServer": "$parameters['webServerName']_Server",
+        "sqlServer": "$parameters['sqlServerName']_Server"
+      }
+    },
+    "runbook": "09c6caf8-f701-4dfb-8ea7-cd5411e86273"
+  }
+}

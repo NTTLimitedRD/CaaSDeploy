@@ -11,7 +11,7 @@ namespace CaasDeploy.Library.Utilities
     public static class TokenHelper
     {
         private static Regex _parameterRegex = new Regex("\\$parameters\\['([^']*)'\\]");
-        private static Regex _resourcePropertyRegex = new Regex("\\$resources\\['(.*)'\\]\\.(.*)");
+        private static Regex _resourcePropertyRegex = new Regex("\\$resources\\['([^']*)'\\]\\.([A-Za-z0-9\\.]+)");
 
         public static void SubstituteTokensInJObject(JObject resourceDefinition, Dictionary<string, string> parameters, Dictionary<string, JObject> resourcesProperties)
         {

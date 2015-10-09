@@ -1,0 +1,43 @@
+﻿{
+  "parameters": {
+    "networkDomainId": {
+      "value": "6b49864b-b84e-4a43-a280-8961f5dfe29e"
+    },
+    "vlanId": {
+      "value": "d062fbca-8224-42d4-b38f-006032bf7c35"
+    },
+    "myNetworkDomainName": {
+      "value": "Toms New Test Network Domain"
+    },
+    "customerRegion": {
+      "value": "Australia_AU"
+    },
+    "adServerName": {
+      "value": "TomsSharepointAD"
+    },
+    "webServerName": {
+      "value": "TomsSharepointWeb"
+    },
+    "appServerName": {
+      "value": "TomsSharepointApp"
+    },
+    "sqlServerName": {
+      "value": "TomsSharepointSQL"
+    },
+    "adminPassword": {
+      "value": "Password@1"
+    },
+    "serviceAccountPassword": {
+      "value": "Password@1"
+    },
+    "domainFQName": {
+      "value": "mydomain.foo"
+    },
+    "domainName": {
+      "value": "MYDOMAIN"
+    },
+    "region": {
+      "value":  "EST"
+    }
+  }
+}

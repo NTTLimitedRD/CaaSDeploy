@@ -31,6 +31,8 @@ namespace CaasDeploy.Library
 
             Dictionary<string, JObject> resourcesProperties = new Dictionary<string, JObject>();
 
+            await GetExistingResources(template.existingResources, parameters, resourcesProperties, accountDetails);
+
             var log = new DeploymentLog()
             {
                 deploymentTime = DateTime.Now,
@@ -79,6 +81,21 @@ namespace CaasDeploy.Library
 
             log.status = "Success";
             return log;
+        }
+
+        private async Task GetExistingResources(List<ExistingResource> existingResources, Dictionary<string, string>  parameters, 
+            Dictionary<string, JObject> resourcesProperties, CaasAccountDetails accountDetails)
+        {
+            if (existingResources == null)
+                return;
+
+            foreach (var existingResource in existingResources)
+            {
+                existingResource.caasId = TokenHelper.SubstitutePropertyTokensInString(existingResource.caasId, parameters);
+                var deployer = new ResourceDeployer(existingResource.resourceId, existingResource.resourceType, accountDetails, _logWriter);
+                var resource = await deployer.Get(existingResource.caasId);
+                resourcesProperties.Add(existingResource.resourceId, resource);
+            }
         }
 
         private async Task RunOrchestration(JObject orchestration, Dictionary<string, string> parameters, IEnumerable<Resource> resources, Dictionary<string, JObject> resourcesProperties)
