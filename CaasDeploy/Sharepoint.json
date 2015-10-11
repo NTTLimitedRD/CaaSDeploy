@@ -44,12 +44,12 @@
     "adminPassword": {
       "title": "Administrator password",
       "description": "The admin password to use on all servers",
-      "type": "string"
+      "type": "password"
     },
     "serviceAccountPassword": {
       "title": "Service account password",
       "description": "The password to for all service accounts",
-      "type": "string"
+      "type": "password"
     },
     "domainFQName": {
       "title": "Domain fully-qualified name",
@@ -100,16 +100,16 @@
       "resourceType": "Server",
       "resourceId": "sqlServer",
       "caasId": "3d052ff8-5f6e-4e1d-83a7-985792a9a697"
-    },
+    }
 
     // END TEST */
   ],
-  "resources": [
+  "resources": [ 
     {
       "resourceType": "FirewallRule",
       "resourceId": "AllowHTTPFirewallRule",
       "resourceDefinition": {
-        "networkDomainId": "parameters['networkDomainId']",
+        "networkDomainId": "$parameters['networkDomainId']",
         "name": "AllowHTTPFirewallRule",
         "action": "ACCEPT_DECISIVELY",
         "ipVersion": "IPV4",
@@ -236,7 +236,7 @@
       "resourceId": "PublicIpBlock",
       "dependsOn": [ "webServer" ],
       "resourceDefinition": {
-        "networkDomainId": "parameters['networkDomainId']"
+        "networkDomainId": "$parameters['networkDomainId']"
       }
     },
     {
@@ -244,7 +244,7 @@
       "resourceId": "nat",
       "dependsOn": [ "PublicIpBlock", "webServer" ],
       "resourceDefinition": {
-        "networkDomainId": "parameters['networkDomainId']",
+        "networkDomainId": "$parameters['networkDomainId']",
         "internalIp": "$resources['webServer'].networkInfo.primaryNic.privateIpv4",
         "externalIp": "$resources['PublicIpBlock'].baseIp"
       }
@@ -292,7 +292,7 @@
         }
       },
       {
-        // VLAN Scope: 
+        // VLAN Scope:
         "scopePath": "/ROOT/Region_$parameters['region']/$parameters['domainName']_$parameters['region']$resources['networkDomain'].datacenterId_Env/$resources['networkDomain'].datacenterId_$resources['networkDomain'].name_MCP2_Network/$resources['networkDomain'].datacenterId_$resources['networkDomain'].name_MCP2_$resources['vlan'].name_VLAN",
         "properties": {
           "VLANName": "$resources['vlan'].name",
@@ -352,7 +352,33 @@
         "appServer": "$parameters['appServerName']_Server",
         "webServer": "$parameters['webServerName']_Server",
         "sqlServer": "$parameters['sqlServerName']_Server"
-      }
+      },
+      "credentials": [
+        {
+          "name": "DomainAdmin",
+          "type": "DomainAdmin",
+          "userName": "Administrator",
+          "password": "$parameters['adminPassword']"
+        },
+        {
+          "name": "SafeModeAdmin",
+          "type": "Other",
+          "userName": "SafeModeAdmin",
+          "password": "$parameters['adminPassword']"
+        },
+        {
+          "name": "CaaSVendorAdmin",
+          "type": "CaaSVendorAdmin",
+          "userName": "csfm_staging",
+          "password": "$parameters['adminPassword']"
+        },
+        {
+          "name": "ServiceAccount",
+          "type": "Other",
+          "userName": "ServiceAccount",
+          "password": "$parameters['serviceAccountPassword']"
+        }
+      ]
     },
     "runbook": "09c6caf8-f701-4dfb-8ea7-cd5411e86273"
   }

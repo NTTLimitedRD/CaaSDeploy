@@ -106,5 +106,18 @@ namespace CaasDeploy.Orchestration.Docs
             var payload = JsonConvert.SerializeObject(payloadObject);
             var response = await CallService(HttpMethod.Post, $"api/Environment/{environmentName}/Server?encrypt=false", payload);
         }
+
+        public async Task AddCredential(string environmentName, string credentialName, string credentialType, string userName, string password)
+        {
+            var payloadObject = new
+            {
+                Name = credentialName,
+                CredentialType = credentialType,
+                Username = credentialType,
+                Password = password,
+            };
+            var payload = JsonConvert.SerializeObject(payloadObject);
+            var response = await CallService(HttpMethod.Post, $"api/Environment/{environmentName}/Credential?encrypt=false", payload);
+        }
     }
 }

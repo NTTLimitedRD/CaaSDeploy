@@ -102,9 +102,16 @@ namespace CaasDeploy.Orchestration.Docs
         {
             _logProvider.LogMessage("Sending environment information to DOCS");
             await CreateEnvironment(environmentObject);
+
+            await CreateEnvironmentCredentials(environmentObject["environmentName"].Value<String>(),
+                (JArray)environmentObject["credentials"]);
+
             await CreateServers(environmentObject["environmentName"].Value<String>(), 
                 (JObject) environmentObject["serverScopes"], resources, resourcesProperties);
+
+
         }
+
 
         private async Task CreateEnvironment(JObject environmentObject)
         {
@@ -121,6 +128,16 @@ namespace CaasDeploy.Orchestration.Docs
                 Guid.Parse(customerId), Guid.Parse(scopeId));
         }
 
+        private async Task CreateEnvironmentCredentials(string environmentName, JArray credentials)
+        {
+            foreach (var credential in credentials)
+            {
+                await _docsApiClient.AddCredential(environmentName, credential["name"].Value<string>(),
+                    credential["type"].Value<string>(), credential["userName"].Value<string>(), credential["password"].Value<string>());
+            }
+        }
+
+
         private async Task CreateServers(string environmentName, JObject serverScopesObject, IEnumerable<Resource> resources, Dictionary<string, JObject> resourcesProperties)
         {
             foreach (var prop in serverScopesObject.Properties())
@@ -129,7 +146,7 @@ namespace CaasDeploy.Orchestration.Docs
                 string ipAddress = resourcesProperties[prop.Name]["networkInfo"]["primaryNic"]["privateIpv4"].Value<string>();
                 string osFamily = resourcesProperties[prop.Name]["operatingSystem"]["family"].Value<string>();
                 string adminUser = osFamily.ToLower() == "windows" ? "administrator" : "root";
-                string adminPassword = resources.Where(r => r.resourceId == prop.Name).Single().resourceDefinition["administratorPassword"].Value<string>();
+                string adminPassword = "temp"; // resources.Where(r => r.resourceId == prop.Name).Single().resourceDefinition["administratorPassword"].Value<string>();
 
                 var scopeName = prop.Value.Value<string>();
                 var scope = await _docsApiClient.GetScope(scopeName);
