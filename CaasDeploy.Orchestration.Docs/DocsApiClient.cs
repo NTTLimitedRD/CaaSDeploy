@@ -11,11 +11,12 @@ namespace CaasDeploy.Orchestration.Docs
 {
     class DocsApiClient
     {
-        private const string _baseUrl = "http://localhost:52119/";
+        private string _baseUrl;
         private HttpClient _client;
 
-        public DocsApiClient()
+        public DocsApiClient(string baseUrl)
         {
+            _baseUrl = baseUrl;
             HttpClientHandler handler = new HttpClientHandler();
             handler.UseDefaultCredentials = true;
             _client = new HttpClient(handler);

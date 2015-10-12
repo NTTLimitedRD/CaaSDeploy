@@ -79,30 +79,6 @@
       "resourceId": "vlan",
       "caasId": "$parameters['vlanId']"
     }
-    // TEST 
-    /*,
-    {
-      "resourceType": "Server",
-      "resourceId": "adServer",
-      "caasId": "3d052ff8-5f6e-4e1d-83a7-985792a9a697"
-    },
-    {
-      "resourceType": "Server",
-      "resourceId": "webServer",
-      "caasId": "3d052ff8-5f6e-4e1d-83a7-985792a9a697"
-    },
-    {
-      "resourceType": "Server",
-      "resourceId": "appServer",
-      "caasId": "3d052ff8-5f6e-4e1d-83a7-985792a9a697"
-    },
-        {
-      "resourceType": "Server",
-      "resourceId": "sqlServer",
-      "caasId": "3d052ff8-5f6e-4e1d-83a7-985792a9a697"
-    }
-
-    // END TEST */
   ],
   "resources": [ 
     {
@@ -252,14 +228,14 @@
   ],
   "orchestration": {
     "provider": "CaasDeploy.Orchestration.Docs.DocsOrchestrationProvider, CaasDeploy.Orchestration.Docs",
+    "docsServiceUrl": "http://localhost:52119/",
+    "orchestratorServiceUrl":  "http://[2607:f480:111:1175:39ff:74f3:3216:ba41]:81/Orchestrator2012/Orchestrator.svc",
     "configuration": [
       {
-        // Region Scope
         "scopePath": "/ROOT/Region_$parameters['region']",
         "properties": { }
       },
       {
-        // Environment Scope
         "scopePath": "/ROOT/Region_$parameters['region']/$parameters['domainName']_$parameters['region']$resources['networkDomain'].datacenterId_Env",
         "properties": {
           "EnvironmentTimeZone": "AUS Eastern Standard Time",
@@ -278,7 +254,6 @@
         }
       },
       {
-        // Network Scope
         "scopePath": "/ROOT/Region_$parameters['region']/$parameters['domainName']_$parameters['region']$resources['networkDomain'].datacenterId_Env/$resources['networkDomain'].datacenterId_$resources['networkDomain'].name_MCP2_Network",
         "properties": {
           "NetworkType": "MCP2",
@@ -292,7 +267,6 @@
         }
       },
       {
-        // VLAN Scope:
         "scopePath": "/ROOT/Region_$parameters['region']/$parameters['domainName']_$parameters['region']$resources['networkDomain'].datacenterId_Env/$resources['networkDomain'].datacenterId_$resources['networkDomain'].name_MCP2_Network/$resources['networkDomain'].datacenterId_$resources['networkDomain'].name_MCP2_$resources['vlan'].name_VLAN",
         "properties": {
           "VLANName": "$resources['vlan'].name",
@@ -302,7 +276,6 @@
         }
       },
       {
-        // Server Scope: AD server
         "scopePath": "/ROOT/Region_$parameters['region']/$parameters['domainName']_$parameters['region']$resources['networkDomain'].datacenterId_Env/$resources['networkDomain'].datacenterId_$resources['networkDomain'].name_MCP2_Network/$resources['networkDomain'].datacenterId_$resources['networkDomain'].name_MCP2_$resources['vlan'].name_VLAN/$parameters['adServerName']_Server",
         "properties": {
           "ServerLegacyRole": "DC01",
@@ -312,7 +285,6 @@
         }
       },
       {
-        // Server Scope: App server
         "scopePath": "/ROOT/Region_$parameters['region']/$parameters['domainName']_$parameters['region']$resources['networkDomain'].datacenterId_Env/$resources['networkDomain'].datacenterId_$resources['networkDomain'].name_MCP2_Network/$resources['networkDomain'].datacenterId_$resources['networkDomain'].name_MCP2_$resources['vlan'].name_VLAN/$parameters['appServerName']_Server",
         "properties": {
           "ServerLegacyRole": "SPA01",
@@ -322,7 +294,6 @@
         }
       },
       {
-        // Server Scope: Web Server
         "scopePath": "/ROOT/Region_$parameters['region']/$parameters['domainName']_$parameters['region']$resources['networkDomain'].datacenterId_Env/$resources['networkDomain'].datacenterId_$resources['networkDomain'].name_MCP2_Network/$resources['networkDomain'].datacenterId_$resources['networkDomain'].name_MCP2_$resources['vlan'].name_VLAN/$parameters['webServerName']_Server",
         "properties": {
           "ServerLegacyRole": "SPW01",
@@ -332,7 +303,6 @@
         }
       },
       {
-        // Server Scope: SQL Server
         "scopePath": "/ROOT/Region_$parameters['region']/$parameters['domainName']_$parameters['region']$resources['networkDomain'].datacenterId_Env/$resources['networkDomain'].datacenterId_$resources['networkDomain'].name_MCP2_Network/$resources['networkDomain'].datacenterId_$resources['networkDomain'].name_MCP2_$resources['vlan'].name_VLAN/$parameters['sqlServerName']_Server",
         "properties": {
           "ServerLegacyRole": "SQL01",

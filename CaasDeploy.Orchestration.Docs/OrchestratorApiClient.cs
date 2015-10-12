@@ -11,14 +11,19 @@ namespace CaasDeploy.Orchestration.Docs
 {
     class OrchestratorApiClient
     {
+        private string _serviceRoot;
+
+        public OrchestratorApiClient(string serviceRoot)
+        {
+            _serviceRoot = serviceRoot;
+        }
+
+
         public Guid StartRunbookWithParameters(Guid runbookId, Dictionary<string, string> parameters)
         {
 
-            // Path to Orchestrator web service
-            string serviceRoot = "http://[2607:f480:111:1175:39ff:74f3:3216:ba41]:81/Orchestrator2012/Orchestrator.svc";
-
             // Create Orchestrator context
-            OrchestratorContext context = new OrchestratorContext(new Uri(serviceRoot));
+            OrchestratorContext context = new OrchestratorContext(new Uri(_serviceRoot));
 
             // Set credentials to default or a specific user.
             //context.Credentials = System.Net.CredentialCache.DefaultCredentials;

@@ -46,13 +46,18 @@ namespace CaasDeploy.Orchestration.Docs
     /// </summary>
     public class DocsOrchestrationProvider : IOrchestrationProvider
     {
-        private DocsApiClient _docsApiClient = new DocsApiClient();
+        private DocsApiClient _docsApiClient;
+        private OrchestratorApiClient _orchestratorClient;
+
         private ILogProvider _logProvider;
 
         public async Task RunOrchestration(JObject orchestrationObject, Dictionary<string, string> parameters, IEnumerable<Resource> resources, 
             Dictionary<string, JObject> resourcesProperties, ILogProvider logProvider)
         {
             _logProvider = logProvider;
+            _docsApiClient = new DocsApiClient(orchestrationObject["docsServiceUrl"].Value<string>());
+            _orchestratorClient = new OrchestratorApiClient(orchestrationObject["orchestratorServiceUrl"].Value<string>());
+
             TokenHelper.SubstituteTokensInJObject(orchestrationObject, parameters, resourcesProperties);
 
             await SendConfiguration((JArray)orchestrationObject["configuration"]);
@@ -146,7 +151,7 @@ namespace CaasDeploy.Orchestration.Docs
                 string ipAddress = resourcesProperties[prop.Name]["networkInfo"]["primaryNic"]["privateIpv4"].Value<string>();
                 string osFamily = resourcesProperties[prop.Name]["operatingSystem"]["family"].Value<string>();
                 string adminUser = osFamily.ToLower() == "windows" ? "administrator" : "root";
-                string adminPassword = "temp"; // resources.Where(r => r.resourceId == prop.Name).Single().resourceDefinition["administratorPassword"].Value<string>();
+                string adminPassword = resources.Where(r => r.resourceId == prop.Name).Single().resourceDefinition["administratorPassword"].Value<string>();
 
                 var scopeName = prop.Value.Value<string>();
                 var scope = await _docsApiClient.GetScope(scopeName);
@@ -158,8 +163,7 @@ namespace CaasDeploy.Orchestration.Docs
         private void LaunchRunbook(string runbook)
         {
             _logProvider.LogMessage($"Launching runbook '{runbook}'");
-            var orchApi = new OrchestratorApiClient();
-            var jobId = orchApi.StartRunbookWithParameters(Guid.Parse(runbook), null);
+            var jobId = _orchestratorClient.StartRunbookWithParameters(Guid.Parse(runbook), null);
             _logProvider.LogMessage($"Running... job id is {jobId}");
         }
 
