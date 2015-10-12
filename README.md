@@ -24,6 +24,14 @@ The templates are in JSON format and contain three sections: **metadata**, **par
 **parameters** contains a single JSON element containing the list of parameter names and their descriptions. The values for the parameters
 (which will vary per deployment) go in a separate file.
 
+**existingResources** contains an array of CaaS resources which are _not_ to be deployed as a part of the template, but
+whose properties should be retrieved for use with the $resources macro. Each entry has the following properties.
+
+* **resourceType**: The type of the CaaS resource. Acceptable values (case sensitive) are NetworkDomain, Vlan, Server, FirewallRule, PublicIpBlock, NatRule, Node, Pool, PoolMember, VirtualListener.
+* **resourceId**: A unique identifier for the resource. This isn't used by CaaS, but is used to identify the resource with the
+$resources macro.
+* **caasId**: The CaaS unique identifier (GUID) for the resource.
+
 **resources** contains an array with the list of resources to be deployed. Each element in the array has the following properties.
 
 * **resourceType**: The type of CaaS resource to deploy. Acceptable values (case sensitive) are NetworkDomain, Vlan, Server, FirewallRule, PublicIpBlock, NatRule, Node, Pool, PoolMember, VirtualListener.
@@ -34,10 +42,14 @@ The templates are in JSON format and contain three sections: **metadata**, **par
   * **bundleFile**: A .zip file containing scripts and related files that should be uploaded to the server post-deployment
   * **onDeploy**: The command line to execute on the VM post deployment.
 
-JSON properties within the **resourceDefinition** may use the following macros to retrieve values from parameters or from the output after creating another resource:
+**orchestration** defines an orchestration process that will be executed after the infrastructure is deployed. The JSON
+elmement must contain a **provider** attribute that specifies the .NET type name of the orchestration provider. All other
+properties and nested objects will vary depending on the provider implementation.
+
+JSON properties within the template may use the following macros to retrieve values from parameters or from the output after creating another resource:
 
 * **$parameters['*paramName*']**: Retrieves the value of the specfied parameter
-* **$resources['*resourceId*']._propertyPath_**: Retrieves the value of the requested property for a previously created resource. The properties can be several levels deep, e.g. "$resources['MyVM'].networkInfo.primaryNic.privateIpv4"
+* **$resources['*resourceId*']._propertyPath_**: Retrieves the value of the requested property for a previously created resource (including those defined in **existingResources**). The properties can be several levels deep, e.g. "$resources['MyVM'].networkInfo.primaryNic.privateIpv4"
 
 ## Sample Template
 This template deploys a new Network Domain with a VNET, a Public IP Block and a Server. It also creates a NAT rule mapping the 
