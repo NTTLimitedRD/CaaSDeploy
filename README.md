@@ -17,7 +17,7 @@ The -region argument should use the CaaS region code, e.g. AU or NA.
 **CaasDeploy.exe** -action Delete -deploymentLog *PathToDeploymentLogFile* -region *RegionName* -username *CaaSUserName* -password *CaasPassword*
 
 ## Template format
-The templates are in JSON format and contain three sections: **metadata**, **parameters** and **resources**.
+The templates are in JSON format and contain up to five sections: **metadata** (required), **parameters** (optional), **existingResources** (optional), **resources** (required) and **orchestration** (optional).
 
 **metadata** defines the template scehma version, and user-defined name and description for this template.
 
