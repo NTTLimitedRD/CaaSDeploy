@@ -257,9 +257,9 @@
         "scopePath": "/ROOT/Region_$parameters['region']/$parameters['domainName']_$parameters['region']$resources['networkDomain'].datacenterId_Env/$resources['networkDomain'].datacenterId_$resources['networkDomain'].name_MCP2_Network",
         "properties": {
           "NetworkType": "MCP2",
-          "NetworkName": "resources['networkDomain'].name $resources['networkDomain'].datacenterId",
+          "NetworkName": "$resources['networkDomain'].name $resources['networkDomain'].datacenterId",
           "NetworkLocation": "$resources['networkDomain'].datacenterId",
-          "NetworkDescription": "resources['networkDomain'].name $resources['networkDomain'].datacenterId",
+          "NetworkDescription": "$resources['networkDomain'].name $resources['networkDomain'].datacenterId",
           "PrimarySite": "$resources['networkDomain'].datacenterId",
           "NetworkId": "$parameters['networkDomainId']",
           "NetworkSnatIPv4Address": "$resources['networkDomain'].snatIpv4Address",
