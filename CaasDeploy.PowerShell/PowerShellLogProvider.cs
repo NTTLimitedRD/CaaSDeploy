@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Management.Automation;
 
-using CaasDeploy.Library;
 using CaasDeploy.Library.Contracts;
 
 namespace CaasDeploy.PowerShell
@@ -21,9 +20,6 @@ namespace CaasDeploy.PowerShell
 
         public void IncrementProgress()
         {
-
-
-
         }
 
         public void LogError(string message)
