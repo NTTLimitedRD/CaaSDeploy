@@ -52,9 +52,8 @@ namespace CaasDeploy.PowerShell
         {
             var config = (IComputeConfiguration)ConfigurationManager.GetSection("compute");
             var accountDetails = await CaasAuthentication.Authenticate(config, UserName, Password, Region);
-            var d = new TaskBuilder(new ConsoleLogProvider(), accountDetails);
-
-            var taskExecutor = d.GetDeletionTasks(ResolvePath(DeploymentLog));
+            var taskBuilder = new TaskBuilder(new ConsoleLogProvider(), accountDetails);
+            var taskExecutor = taskBuilder.GetDeletionTasks(ResolvePath(DeploymentLog));
             var log = await taskExecutor.Execute();
 
             Console.WriteLine($"Result: {log.status}");

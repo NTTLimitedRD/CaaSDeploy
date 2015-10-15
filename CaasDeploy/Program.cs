@@ -100,14 +100,14 @@ namespace CaasDeploy
 
             try
             {
-                var d = new TaskBuilder(new ConsoleLogProvider(), accountDetails);
+                var taskBuilder = new TaskBuilder(new ConsoleLogProvider(), accountDetails);
 
                 if (arguments["action"].ToLower() == "deploy")
                 {
                     var parametersFile = arguments.ContainsKey("parameters") ? arguments["parameters"] : null;
                     var templateFile = arguments["template"];
 
-                    var taskExecutor = d.GetDeploymentTasks(templateFile, parametersFile);
+                    var taskExecutor = taskBuilder.GetDeploymentTasks(templateFile, parametersFile);
                     var log = await taskExecutor.Execute();
 
                     Console.WriteLine($"Result: {log.status}");
@@ -119,7 +119,7 @@ namespace CaasDeploy
                 {
                     var deploymentLogFile = arguments["deploymentlog"];
 
-                    var taskExecutor = d.GetDeletionTasks(deploymentLogFile);
+                    var taskExecutor = taskBuilder.GetDeletionTasks(deploymentLogFile);
                     var log = await taskExecutor.Execute();
 
                     Console.WriteLine($"Result: {log.status}");

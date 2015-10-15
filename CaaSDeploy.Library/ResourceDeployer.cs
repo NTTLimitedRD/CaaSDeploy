@@ -285,19 +285,17 @@ namespace CaasDeploy.Library
         /// <returns>The list of parameter values to be used for the List API call</returns>
         public string[] GetResourceIdentifiers(JObject resourceDefinition)
         {
-            if (_resourceType == ResourceType.PoolMember)
+            switch (_resourceType)
             {
-                return new[] { resourceDefinition["poolId"].Value<string>(), resourceDefinition["nodeId"].Value<string>(), };
+                case ResourceType.PoolMember:
+                    return new[] { resourceDefinition["poolId"].Value<string>(), resourceDefinition["nodeId"].Value<string>(), };
+                case ResourceType.NatRule:
+                    return new[] { resourceDefinition["networkDomainId"].Value<string>(), resourceDefinition["internalIp"].Value<string>() };
+                case ResourceType.FirewallRule:
+                    return new[] { resourceDefinition["name"].Value<string>(), resourceDefinition["networkDomainId"].Value<string>() };
+                default:
+                    return new[] { resourceDefinition["name"].Value<string>() };
             }
-            else if (_resourceType == ResourceType.NatRule)
-            {
-                return new[] { resourceDefinition["networkDomainId"].Value<string>(), resourceDefinition["internalIp"].Value<string>()};
-            }
-            else if (_resourceType == ResourceType.FirewallRule)
-            {
-                return new[] { resourceDefinition["name"].Value<string>(), resourceDefinition["networkDomainId"].Value<string>()};
-            }
-            return new[] { resourceDefinition["name"].Value<string>() };
         }
 
         public async Task<IEnumerable<JObject>> GetResourceByIdentifiers(string[] ids)

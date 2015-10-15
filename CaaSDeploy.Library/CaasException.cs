@@ -25,7 +25,6 @@ namespace CaasDeploy.Library
         {
             var jObject = JObject.Parse(errorText);
             return jObject["message"]?.Value<string>();
-
         }
 
         public string Operation { get; set; }

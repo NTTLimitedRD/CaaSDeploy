@@ -1,7 +1,5 @@
 ﻿using System.Threading.Tasks;
 
-using CaasDeploy.Library.Models;
-
 namespace CaasDeploy.Library.Tasks
 {
     /// <summary>
