@@ -1,17 +1,22 @@
-﻿using CaasDeploy.Library.Models;
+﻿using System.Collections.Generic;
+using System.IO;
+
+using CaasDeploy.Library.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CaasDeploy.Library
 {
+    /// <summary>
+    /// Parses JSON deployment documents.
+    /// </summary>
     public static class TemplateParser
     {
+        /// <summary>
+        /// Parses the template.
+        /// </summary>
+        /// <param name="fileName">Path to the file.</param>
+        /// <returns>The parsed deployment template.</returns>
         public static DeploymentTemplate ParseTemplate(string fileName)
         {
             using (var reader = new StreamReader(fileName))
@@ -21,6 +26,11 @@ namespace CaasDeploy.Library
             }
         }
 
+        /// <summary>
+        /// Parses the parameters.
+        /// </summary>
+        /// <param name="fileName">Path to the file.</param>
+        /// <returns>The parsed parameters.</returns>
         public static Dictionary<string, string> ParseParameters(string fileName)
         {
             var dict = new Dictionary<string, string>();
@@ -41,6 +51,11 @@ namespace CaasDeploy.Library
             }
         }
 
+        /// <summary>
+        /// Parses a deployment log file.
+        /// </summary>
+        /// <param name="fileName">Path to the file.</param>
+        /// <returns>The parsed deployment log.</returns>
         public static DeploymentLog ParseDeploymentLog(string fileName)
         {
             using (var reader = new StreamReader(fileName))

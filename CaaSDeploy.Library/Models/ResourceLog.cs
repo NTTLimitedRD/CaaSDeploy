@@ -1,23 +1,21 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CaasDeploy.Library.Utilities;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CaasDeploy.Library.Models
 {
     public class ResourceLog
     {
-        public const string DeploymentStatusDeployed = "Deployed";
-        public const string DeploymentStatusFailed = "Failed";
-        public const string DeploymentStatusUpdated = "Updated";
-        public const string DeploymentStatusUsedExisting = "UsedExisting";
+        [JsonConverter(typeof(JsonEnumConverter))]
+        public ResourceType resourceType { get; set; }
 
-        public string resourceType { get; set; }
         public string resourceId { get; set; }
-        public string deploymentStatus { get; set; }
+
+        [JsonConverter(typeof(JsonEnumConverter))]
+        public DeploymentStatus deploymentStatus { get; set; }
+
         public JObject details { get; set; }
+
         public JObject error { get; set; }
     }
 }

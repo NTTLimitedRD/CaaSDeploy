@@ -1,14 +1,13 @@
-﻿using CaasDeploy.Library;
+﻿using System;
+using System.Configuration;
+using System.IO;
+using System.Management.Automation;
+using System.Threading.Tasks;
+
+using CaasDeploy.Library;
+using CaasDeploy.Library.Contracts;
 using CaasDeploy.Library.Models;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Management.Automation;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CaasDeploy.PowerShell
 {
@@ -65,20 +64,18 @@ namespace CaasDeploy.PowerShell
             base.BeginProcessing();
         }
 
-
         private async Task BeginProcessingAsync()
         {
-            var accountDetails = await CaasAuthentication.Authenticate(UserName, Password, Region);
-            var d = new Deployment(new ConsoleLogProvider());
+            var config = (IComputeConfiguration)ConfigurationManager.GetSection("compute");
+            var accountDetails = await CaasAuthentication.Authenticate(config, UserName, Password, Region);
+            var d = new TaskBuilder(new ConsoleLogProvider(), accountDetails);
 
-            var parameters = TemplateParser.ParseParameters(ResolvePath(Parameters));
+            var taskExecutor = d.GetDeploymentTasks(ResolvePath(Template), ResolvePath(Parameters));
+            var log = await taskExecutor.Execute();
 
-
-            var log = await d.Deploy(ResolvePath(Template), parameters, accountDetails);
             Console.WriteLine($"Result: {log.status}");
             WriteLog(log, ResolvePath(DeploymentLog));
             Console.WriteLine($"Complete! Deployment log written to {DeploymentLog}.");
-
         }
 
         private string ResolvePath(string path)
@@ -95,7 +92,5 @@ namespace CaasDeploy.PowerShell
                 sw.Write(json);
             }
         }
-
-
     }
 }
