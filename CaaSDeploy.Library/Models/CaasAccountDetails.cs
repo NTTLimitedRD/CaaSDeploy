@@ -12,5 +12,6 @@ namespace CaasDeploy.Library.Models
         public string Password { get; set; }
         public string OrgId { get; set; }
         public string Region { get; set; }
+        public string BaseUrl { get; set; }
     }
 }

@@ -69,6 +69,12 @@ namespace CaasDeploy.Library.Tests
 			ExceptionAssert.Throws<InvalidOperationException>(
 				() => resources.DependencySort()
 			);
-		}
+
+            var x = new Resource
+            {
+                resourceId = "dfsgd",
+                resourceType = ResourceType.NetworkDomain
+            };
+        }
 	}
 }

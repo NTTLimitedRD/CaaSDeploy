@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CaasDeploy.Library.Utilities;
+using Newtonsoft.Json;
 
 namespace CaasDeploy.Library.Models
 {
     public class ExistingResource
     {
-        public string resourceType { get; set; }
+        [JsonConverter(typeof(JsonEnumConverter))]
+        public ResourceType resourceType { get; set; }
         public string resourceId { get; set; }
         public string caasId { get; set; }
     }

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CaasDeploy.Library
+namespace CaasDeploy.Library.Contracts
 {
     public interface ILogProvider
     {
@@ -15,6 +11,7 @@ namespace CaasDeploy.Library
         void LogException(Exception exception);
 
         void IncrementProgress();
+
         void CompleteProgress();
     }
 }

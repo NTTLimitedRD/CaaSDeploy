@@ -1,19 +1,18 @@
-﻿using CaasDeploy.Library;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using CaasDeploy.Library;
+using CaasDeploy.Library.Contracts;
 using CaasDeploy.Library.Models;
 using Newtonsoft.Json;
-using System.Diagnostics;
 
 namespace CaasDeploy
 {
     class Program
     {
-
         static void Main(string[] args)
         {
             Dictionary<string, string> arguments = ParseArguments(args);
@@ -26,7 +25,6 @@ namespace CaasDeploy
             var t = Task.Run(() => PerformRequest(arguments));
             t.Wait();
         }
-
 
         private static Dictionary<string, string> ParseArguments(string[] args)
         {
@@ -88,33 +86,43 @@ namespace CaasDeploy
             Console.WriteLine("\t\t-region {RegionName}");
             Console.WriteLine("\t\t-username {CaaSUserName}");
             Console.WriteLine("\t\t-password {CaasPassword}");
-
         }
 
         static async Task PerformRequest(Dictionary<string, string> arguments)
         {
+            var config = (IComputeConfiguration)ConfigurationManager.GetSection("compute");
+
             var accountDetails = await CaasAuthentication.Authenticate(
-                arguments["username"], arguments["password"], arguments["region"]);
+                config,
+                arguments["username"],
+                arguments["password"],
+                arguments["region"]);
 
             try
             {
-                var d = new Deployment(new ConsoleLogProvider());
+                var d = new TaskBuilder(new ConsoleLogProvider(), accountDetails);
 
                 if (arguments["action"].ToLower() == "deploy")
                 {
-                    string parametersFile = arguments.ContainsKey("parameters") ? arguments["parameters"] : null;
-                    var parameters = TemplateParser.ParseParameters(parametersFile);
+                    var parametersFile = arguments.ContainsKey("parameters") ? arguments["parameters"] : null;
                     var templateFile = arguments["template"];
 
-                    var log = await d.Deploy(templateFile, parameters, accountDetails);
+                    var taskExecutor = d.GetDeploymentTasks(templateFile, parametersFile);
+                    var log = await taskExecutor.Execute();
+
                     Console.WriteLine($"Result: {log.status}");
+
                     WriteLog(log, arguments["deploymentlog"]);
                     Console.WriteLine($"Complete! Deployment log written to {arguments["deploymentlog"]}.");
                 }
                 else if (arguments["action"].ToLower() == "delete")
                 {
-                    var log = TemplateParser.ParseDeploymentLog(arguments["deploymentlog"]);
-                    await d.Delete(log, accountDetails);
+                    var deploymentLogFile = arguments["deploymentlog"];
+
+                    var taskExecutor = d.GetDeletionTasks(deploymentLogFile);
+                    var log = await taskExecutor.Execute();
+
+                    Console.WriteLine($"Result: {log.status}");
                 }
             }
             catch (Exception ex)

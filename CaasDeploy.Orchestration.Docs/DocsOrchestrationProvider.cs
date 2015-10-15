@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
+
+using CaasDeploy.Library.Contracts;
 using CaasDeploy.Library.Utilities;
-using System.Net.Http;
 using CaasDeploy.Library.Models;
-using CaasDeploy.Library;
+using Newtonsoft.Json.Linq;
 
 namespace CaasDeploy.Orchestration.Docs
 {

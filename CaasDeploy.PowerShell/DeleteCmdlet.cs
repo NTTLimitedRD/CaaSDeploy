@@ -1,19 +1,17 @@
-﻿using CaasDeploy.Library;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System;
+using System.Configuration;
 using System.IO;
-using System.Linq;
 using System.Management.Automation;
-using System.Text;
 using System.Threading.Tasks;
+
+using CaasDeploy.Library;
+using CaasDeploy.Library.Contracts;
 
 namespace CaasDeploy.PowerShell
 {
     [Cmdlet(VerbsCommon.Remove, "CaasDeployment")]
     public class DeleteCmdlet : PSCmdlet
     {
-
         [Parameter(
             Mandatory = true,
             HelpMessage = "The path to the deployment log file for the deployment that should be deleted.",
@@ -50,16 +48,16 @@ namespace CaasDeploy.PowerShell
             base.BeginProcessing();
         }
 
-
         private async Task BeginProcessingAsync()
         {
-            var accountDetails = await CaasAuthentication.Authenticate(UserName, Password, Region);
-            var d = new Deployment(new ConsoleLogProvider());
+            var config = (IComputeConfiguration)ConfigurationManager.GetSection("compute");
+            var accountDetails = await CaasAuthentication.Authenticate(config, UserName, Password, Region);
+            var d = new TaskBuilder(new ConsoleLogProvider(), accountDetails);
 
-            var log = TemplateParser.ParseDeploymentLog(ResolvePath(DeploymentLog));
-            await d.Delete(log, accountDetails);
+            var taskExecutor = d.GetDeletionTasks(ResolvePath(DeploymentLog));
+            var log = await taskExecutor.Execute();
 
-
+            Console.WriteLine($"Result: {log.status}");
         }
 
         private string ResolvePath(string path)
