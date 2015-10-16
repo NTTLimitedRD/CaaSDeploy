@@ -50,7 +50,7 @@ namespace CaasDeploy.Library
         {
             var template = TemplateParser.ParseTemplate(templateFilePath);
             var parameters = TemplateParser.ParseParameters(parametersFilePath);
-            var sortedResources = ResourceDependencies.DependencySort(template.resources, template.existingResources).Reverse();
+            var sortedResources = ResourceDependencies.DependencySort(template.resources, template.existingResources).Reverse().ToList();
 
             // Create a sequential list of tasks we need to execute.
             var tasks = new List<ITask>();
@@ -72,7 +72,7 @@ namespace CaasDeploy.Library
 
             if (template.orchestration != null)
             {
-                tasks.Add(new RunOrchestrationTask(_logProvider, template.orchestration));
+                tasks.Add(new RunOrchestrationTask(_logProvider, template.orchestration, sortedResources));
             }
 
             // Create the task execution context.
@@ -80,7 +80,6 @@ namespace CaasDeploy.Library
             {
                 ScriptPath = new FileInfo(templateFilePath).DirectoryName,
                 Parameters = parameters,
-                Resources = sortedResources,
                 ResourcesProperties = new Dictionary<string, JObject>(),
                 Log = new DeploymentLog()
                 {

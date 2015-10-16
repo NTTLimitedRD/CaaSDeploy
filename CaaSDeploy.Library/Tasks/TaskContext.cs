@@ -21,11 +21,6 @@ namespace CaasDeploy.Library.Tasks
         public Dictionary<string, string> Parameters { get; set; }
 
         /// <summary>
-        /// Gets or sets the resources.
-        /// </summary>
-        public IEnumerable<Resource> Resources { get; set; }
-
-        /// <summary>
         /// Gets or sets the resources properties.
         /// </summary>
         public Dictionary<string, JObject> ResourcesProperties { get; set; }
