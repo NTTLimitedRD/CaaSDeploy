@@ -84,9 +84,7 @@ namespace CaasDeploy.Library
                 Log = new DeploymentLog()
                 {
                     deploymentTime = DateTime.Now,
-                    region = _accountDetails.Region,
                     templateName = template.metadata.templateName,
-                    parameters = parameters,
                     resources = new List<ResourceLog>()
                 }
             };
@@ -117,7 +115,7 @@ namespace CaasDeploy.Library
                 Log = new DeploymentLog()
                 {
                     deploymentTime = DateTime.Now,
-                    region = _accountDetails.Region,
+                    templateName = deploymentLog.templateName,
                     resources = new List<ResourceLog>()
                 }
             };
