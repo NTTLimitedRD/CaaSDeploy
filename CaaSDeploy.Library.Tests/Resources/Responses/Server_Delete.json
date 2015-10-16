@@ -1,0 +1,9 @@
+﻿{
+  "operation": "DELETE_SERVER",
+  "responseCode": "IN_PROGRESS",
+  "message": "Request to Delete Server 'Unit Test Server' has been accepted and is being processed.",
+  "info": [ ],
+  "warning": [ ],
+  "error": [ ],
+  "requestId": "na/2015-10-15T21:10:30.913-04:00/8d694a40-28f5-473e-87d3-d7019fa88aa9"
+}

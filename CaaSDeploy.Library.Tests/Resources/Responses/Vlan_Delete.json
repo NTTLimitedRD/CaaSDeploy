@@ -1,0 +1,9 @@
+﻿{
+  "operation": "DELETE_VLAN",
+  "responseCode": "IN_PROGRESS",
+  "message": "Request to Delete VLAN 'Unit Test VLAN' has been accepted and is being processed.",
+  "info": [ ],
+  "warning": [ ],
+  "error": [ ],
+  "requestId": "na/2015-10-15T21:31:53.065-04:00/8f01993d-2500-4b62-9367-6c588ba25dbb"
+}

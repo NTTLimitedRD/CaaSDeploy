@@ -1,0 +1,9 @@
+﻿{
+  "operation": "GET_SERVER",
+  "responseCode": "RESOURCE_NOT_FOUND",
+  "message": "Server b42b40e1-351a-4df9-b726-2ccff01f2767 not found.",
+  "info": [ ],
+  "warning": [ ],
+  "error": [ ],
+  "requestId": "na/2015-10-15T21:30:14.591-04:00/9edfae39-a230-4da3-b097-c8c69341349a"
+}

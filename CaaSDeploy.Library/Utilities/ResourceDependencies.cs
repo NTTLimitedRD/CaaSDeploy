@@ -38,44 +38,51 @@ namespace CaasDeploy.Library.Utilities
                 throw new ArgumentNullException(nameof(resources));
             }
 
-            Dictionary<string, Resource> resourcesById = resources.ToDictionary(resource => resource.resourceId);
-            Dictionary<string, ExistingResource> existingResourcesById = existingResources.ToDictionary(resource => resource.resourceId);
+            try
+            {
+                Dictionary<string, Resource> resourcesById = resources.ToDictionary(resource => resource.resourceId);
+                Dictionary<string, ExistingResource> existingResourcesById = existingResources.ToDictionary(resource => resource.resourceId);
 
-            AdjacencyGraph<Resource, Edge<Resource>> resourceDependencies = new AdjacencyGraph<Resource, Edge<Resource>>();
+                AdjacencyGraph<Resource, Edge<Resource>> resourceDependencies = new AdjacencyGraph<Resource, Edge<Resource>>();
 
-            foreach (string resourceId in resourcesById.Keys)
-			{
-				Resource resource = resourcesById[resourceId];
-				if (!resourceDependencies.AddVertex(resource))
-					continue; // Already processed.
+                foreach (string resourceId in resourcesById.Keys)
+                {
+                    Resource resource = resourcesById[resourceId];
+                    if (!resourceDependencies.AddVertex(resource))
+                        continue; // Already processed.
 
-				foreach (string dependsOnResourceId in resource.dependsOn)
-				{
-                    if (existingResourcesById.ContainsKey(dependsOnResourceId))
+                    foreach (string dependsOnResourceId in resource.dependsOn)
                     {
-                        continue;
+                        if (existingResourcesById.ContainsKey(dependsOnResourceId))
+                        {
+                            continue;
+                        }
+
+                        Resource dependsOnResource;
+                        if (!resourcesById.TryGetValue(dependsOnResourceId, out dependsOnResource))
+                        {
+                            throw new TemplateParserException(
+                                $"Resource '{resourceId}' depends on non-existent resource '{dependsOnResourceId}'."
+                            );
+                        }
+
+                        resourceDependencies.AddEdge(
+                            new Edge<Resource>(resource, dependsOnResource)
+                        );
                     }
+                }
 
-                    Resource dependsOnResource;
-					if (!resourcesById.TryGetValue(dependsOnResourceId, out dependsOnResource))
-					{
-						throw new InvalidOperationException(
-							$"Resource '{resourceId}' depends on non-existent resource '{dependsOnResourceId}'."
-						);
-					}
+                Resource[] sortedResources =
+                    resourceDependencies
+                        .TopologicalSort()
+                        .ToArray();
 
-					resourceDependencies.AddEdge(
-						new Edge<Resource>(resource, dependsOnResource)
-					);
-				}
-			}
-
-			Resource[] sortedResources =
-				resourceDependencies
-					.TopologicalSort()
-					.ToArray();
-			
-			return sortedResources;
+                return sortedResources;
+            }
+            catch (NonAcyclicGraphException ex)
+            {
+                throw new TemplateParserException("The template contains a circular dependency.", ex);
+            }
 		} 
 	}
 }

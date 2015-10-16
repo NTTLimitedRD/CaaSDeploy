@@ -1,0 +1,9 @@
+﻿{
+  "operation": "REMOVE_PUBLIC_IP_BLOCK",
+  "responseCode": "OK",
+  "message": "Public IPv4 Address Block 996b066e-bdce-11e4-8c14-b8ca3a5d9ef8 has been removed successfully.",
+  "info": [ ],
+  "warning": [ ],
+  "error": [ ],
+  "requestId": "na/2015-10-15T21:07:03.439-04:00/0bad7fef-b85d-473a-9f0c-e1a2ae51eb10"
+}

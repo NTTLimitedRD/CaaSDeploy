@@ -112,7 +112,7 @@ namespace CaasDeploy
 
                     Console.WriteLine($"Result: {log.status}");
 
-                    WriteLog(log, arguments["deploymentlog"]);
+                    TemplateParser.SaveDeploymentLog(log, arguments["deploymentlog"]);
                     Console.WriteLine($"Complete! Deployment log written to {arguments["deploymentlog"]}.");
                 }
                 else if (arguments["action"].ToLower() == "delete")
@@ -128,15 +128,6 @@ namespace CaasDeploy
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-            }
-        }
-
-        private static void WriteLog(DeploymentLog log, string logFile)
-        {
-            using (var sw = new StreamWriter(logFile))
-            {
-                var json = JsonConvert.SerializeObject(log, Formatting.Indented);
-                sw.Write(json);
             }
         }
     }

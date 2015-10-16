@@ -1,0 +1,9 @@
+﻿{
+    "operation": "GET_NAT_RULE",
+    "responseCode": "RESOURCE_NOT_FOUND",
+    "message": "Cannot find NAT Rule with Id a6b2e743-e330-4deb-a76e-0d9cb0b1d1bb.",
+    "info": [],
+    "warning": [],
+    "error": [],
+    "requestId": "na/2015-10-15T21:03:45.273-04:00/40fbb229-3007-4ea2-816e-7cc65caa5de7"
+}

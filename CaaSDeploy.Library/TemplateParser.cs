@@ -64,5 +64,19 @@ namespace CaasDeploy.Library
                 return JsonConvert.DeserializeObject<DeploymentLog>(content);
             }
         }
+
+        /// <summary>
+        /// Saves the deployment log.
+        /// </summary>
+        /// <param name="log">The log to save.</param>
+        /// <param name="fileName">Path to the file.</param>
+        public static void SaveDeploymentLog(DeploymentLog log, string fileName)
+        {
+            using (var sw = new StreamWriter(fileName))
+            {
+                var json = JsonConvert.SerializeObject(log, Formatting.Indented);
+                sw.Write(json);
+            }
+        }
     }
 }

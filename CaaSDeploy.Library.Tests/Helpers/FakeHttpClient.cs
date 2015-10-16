@@ -38,7 +38,7 @@ namespace CaasDeploy.Library.Tests.Helpers
                 HttpClientFactory.FakeClient = _fakeClient.Object;
             }
 
-            var sampleFolderLocation = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\Resources\Messages");
+            var sampleFolderLocation = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\Resources\Responses");
             var targetFile = Path.Combine(sampleFolderLocation, fileName);
             var contents = File.ReadAllText(targetFile);
             var message = new HttpResponseMessage(statusCode)
