@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using CaasDeploy.Library.Contracts;
 using CaasDeploy.Library.Models;
 using Newtonsoft.Json.Linq;
+using CaasDeploy.Library.Utilities;
 
 namespace CaasDeploy.Library
 {
@@ -53,7 +54,7 @@ namespace CaasDeploy.Library
         private const int _pollingTimeOutMinutes = 20;
         private ILogProvider _logWriter;
 
-        public ResourceDeployer(string resourceId, ResourceType resourceType, CaasAccountDetails accountDetails, ILogProvider logWriter)
+        public ResourceDeployer(ILogProvider logWriter, CaasAccountDetails accountDetails, string resourceId, ResourceType resourceType)
         {
             _resourceId = resourceId;
             _resourceType = resourceType;
@@ -62,21 +63,11 @@ namespace CaasDeploy.Library
             _logWriter = logWriter;
         }
 
-        private HttpClient GetHttpClient()
-        {
-            var credentials = new NetworkCredential(_accountDetails.UserName, _accountDetails.Password);
-            var handler = new HttpClientHandler { Credentials = credentials };
-
-            var client = new HttpClient(handler);
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            return client; 
-        }
-
         private async Task<string> Deploy(string jsonPayload)
         {
             _logWriter.LogMessage($"Deploying {_resourceType}: '{_resourceId}' ");
 
-            using (var client = GetHttpClient())
+            using (var client = HttpClientFactory.GetClient(_accountDetails))
             {
                 var url = GetApiUrl(_resourceApi.DeployUrl);
                 var response = await client.PostAsync(url, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
@@ -138,7 +129,7 @@ namespace CaasDeploy.Library
         {
             _logWriter.LogMessage($"Updating existing {_resourceType}: '{_resourceId}' ");
 
-            using (var client = GetHttpClient())
+            using (var client = HttpClientFactory.GetClient(_accountDetails))
             {
                 resourceDefinition.AddFirst(new JProperty("id", existingId));
                 RemovePropertiesUnsupportedForEdit(resourceDefinition);
@@ -162,7 +153,7 @@ namespace CaasDeploy.Library
 
         public async Task<JObject> Get(string id)
         {
-            using (var client = GetHttpClient())
+            using (var client = HttpClientFactory.GetClient(_accountDetails))
             {
                 var url = String.Format(GetApiUrl(_resourceApi.GetUrl), id);
                 var response = await client.GetAsync(url);
@@ -177,7 +168,7 @@ namespace CaasDeploy.Library
         private async Task<bool> Delete(string id) // Returns true if waiting is required
         {
             _logWriter.LogMessage($"Deleting {_resourceType}: '{_resourceId}' (ID: {id}) ");
-            using (var client = GetHttpClient())
+            using (var client = HttpClientFactory.GetClient(_accountDetails))
             {
                 try
                 {
@@ -306,7 +297,7 @@ namespace CaasDeploy.Library
                 return null;
             }
 
-            using (var client = GetHttpClient())
+            using (var client = HttpClientFactory.GetClient(_accountDetails))
             {
                 var url = String.Format(GetApiUrl(_resourceApi.ListUrl), ids);
                 var response = await client.GetAsync(url);

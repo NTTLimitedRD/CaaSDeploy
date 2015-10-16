@@ -53,7 +53,7 @@ namespace CaasDeploy.Library.Tasks
         {
             if (_resource.details != null)
             {
-                var deployer = new ResourceDeployer(_resource.resourceId, _resource.resourceType, _accountDetails, _logProvider);
+                var deployer = new ResourceDeployer(_logProvider, _accountDetails, _resource.resourceId, _resource.resourceType);
                 var caasId = _resource.details["id"].Value<string>();
                 await deployer.DeleteAndWait(caasId);
 

@@ -41,6 +41,10 @@
       <HintPath>..\packages\JetBrains.Annotations.9.2.0\lib\net20\JetBrains.Annotations.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Moq">
+      <HintPath>..\Packages\Moq.4.2.1507.0118\lib\net40\Moq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -92,7 +96,9 @@
     <Compile Include="Config\ComputeConfigurationSectionTests.cs" />
     <Compile Include="DependencyTests.cs" />
     <Compile Include="ExceptionAssert.cs" />
+    <Compile Include="Helpers\FakeHttpClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TaskBuilderAndExecutorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CaaSDeploy.Library\CaasDeploy.Library.csproj">
@@ -103,7 +109,25 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Resources\Messages\AddPublicIpBlockResponse.json" />
+    <None Include="Resources\Messages\CreateNatRuleResponse.json" />
+    <None Include="Resources\Messages\DeployNetworkDomainResponse.json" />
+    <None Include="Resources\Messages\DeployServerResponse.json" />
+    <None Include="Resources\Messages\DeployVlanResponse.json" />
+    <None Include="Resources\Messages\GetNatRuleResponse.json" />
+    <None Include="Resources\Messages\GetNetworkDomainResponse.json" />
+    <None Include="Resources\Messages\GetPublicIpBlockResponse.json" />
+    <None Include="Resources\Messages\GetServerResponse.json" />
+    <None Include="Resources\Messages\GetVlanResponse.json" />
+    <None Include="Resources\Messages\NotFoundResponse.json" />
+    <None Include="Resources\Templates\StandardTemplate.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Templates\StandardTemplateParams.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

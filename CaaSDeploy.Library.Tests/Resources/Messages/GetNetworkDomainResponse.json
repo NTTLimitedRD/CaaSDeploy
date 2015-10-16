@@ -1,0 +1,10 @@
+﻿{
+  "name": "Unit Test Network Domain",
+  "description": "Unit Test Network Domain",
+  "type": "ESSENTIALS",
+  "snatIpv4Address": "168.128.2.208",
+  "createTime": "2015-10-15T22:08:49.000Z",
+  "state": "NORMAL",
+  "id": "d5791a6d-2b69-47e2-be06-f26a2ec4bff8",
+  "datacenterId": "NA9"
+}

@@ -52,7 +52,7 @@ namespace CaasDeploy.Library.Tasks
         public async Task Execute(TaskContext context)
         {
             TokenHelper.SubstituteTokensInJObject(_resource.resourceDefinition, context.Parameters, context.ResourcesProperties);
-            var deployer = new ResourceDeployer(_resource.resourceId, _resource.resourceType, _accountDetails, _logProvider);
+            var deployer = new ResourceDeployer(_logProvider, _accountDetails, _resource.resourceId, _resource.resourceType);
             var resourceLog = await deployer.DeployAndWait(_resource.resourceDefinition.ToString());
 
             context.Log.resources.Add(resourceLog);

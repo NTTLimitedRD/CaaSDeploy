@@ -1,0 +1,10 @@
+﻿{
+  "parameters": {
+    "ServerName": {
+      "value": "Unit Test Server"
+    },
+    "VlanName": {
+      "value": "Unit Test VLAN"
+    }
+  }
+}

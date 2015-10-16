@@ -1,0 +1,54 @@
+﻿{
+  "name": "Unit Test Server",
+  "description": "Unit Test Server",
+  "operatingSystem": {
+    "id": "CENTOS664",
+    "displayName": "CENTOS6/64",
+    "family": "UNIX"
+  },
+  "cpuCount": 2,
+  "memoryGb": 4,
+  "disk": [
+    {
+      "id": "593da0ed-9763-4196-a308-efc23d6d03ea",
+      "scsiId": 0,
+      "sizeGb": 10,
+      "speed": "STANDARD",
+      "state": "NORMAL"
+    }
+  ],
+  "networkInfo": {
+    "primaryNic": {
+      "id": "235a7fef-3f78-42e6-afb8-e4005bc0506b",
+      "privateIpv4": "10.0.0.8",
+      "ipv6": "2607:f480:111:1398:18bb:c547:dc8e:f358",
+      "vlanId": "997e2084-00b1-4d1d-96ce-099946679c6f",
+      "vlanName": "Unit Test VLAN",
+      "state": "NORMAL"
+    },
+    "additionalNic": [ ],
+    "networkDomainId": "d5791a6d-2b69-47e2-be06-f26a2ec4bff8"
+  },
+  "softwareLabel": [ ],
+  "sourceImageId": "dc4f5eac-841c-4c51-8185-f15bfaaebf39",
+  "createTime": "2015-10-15T22:34:15.000Z",
+  "deployed": true,
+  "started": false,
+  "state": "NORMAL",
+  "machineStatus": [
+    {
+      "name": "vmwareToolsVersionStatus",
+      "value": "NEED_UPGRADE"
+    },
+    {
+      "name": "vmwareToolsRunningStatus",
+      "value": "NOT_RUNNING"
+    },
+    {
+      "name": "vmwareToolsApiVersion",
+      "value": "9354"
+    }
+  ],
+  "id": "b42b40e1-351a-4df9-b726-2ccff01f2767",
+  "datacenterId": "NA9"
+}

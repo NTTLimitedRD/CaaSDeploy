@@ -1,0 +1,14 @@
+﻿{
+  "operation": "DEPLOY_VLAN",
+  "responseCode": "IN_PROGRESS",
+  "message": "Request to deploy VLAN 'Unit Test VLAN' has been accepted and is being processed.",
+  "info": [
+    {
+      "name": "vlanId",
+      "value": "997e2084-00b1-4d1d-96ce-099946679c6f"
+    }
+  ],
+  "warning": [ ],
+  "error": [ ],
+  "requestId": "na/2015-10-15T18:15:02.192-04:00/ef9a64ad-aa17-45b6-88cf-f54a8d7ace82"
+}
