@@ -97,6 +97,7 @@ namespace CaasDeploy.Library
                         {
                             _logWriter.LogMessage($"Resource '{_resourceId}' already exists and cannot be updated. Using existing resource even if its definition doesn't match the template.");
                             response.details = existingResourceDetails;
+                            response.caasId = response.details["id"].Value<string>();
                             response.deploymentStatus = DeploymentStatus.UsedExisting;
                             return response;
                         }
@@ -105,6 +106,7 @@ namespace CaasDeploy.Library
                             var existingId = existingResourceDetails["id"].Value<string>();
                             await UpdateExistingResource(existingId, resourceDefinition);
                             response.details = await Get(existingId);
+                            response.caasId = response.details["id"].Value<string>();
                             response.deploymentStatus = DeploymentStatus.Updated;
                             return response;
                         }
@@ -113,6 +115,7 @@ namespace CaasDeploy.Library
 
                 var id = await Deploy(jsonPayload);
                 response.details = await WaitForDeploy(id);
+                response.caasId = response.details["id"].Value<string>();
                 response.deploymentStatus = DeploymentStatus.Deployed;
                 return response;
             }
@@ -151,11 +154,11 @@ namespace CaasDeploy.Library
             }
         }
 
-        public async Task<JObject> Get(string id)
+        public async Task<JObject> Get(string caasId)
         {
             using (var client = HttpClientFactory.GetClient(_accountDetails))
             {
-                var url = String.Format(GetApiUrl(_resourceApi.GetUrl), id);
+                var url = String.Format(GetApiUrl(_resourceApi.GetUrl), caasId);
                 var response = await client.GetAsync(url);
                 var responseBody = await response.Content.ReadAsStringAsync();
                 await ThrowForHttpFailure(response);
@@ -165,15 +168,24 @@ namespace CaasDeploy.Library
             }
         }
 
-        private async Task<bool> Delete(string id) // Returns true if waiting is required
+        public async Task DeleteAndWait(string caasId)
         {
-            _logWriter.LogMessage($"Deleting {_resourceType}: '{_resourceId}' (ID: {id}) ");
+            bool wait = await Delete(caasId);
+            if (wait)
+            {
+                await WaitForDelete(caasId);
+            }
+        }
+
+        private async Task<bool> Delete(string caasId) // Returns true if waiting is required
+        {
+            _logWriter.LogMessage($"Deleting {_resourceType}: '{_resourceId}' (ID: {caasId}) ");
             using (var client = HttpClientFactory.GetClient(_accountDetails))
             {
                 try
                 {
                     var url = GetApiUrl(_resourceApi.DeleteUrl);
-                    string jsonPayload = String.Format("{{ \"id\": \"{0}\" }}", id);
+                    string jsonPayload = String.Format("{{ \"id\": \"{0}\" }}", caasId);
                     var response = await client.PostAsync(url, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
                     await ThrowForHttpFailure(response);
                     return true;
@@ -200,21 +212,12 @@ namespace CaasDeploy.Library
             }
         }
 
-        public async Task DeleteAndWait(string id)
-        {
-            bool wait = await Delete(id);
-            if (wait)
-            {
-                await WaitForDelete(id);
-            }
-        }
-
         private string GetApiUrl(string url)
         {
             return _accountDetails.BaseUrl + _mcp2UrlStem + "/" + _accountDetails.OrgId + url;
         }
 
-        public async Task<JObject> WaitForDeploy(string id)
+        private async Task<JObject> WaitForDeploy(string caasId)
         {
             DateTime startTime = DateTime.Now;
             while(true)
@@ -222,10 +225,10 @@ namespace CaasDeploy.Library
                 if ((DateTime.Now - startTime).TotalMinutes >= _pollingTimeOutMinutes)
                 {
                     throw new TimeoutException(String.Format(
-                        "Timed out waiting to create {0} with id {1}", _resourceType, id));
+                        "Timed out waiting to create {0} with id {1}", _resourceType, caasId));
                 }
 
-                var props = await Get(id);
+                var props = await Get(caasId);
                 if (props["state"].Value<string>() == "NORMAL")
                 {
                     _logWriter.CompleteProgress();
@@ -237,7 +240,7 @@ namespace CaasDeploy.Library
 
         }
 
-        public async Task WaitForDelete(string id)
+        private async Task WaitForDelete(string caasId)
         {
             DateTime startTime = DateTime.Now;
             while (true)
@@ -245,12 +248,12 @@ namespace CaasDeploy.Library
                 if ((DateTime.Now - startTime).TotalMinutes >= _pollingTimeOutMinutes)
                 {
                     throw new TimeoutException(String.Format(
-                        "Timed out waiting to delete {0} with id {1}", _resourceType, id));
+                        "Timed out waiting to delete {0} with id {1}", _resourceType, caasId));
                 }
 
                 try
                 {
-                    var props = await Get(id);
+                    var props = await Get(caasId);
                 }
                 catch (CaasException ex)
                 {
@@ -274,7 +277,7 @@ namespace CaasDeploy.Library
         /// </summary>
         /// <param name="resourceDefinition">The JSON resource definition from the template</param>
         /// <returns>The list of parameter values to be used for the List API call</returns>
-        public string[] GetResourceIdentifiers(JObject resourceDefinition)
+        private string[] GetResourceIdentifiers(JObject resourceDefinition)
         {
             switch (_resourceType)
             {
@@ -289,7 +292,7 @@ namespace CaasDeploy.Library
             }
         }
 
-        public async Task<IEnumerable<JObject>> GetResourceByIdentifiers(string[] ids)
+        private async Task<IEnumerable<JObject>> GetResourceByIdentifiers(string[] ids)
         {
             if (_resourceApi.ListUrl == null)
             {
