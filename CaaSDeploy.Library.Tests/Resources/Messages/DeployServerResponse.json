@@ -1,0 +1,14 @@
+﻿{
+  "operation": "DEPLOY_SERVER",
+  "responseCode": "IN_PROGRESS",
+  "message": "Request to deploy Server 'Unit Test Server' has been accepted and is being processed.",
+  "info": [
+    {
+      "name": "serverId",
+      "value": "b42b40e1-351a-4df9-b726-2ccff01f2767"
+    }
+  ],
+  "warning": [ ],
+  "error": [ ],
+  "requestId": "na/2015-10-15T18:34:15.299-04:00/90e2a592-e831-4e51-9167-ac9ad466ddc7"
+}

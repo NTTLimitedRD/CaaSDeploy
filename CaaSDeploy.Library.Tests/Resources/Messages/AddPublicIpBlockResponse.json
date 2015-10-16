@@ -1,0 +1,14 @@
+﻿{
+  "operation": "ADD_PUBLIC_IP_BLOCK",
+  "responseCode": "OK",
+  "message": "Public IPv4 Address Block has been added successfully to Network Domain d5791a6d-2b69-47e2-be06-f26a2ec4bff8.",
+  "info": [
+    {
+      "name": "ipBlockId",
+      "value": "996b066e-bdce-11e4-8c14-b8ca3a5d9ef8"
+    }
+  ],
+  "warning": [ ],
+  "error": [ ],
+  "requestId": "na/2015-10-15T20:42:14.098-04:00/a819ee69-d8f4-4e31-9d7c-2a57bc779a76"
+}

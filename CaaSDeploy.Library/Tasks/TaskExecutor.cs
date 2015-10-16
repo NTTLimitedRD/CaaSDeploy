@@ -16,8 +16,6 @@ namespace CaasDeploy.Library.Tasks
         /// </summary>
         /// <param name="tasks">The tasks to execute.</param>
         /// <param name="context">The task execution context.</param>
-        /// <exception cref="System.ArgumentNullException">
-        /// </exception>
         public TaskExecutor(IList<ITask> tasks, TaskContext context)
         {
             if (tasks == null)
@@ -64,7 +62,7 @@ namespace CaasDeploy.Library.Tasks
                 catch (Exception)
                 {
                     Context.Log.status = DeploymentLogStatus.Failed;
-                    return Context.Log;
+                    throw;
                 }
             }
 

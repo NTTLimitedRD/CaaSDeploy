@@ -106,6 +106,9 @@
     <Compile Include="Tasks\RunOrchestrationTask.cs" />
     <Compile Include="Tasks\TaskContext.cs" />
     <Compile Include="Tasks\TaskExecutor.cs" />
+    <Compile Include="Utilities\HttpClientAdapter.cs" />
+    <Compile Include="Utilities\HttpClientFactory.cs" />
+    <Compile Include="Utilities\IHttpClient.cs" />
     <Compile Include="Utilities\JsonEnumConverter.cs" />
     <Compile Include="Utilities\ResourceDependencies.cs" />
     <Compile Include="TaskBuilder.cs" />

@@ -1,0 +1,14 @@
+﻿{
+  "operation": "CREATE_NAT_RULE",
+  "responseCode": "OK",
+  "message": "NAT Rule with Id a6b2e743-e330-4deb-a76e-0d9cb0b1d1bb has been created.",
+  "info": [
+    {
+      "name": "natRuleId",
+      "value": "a6b2e743-e330-4deb-a76e-0d9cb0b1d1bb"
+    }
+  ],
+  "warning": [ ],
+  "error": [ ],
+  "requestId": "na/2015-10-15T20:46:58.485-04:00/9aaadfe7-6598-4b64-a252-0ed3a9e41203"
+}

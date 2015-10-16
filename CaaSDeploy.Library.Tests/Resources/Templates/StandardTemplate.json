@@ -1,0 +1,83 @@
+﻿{
+  "metadata": {
+    "schemaVersion": "0.1",
+    "templateName": "Test Template for Unit Test",
+    "templateDescription": "Deploys a new Server in a new VLAN in an existing Newtwork Domain, with a public IP address and NAT rule."
+  },
+  "parameters": {
+    "ServerName": {
+      "description": "The name to use for the Server",
+      "type": "string"
+    },
+    "VlanName": {
+      "description": "The name to use for the VLAN",
+      "type": "string"
+    }
+  },
+  "existingResources": [
+    {
+      "resourceType": "NetworkDomain",
+      "resourceId": "UnitTestNetworkDomain",
+      "caasId": "d5791a6d-2b69-47e2-be06-f26a2ec4bff8"
+    }
+  ],
+  "resources": [
+    {
+      "resourceType": "Vlan",
+      "resourceId": "UnitTestVlan",
+      "resourceDefinition": {
+        "networkDomainId": "$resources['UnitTestNetworkDomain'].id",
+        "name": "$parameters['VlanName']",
+        "description": "$parameters['VlanName']",
+        "privateIpv4BaseAddress": "10.0.0.0"
+      },
+      "dependsOn": [
+        "UnitTestNetworkDomain"
+      ]
+    },
+    {
+      "resourceType": "Server",
+      "resourceId": "UnitTestServer",
+      "resourceDefinition": {
+        "name": "$parameters['ServerName']",
+        "description": "$parameters['ServerName']",
+        "imageId": "8bc629a9-8d71-4b1b-8b26-acdc077edab1",
+        "start": true,
+        "administratorPassword": "Password@1",
+        "networkInfo": {
+          "networkDomainId": "$resources['UnitTestNetworkDomain'].id",
+          "primaryNic": { "vlanId": "$resources['UnitTestVlan'].id" },
+          "additionalNic": [ ]
+        },
+        "disk": [
+          {
+            "scsiId": "0",
+            "speed": "STANDARD"
+          }
+        ]
+      },
+      "dependsOn": [
+        "UnitTestVlan"
+      ]
+    },
+    {
+      "resourceType": "PublicIpBlock",
+      "resourceId": "PublicIpBlock",
+      "dependsOn": [ "UnitTestNetworkDomain", "UnitTestServer" ],
+      "resourceDefinition": {
+        "networkDomainId": "$resources['UnitTestNetworkDomain'].id"
+      }
+    },
+    {
+      "resourceType": "NatRule",
+      "resourceId": "nat",
+      "dependsOn":  [ "UnitTestNetworkDomain", "PublicIpBlock", "UnitTestServer", "UnitTestVlan"],
+      "resourceDefinition": 
+      {
+          "networkDomainId": "$resources['UnitTestNetworkDomain'].id",
+          "internalIp" : "$resources['UnitTestServer'].networkInfo.primaryNic.privateIpv4",
+          "externalIp" :"$resources['PublicIpBlock'].baseIp"
+      }
+    }
+  ]
+}

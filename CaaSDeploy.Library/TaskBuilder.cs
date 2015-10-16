@@ -50,7 +50,7 @@ namespace CaasDeploy.Library
         {
             var template = TemplateParser.ParseTemplate(templateFilePath);
             var parameters = TemplateParser.ParseParameters(parametersFilePath);
-            var sortedResources = ResourceDependencies.DependencySort(template.resources).Reverse();
+            var sortedResources = ResourceDependencies.DependencySort(template.resources, template.existingResources).Reverse();
 
             // Create a sequential list of tasks we need to execute.
             var tasks = new List<ITask>();

@@ -39,7 +39,7 @@ namespace CaasDeploy.Library.Tests
 				}
 			};
 
-			IReadOnlyList<Resource> sortedResources = resources.DependencySort();
+			IReadOnlyList<Resource> sortedResources = ResourceDependencies.DependencySort(resources, new List<ExistingResource>());
 			Assert.IsNotNull(sortedResources);
 			Assert.AreEqual(1, sortedResources.Count);
 			Assert.AreSame(resources[0], sortedResources[0]);
@@ -67,7 +67,7 @@ namespace CaasDeploy.Library.Tests
 
 			// AF: Actually, this is a pretty lazy exception type to throw.
 			ExceptionAssert.Throws<InvalidOperationException>(
-				() => resources.DependencySort()
+				() => ResourceDependencies.DependencySort(resources, new List<ExistingResource>())
 			);
 
             var x = new Resource
