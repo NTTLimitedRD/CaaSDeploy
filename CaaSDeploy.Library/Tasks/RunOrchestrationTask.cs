@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using CaasDeploy.Library.Contracts;
@@ -14,13 +15,15 @@ namespace CaasDeploy.Library.Tasks
     {
         private readonly ILogProvider _logProvider;
         private readonly JObject _orchestration;
+        private readonly IReadOnlyList<Resource> _resources;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RunOrchestrationTask"/> class.
         /// </summary>
         /// <param name="logProvider">The log provider.</param>
         /// <param name="orchestration">The orchestration.</param>
-        public RunOrchestrationTask(ILogProvider logProvider, JObject orchestration)
+        /// <param name="resources">The resources.</param>
+        public RunOrchestrationTask(ILogProvider logProvider, JObject orchestration, IReadOnlyList<Resource> resources)
         {
             if (logProvider == null)
             {
@@ -32,8 +35,14 @@ namespace CaasDeploy.Library.Tasks
                 throw new ArgumentNullException(nameof(orchestration));
             }
 
+            if (resources == null)
+            {
+                throw new ArgumentNullException(nameof(resources));
+            }
+
             _logProvider = logProvider;
             _orchestration = orchestration;
+            _resources = resources;
         }
 
         /// <summary>
@@ -54,7 +63,7 @@ namespace CaasDeploy.Library.Tasks
             var provider = (IOrchestrationProvider)Activator.CreateInstance(providerType);
             _logProvider.LogMessage($"Running Orchestration Provider '{providerTypeName}'.");
 
-            await provider.RunOrchestration(_orchestration, context.Parameters, context.Resources, context.ResourcesProperties, _logProvider);
+            await provider.RunOrchestration(_orchestration, context.Parameters, _resources, context.ResourcesProperties, _logProvider);
         }
     }
 }

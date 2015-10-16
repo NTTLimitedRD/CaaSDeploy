@@ -72,12 +72,7 @@ namespace CaasDeploy.Library.Utilities
                     }
                 }
 
-                Resource[] sortedResources =
-                    resourceDependencies
-                        .TopologicalSort()
-                        .ToArray();
-
-                return sortedResources;
+                return resourceDependencies.TopologicalSort().ToList();
             }
             catch (NonAcyclicGraphException ex)
             {
