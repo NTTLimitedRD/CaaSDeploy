@@ -94,8 +94,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Config\ComputeConfigurationSectionTests.cs" />
-    <Compile Include="DependencyTests.cs" />
-    <Compile Include="ExceptionAssert.cs" />
     <Compile Include="Helpers\FakeHttpClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TaskBuilderAndExecutorTests.cs" />
@@ -109,17 +107,33 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="Resources\Messages\AddPublicIpBlockResponse.json" />
-    <None Include="Resources\Messages\CreateNatRuleResponse.json" />
-    <None Include="Resources\Messages\DeployNetworkDomainResponse.json" />
-    <None Include="Resources\Messages\DeployServerResponse.json" />
-    <None Include="Resources\Messages\DeployVlanResponse.json" />
-    <None Include="Resources\Messages\GetNatRuleResponse.json" />
-    <None Include="Resources\Messages\GetNetworkDomainResponse.json" />
-    <None Include="Resources\Messages\GetPublicIpBlockResponse.json" />
-    <None Include="Resources\Messages\GetServerResponse.json" />
-    <None Include="Resources\Messages\GetVlanResponse.json" />
-    <None Include="Resources\Messages\NotFoundResponse.json" />
+    <None Include="Resources\Responses\PublicIpBlock_Add.json" />
+    <None Include="Resources\Responses\NatRule_Create.json" />
+    <None Include="Resources\Responses\NatRule_Delete.json" />
+    <None Include="Resources\Responses\PublicIpBlock_Delete.json" />
+    <None Include="Resources\Responses\Server_Delete.json" />
+    <None Include="Resources\Responses\Vlan_Delete.json" />
+    <None Include="Resources\Responses\Server_Deploy.json" />
+    <None Include="Resources\Responses\Vlan_Delpoy.json" />
+    <None Include="Resources\Responses\NatRule_Get.json" />
+    <None Include="Resources\Responses\NetworkDomain_Get.json" />
+    <None Include="Resources\Responses\PublicIpBlock_Get.json" />
+    <None Include="Resources\Responses\Server_Get.json" />
+    <None Include="Resources\Responses\Vlan_Get.json" />
+    <None Include="Resources\Responses\GenericNotFound.json" />
+    <None Include="Resources\Responses\NatRule_Get_NotFound.json" />
+    <None Include="Resources\Responses\PublicIpBlock_Get_NotFound.json" />
+    <None Include="Resources\Responses\Server_Get_NotFound.json" />
+    <None Include="Resources\Responses\Vlan_Get_NotFound.json" />
+    <None Include="Resources\Templates\CircularDependency.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Templates\MissingDependency.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Templates\StandardTemplateLog.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Templates\StandardTemplate.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

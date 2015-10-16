@@ -1,0 +1,9 @@
+﻿{
+  "operation": "GET_VLAN",
+  "responseCode": "RESOURCE_NOT_FOUND",
+  "message": "Vlan 997e2084-00b1-4d1d-96ce-099946679c6f not found.",
+  "info": [ ],
+  "warning": [ ],
+  "error": [ ],
+  "requestId": "na/2015-10-15T21:38:24.935-04:00/73ba7bda-f810-4892-a052-0dbac72fd813"
+}

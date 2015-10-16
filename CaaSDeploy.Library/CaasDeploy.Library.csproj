@@ -86,6 +86,7 @@
     <Compile Include="Contracts\IComputeConfiguration.cs" />
     <Compile Include="Contracts\ILogProvider.cs" />
     <Compile Include="Contracts\IOrchestrationProvider.cs" />
+    <Compile Include="TemplateParserException.cs" />
     <Compile Include="Models\CaasAccountDetails.cs" />
     <Compile Include="CaasApiUrls.cs" />
     <Compile Include="CaasAuthentication.cs" />

@@ -1,0 +1,9 @@
+﻿{
+  "operation": "DELETE_NAT_RULE",
+  "responseCode": "OK",
+  "message": "NAT Rule with Id a6b2e743-e330-4deb-a76e-0d9cb0b1d1bb has been deleted.",
+  "info": [ ],
+  "warning": [ ],
+  "error": [ ],
+  "requestId": "na/2015-10-15T21:02:03.946-04:00/ce9dae30-26fd-43d1-9466-b191e0808687"
+}
