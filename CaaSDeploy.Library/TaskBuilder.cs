@@ -107,7 +107,7 @@ namespace CaasDeploy.Library
             reversedResources.Reverse();
 
             var tasks = reversedResources
-                .Where(resource => resource.details != null)
+                .Where(resource => resource.caasId != null)
                 .Select(resource => (ITask)new DeleteResourceTask(_accountDetails, _logProvider, resource))
                 .ToList();
 
