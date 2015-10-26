@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
-    <id>CaasDeploy.Library</id>
-    <version>$version$</version>
-    <title>CaasDeploy Library</title>
+    <id>DD.CBU.CaasDeploy.Library</id>
+    <version>0.2.0-develop</version>
+    <title>Dimension Data CaaS Template Deploy Library</title>
     <authors>Dimension Data</authors>
     <owners>tom.hollander@dimensiondata.com</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Library for deploying templates to CaaS</description>
-    <iconUrl>http://aperturewebcontent.blob.core.windows.net/web-images/ApertureLogoTiny.png</iconUrl>
     <summary>Library for deploying templates to CaaS</summary>
+    <projectUrl>https://github.com/DimensionDataCBUSydney/CaaSDeploy</projectUrl>
+    <iconUrl>http://aperturewebcontent.blob.core.windows.net/web-images/ApertureLogoTiny.png</iconUrl>
     <copyright>2015 (c) Dimension Data</copyright>
     <language>en-AU</language>
     <tags>CaaS</tags>
@@ -17,12 +18,21 @@
       <frameworkAssembly assemblyName="System" targetFramework="net451" />
     </frameworkAssemblies>
     <dependencies>
-      <dependency id="JetBrains.Annotations" version="9.2.0" />
-      <dependency id="Microsoft.Bcl" version="1.1.10" />
-      <dependency id="Microsoft.Bcl.Build" version="1.0.14" />
-      <dependency id="Microsoft.Net.Http" version="2.2.29" />
-      <dependency id="Newtonsoft.Json" version="7.0.1" />
-      <dependency id="QuickGraph" version="3.6.61119.7" />
+      <group targetFramework=".NETFramework4.5">
+        <dependency id="JetBrains.Annotations" version="9.2.0" />
+        <dependency id="Microsoft.Bcl" version="1.1.10" />
+        <dependency id="Microsoft.Bcl.Build" version="1.0.14" />
+        <dependency id="Microsoft.Net.Http" version="2.2.29" />
+        <dependency id="Newtonsoft.Json" version="7.0.1" />
+        <dependency id="QuickGraph" version="3.6.61119.7" />
+      </group>
     </dependencies>
   </metadata>
+  <files>
+    <file src="bin\Release\DD.CBU.CaasDeploy.Library.dll" target="lib\net45\DD.CBU.CaasDeploy.Library.dll" />
+    <file src="bin\Release\DD.CBU.CaasDeploy.Library.xml" target="lib\net45\DD.CBU.CaasDeploy.Library.xml" />
+    <file src="bin\Release\DD.CBU.CaasDeploy.PostDeployScriptRunner.dll" target="lib\net45\DD.CBU.CaasDeploy.PostDeployScriptRunner.dll" />
+    <file src="bin\Release\DD.CBU.CaasDeploy.PostDeployScriptRunner.xml" target="lib\net45\DD.CBU.CaasDeploy.PostDeployScriptRunner.xml" />
+    <file src="bin\Release\PsExec.exe" target="lib\net45\PsExec.exe" />
+  </files>
 </package>
