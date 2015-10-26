@@ -10,7 +10,7 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
     /// <summary>
     /// An implementation of <see cref="ITask"/> which deploys a resource.
     /// </summary>
-    internal sealed class DeployResourceTask : ITask
+    public sealed class DeployResourceTask : ITask
     {
         /// <summary>
         /// The log provider
@@ -46,12 +46,13 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         /// <summary>
         /// Executes the task.
         /// </summary>
+        /// <param name="accountDetails">The account details.</param>
         /// <param name="context">The task execution context.</param>
         /// <returns>The async <see cref="Task"/>.</returns>
-        public async Task Execute(TaskContext context)
+        public async Task Execute(CaasAccountDetails accountDetails, TaskContext context)
         {
             TokenHelper.SubstituteTokensInJObject(_resource.ResourceDefinition, context.Parameters, context.ResourcesProperties);
-            var deployer = new ResourceDeployer(_logProvider, context.AccountDetails, _resource.ResourceId, _resource.ResourceType);
+            var deployer = new ResourceDeployer(_logProvider, accountDetails, _resource.ResourceId, _resource.ResourceType);
             var resourceLog = await deployer.DeployAndWait(_resource.ResourceDefinition.ToString());
 
             context.Log.Resources.Add(resourceLog);

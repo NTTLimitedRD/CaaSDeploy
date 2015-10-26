@@ -10,7 +10,7 @@ namespace DD.CBU.CaasDeploy.PostDeployScriptRunner
     /// <summary>
     /// Runs post-deploy scripts on a remote Windows server using PsExec.
     /// </summary>
-    public sealed class PsExecPostDeployScriptRunner : IPostDeployScriptRunner
+    internal sealed class PsExecPostDeployScriptRunner : IPostDeployScriptRunner
     {
         /// <summary>
         /// The server IP

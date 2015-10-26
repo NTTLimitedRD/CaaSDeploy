@@ -14,7 +14,7 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
     /// <summary>
     /// An implementation of <see cref="ITask"/> which executes a post deployment script.
     /// </summary>
-    internal sealed class ExecuteScriptTask : ITask
+    public sealed class ExecuteScriptTask : ITask
     {
         /// <summary>
         /// The log provider
@@ -50,9 +50,10 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         /// <summary>
         /// Executes the task.
         /// </summary>
+        /// <param name="accountDetails">The account details.</param>
         /// <param name="context">The task execution context.</param>
         /// <returns>The async <see cref="Task"/>.</returns>
-        public async Task Execute(TaskContext context)
+        public async Task Execute(CaasAccountDetails accountDetails, TaskContext context)
         {
             var details = context.ResourcesProperties[_resource.ResourceId];
 

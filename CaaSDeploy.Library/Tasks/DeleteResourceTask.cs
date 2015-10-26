@@ -10,7 +10,7 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
     /// <summary>
     /// An implementation of <see cref="ITask"/> which deletes a resource.
     /// </summary>
-    internal sealed class DeleteResourceTask : ITask
+    public sealed class DeleteResourceTask : ITask
     {
         /// <summary>
         /// The log provider
@@ -46,13 +46,14 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         /// <summary>
         /// Executes the task.
         /// </summary>
+        /// <param name="accountDetails">The account details.</param>
         /// <param name="context">The task execution context.</param>
         /// <returns>The async <see cref="Task"/>.</returns>
-        public async Task Execute(TaskContext context)
+        public async Task Execute(CaasAccountDetails accountDetails, TaskContext context)
         {
             if (_resourceLog.CaasId != null)
             {
-                var deployer = new ResourceDeployer(_logProvider, context.AccountDetails, _resourceLog.ResourceId, _resourceLog.ResourceType);
+                var deployer = new ResourceDeployer(_logProvider, accountDetails, _resourceLog.ResourceId, _resourceLog.ResourceType);
                 await deployer.DeleteAndWait(_resourceLog.CaasId);
 
                 context.Log.Resources.Add(_resourceLog);

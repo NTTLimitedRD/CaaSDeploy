@@ -53,8 +53,8 @@ namespace DD.CBU.CaasDeploy.Library.Tests
             var templateFile = Path.Combine(_resourceFolder, "StandardTemplate.json");
             var parametersFile = Path.Combine(_resourceFolder, "StandardTemplateParams.json");
             var parser = new TemplateParser(new ConsoleLogProvider());
-            var taskExecutor = parser.ParseDeploymentTemplate(_accountDetails, templateFile, parametersFile);
-            var log = await taskExecutor.Execute();
+            var taskExecutor = parser.ParseDeploymentTemplate(templateFile, parametersFile);
+            var log = await taskExecutor.Execute(_accountDetails);
 
             Assert.AreEqual(DeploymentLogStatus.Success, log.Status);
         }
@@ -78,8 +78,8 @@ namespace DD.CBU.CaasDeploy.Library.Tests
 
             var logFile = Path.Combine(_resourceFolder, "StandardTemplateLog.json");
             var parser = new TemplateParser(new ConsoleLogProvider());
-            var taskExecutor = parser.ParseDeploymentLog(_accountDetails, logFile);
-            var log = await taskExecutor.Execute();
+            var taskExecutor = parser.ParseDeploymentLog(logFile);
+            var log = await taskExecutor.Execute(_accountDetails);
 
             Assert.AreEqual(DeploymentLogStatus.Success, log.Status);
         }
@@ -94,7 +94,7 @@ namespace DD.CBU.CaasDeploy.Library.Tests
             var templateFile = Path.Combine(_resourceFolder, "MissingDependency.json");
             var parametersFile = Path.Combine(_resourceFolder, "StandardTemplateParams.json");
             var parser = new TemplateParser(new ConsoleLogProvider());
-            var taskExecutor = parser.ParseDeploymentTemplate(_accountDetails, templateFile, parametersFile);
+            var taskExecutor = parser.ParseDeploymentTemplate(templateFile, parametersFile);
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace DD.CBU.CaasDeploy.Library.Tests
             var templateFile = Path.Combine(_resourceFolder, "CircularDependency.json");
             var parametersFile = Path.Combine(_resourceFolder, "StandardTemplateParams.json");
             var parser = new TemplateParser(new ConsoleLogProvider());
-            var taskExecutor = parser.ParseDeploymentTemplate(_accountDetails, templateFile, parametersFile);
+            var taskExecutor = parser.ParseDeploymentTemplate(templateFile, parametersFile);
         }
     }
 }

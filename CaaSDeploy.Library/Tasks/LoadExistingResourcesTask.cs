@@ -11,7 +11,7 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
     /// <summary>
     /// An implementation of <see cref="ITask"/> which loads existing resources.
     /// </summary>
-    internal sealed class LoadExistingResourcesTask : ITask
+    public sealed class LoadExistingResourcesTask : ITask
     {
         /// <summary>
         /// The log provider
@@ -47,9 +47,10 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         /// <summary>
         /// Executes the task.
         /// </summary>
+        /// <param name="accountDetails">The account details.</param>
         /// <param name="context">The task execution context.</param>
         /// <returns>The async <see cref="Task"/>.</returns>
-        public async Task Execute(TaskContext context)
+        public async Task Execute(CaasAccountDetails accountDetails, TaskContext context)
         {
             if (_existingResources == null)
             {
@@ -59,7 +60,7 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
             foreach (var existingResource in _existingResources)
             {
                 existingResource.CaasId = TokenHelper.SubstitutePropertyTokensInString(existingResource.CaasId, context.Parameters);
-                var deployer = new ResourceDeployer(_logProvider, context.AccountDetails, existingResource.ResourceId, existingResource.ResourceType);
+                var deployer = new ResourceDeployer(_logProvider, accountDetails, existingResource.ResourceId, existingResource.ResourceType);
                 var resource = await deployer.Get(existingResource.CaasId);
                 context.ResourcesProperties.Add(existingResource.ResourceId, resource);
             }
