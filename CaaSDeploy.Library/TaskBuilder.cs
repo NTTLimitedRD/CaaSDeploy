@@ -57,29 +57,29 @@ namespace CaasDeploy.Library
         {
             var template = TemplateParser.ParseTemplate(templateFilePath);
             var parameters = TemplateParser.ParseParameters(parametersFilePath);
-            var sortedResources = ResourceDependencies.DependencySort(template.resources, template.existingResources).Reverse().ToList();
+            var sortedResources = ResourceDependencies.DependencySort(template.Resources, template.ExistingResources).Reverse().ToList();
 
             // Create a sequential list of tasks we need to execute.
             var tasks = new List<ITask>();
 
-            if ((template.existingResources != null) && (template.existingResources.Count > 0))
+            if ((template.ExistingResources != null) && (template.ExistingResources.Count > 0))
             {
-                tasks.Add(new LoadExistingResourcesTask(_accountDetails, _logProvider, template.existingResources));
+                tasks.Add(new LoadExistingResourcesTask(_accountDetails, _logProvider, template.ExistingResources));
             }
 
             foreach (var resource in sortedResources)
             {
                 tasks.Add(new DeployResourceTask(_accountDetails, _logProvider, resource));
 
-                if ((resource.scripts != null) && (resource.resourceType == ResourceType.Server))
+                if ((resource.Scripts != null) && (resource.ResourceType == ResourceType.Server))
                 {
                     tasks.Add(new ExecuteScriptTask(_logProvider, resource));
                 }
             }
 
-            if (template.orchestration != null)
+            if (template.Orchestration != null)
             {
-                tasks.Add(new RunOrchestrationTask(_logProvider, template.orchestration, sortedResources));
+                tasks.Add(new RunOrchestrationTask(_logProvider, template.Orchestration, sortedResources));
             }
 
             // Create the task execution context.
@@ -90,9 +90,9 @@ namespace CaasDeploy.Library
                 ResourcesProperties = new Dictionary<string, JObject>(),
                 Log = new DeploymentLog()
                 {
-                    deploymentTime = DateTime.Now,
-                    templateName = template.metadata.templateName,
-                    resources = new List<ResourceLog>()
+                    DeploymentTime = DateTime.Now,
+                    TemplateName = template.Metadata.TemplateName,
+                    Resources = new List<ResourceLog>()
                 }
             };
 
@@ -108,11 +108,11 @@ namespace CaasDeploy.Library
         {
             // Create a sequential list of tasks we need to execute.
             var deploymentLog = TemplateParser.ParseDeploymentLog(deploymentLogFilePath);
-            var reversedResources = new List<ResourceLog>(deploymentLog.resources);
+            var reversedResources = new List<ResourceLog>(deploymentLog.Resources);
             reversedResources.Reverse();
 
             var tasks = reversedResources
-                .Where(resource => resource.caasId != null)
+                .Where(resource => resource.CaasId != null)
                 .Select(resource => (ITask)new DeleteResourceTask(_accountDetails, _logProvider, resource))
                 .ToList();
 
@@ -121,9 +121,9 @@ namespace CaasDeploy.Library
             {
                 Log = new DeploymentLog()
                 {
-                    deploymentTime = DateTime.Now,
-                    templateName = deploymentLog.templateName,
-                    resources = new List<ResourceLog>()
+                    DeploymentTime = DateTime.Now,
+                    TemplateName = deploymentLog.TemplateName,
+                    Resources = new List<ResourceLog>()
                 }
             };
 

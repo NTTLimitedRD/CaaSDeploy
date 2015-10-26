@@ -14,27 +14,32 @@ namespace CaasDeploy.Library.Models
         /// <summary>
         /// Gets or sets the type of the resource.
         /// </summary>
+        [JsonProperty("resourceType")]
         [JsonConverter(typeof(JsonEnumConverter))]
-        public ResourceType resourceType { get; set; }
+        public ResourceType ResourceType { get; set; }
 
         /// <summary>
         /// Gets or sets the resource identifier.
         /// </summary>
-        public string resourceId { get; set; }
+        [JsonProperty("resourceId")]
+        public string ResourceId { get; set; }
 
         /// <summary>
         /// Gets or sets the identifiers of the existing or new resources this resource depends on.
         /// </summary>
-        public List<string> dependsOn { get; set; }
+        [JsonProperty("dependsOn")]
+        public List<string> DependsOn { get; set; }
 
         /// <summary>
         /// Gets or sets the resource definition.
         /// </summary>
-        public JObject resourceDefinition { get; set; }
+        [JsonProperty("resourceDefinition")]
+        public JObject ResourceDefinition { get; set; }
 
         /// <summary>
         /// Gets or sets the scripts to run.
         /// </summary>
-        public Scripts scripts { get; set; }
+        [JsonProperty("scripts")]
+        public Scripts Scripts { get; set; }
     }
 }

@@ -62,12 +62,12 @@ namespace CaasDeploy.Library.Tasks
         /// <returns>The async <see cref="Task"/>.</returns>
         public async Task Execute(TaskContext context)
         {
-            if (_resource.caasId != null)
+            if (_resource.CaasId != null)
             {
-                var deployer = new ResourceDeployer(_logProvider, _accountDetails, _resource.resourceId, _resource.resourceType);
-                await deployer.DeleteAndWait(_resource.caasId);
+                var deployer = new ResourceDeployer(_logProvider, _accountDetails, _resource.ResourceId, _resource.ResourceType);
+                await deployer.DeleteAndWait(_resource.CaasId);
 
-                context.Log.resources.Add(_resource);
+                context.Log.Resources.Add(_resource);
             }
         }
     }

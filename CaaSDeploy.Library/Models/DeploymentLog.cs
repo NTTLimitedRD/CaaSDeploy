@@ -14,22 +14,26 @@ namespace CaasDeploy.Library.Models
         /// <summary>
         /// Gets or sets the status.
         /// </summary>
+        [JsonProperty("status")]
         [JsonConverter(typeof(JsonEnumConverter))]
-        public DeploymentLogStatus status { get; set; }
+        public DeploymentLogStatus Status { get; set; }
 
         /// <summary>
         /// Gets or sets the deployment time.
         /// </summary>
-        public DateTime deploymentTime { get; set; }
+        [JsonProperty("deploymentTime")]
+        public DateTime DeploymentTime { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the template.
         /// </summary>
-        public string templateName { get; set; }
+        [JsonProperty("templateName")]
+        public string TemplateName { get; set; }
 
         /// <summary>
         /// Gets or sets the resources.
         /// </summary>
-        public List<ResourceLog> resources { get; set; }
+        [JsonProperty("resources")]
+        public List<ResourceLog> Resources { get; set; }
     }
 }

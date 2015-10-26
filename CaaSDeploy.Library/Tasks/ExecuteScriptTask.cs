@@ -54,7 +54,7 @@ namespace CaasDeploy.Library.Tasks
         /// <returns>The async <see cref="Task"/>.</returns>
         public async Task Execute(TaskContext context)
         {
-            var details = context.ResourcesProperties[_resource.resourceId];
+            var details = context.ResourcesProperties[_resource.ResourceId];
 
             _logProvider.LogMessage($"Running deployment scripts.");
             string ipv6Address = details["networkInfo"]["primaryNic"]["ipv6"].Value<string>();
@@ -62,11 +62,11 @@ namespace CaasDeploy.Library.Tasks
             OSType osType = details["operatingSystem"]["family"].Value<string>() == "WINDOWS" ? OSType.Windows : OSType.Linux;
 
             string userName = osType == OSType.Windows ? "administrator" : "root";
-            string password = _resource.resourceDefinition["administratorPassword"].Value<string>();
+            string password = _resource.ResourceDefinition["administratorPassword"].Value<string>();
 
             var scriptRunner = PostDeployScriptRunnerFactory.Create(ipv6Unc, userName, password, osType);
 
-            string scriptPath = UnzipScriptBundle(context.ScriptPath, _resource.scripts.bundleFile);
+            string scriptPath = UnzipScriptBundle(context.ScriptPath, _resource.Scripts.BundleFile);
             var scriptDirectory = new DirectoryInfo(scriptPath);
             foreach (var scriptFile in scriptDirectory.EnumerateFiles())
             {
@@ -76,7 +76,7 @@ namespace CaasDeploy.Library.Tasks
             }
             scriptDirectory.Delete();
 
-            string deployScript = TokenHelper.SubstitutePropertyTokensInString(_resource.scripts.onDeploy, context.Parameters);
+            string deployScript = TokenHelper.SubstitutePropertyTokensInString(_resource.Scripts.OnDeploy, context.Parameters);
             _logProvider.LogMessage("\tExecuting script " + deployScript);
             await scriptRunner.ExecuteScript(deployScript);
         }

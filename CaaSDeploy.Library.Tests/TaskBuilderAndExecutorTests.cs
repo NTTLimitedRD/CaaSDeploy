@@ -56,7 +56,7 @@ namespace CaasDeploy.Library.Tests
             var taskExecutor = taskBuilder.GetDeploymentTasks(templateFile, parametersFile);
             var log = await taskExecutor.Execute();
 
-            Assert.AreEqual(DeploymentLogStatus.Success, log.status);
+            Assert.AreEqual(DeploymentLogStatus.Success, log.Status);
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace CaasDeploy.Library.Tests
             var taskExecutor = taskBuilder.GetDeletionTasks(logFile);
             var log = await taskExecutor.Execute();
 
-            Assert.AreEqual(DeploymentLogStatus.Success, log.status);
+            Assert.AreEqual(DeploymentLogStatus.Success, log.Status);
         }
 
         /// <summary>

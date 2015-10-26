@@ -131,7 +131,7 @@ namespace CaasDeploy
                     var taskExecutor = taskBuilder.GetDeploymentTasks(templateFile, parametersFile);
                     var log = await taskExecutor.Execute();
 
-                    Console.WriteLine($"Result: {log.status}");
+                    Console.WriteLine($"Result: {log.Status}");
 
                     TemplateParser.SaveDeploymentLog(log, arguments["deploymentlog"]);
                     Console.WriteLine($"Complete! Deployment log written to {arguments["deploymentlog"]}.");
@@ -143,7 +143,7 @@ namespace CaasDeploy
                     var taskExecutor = taskBuilder.GetDeletionTasks(deploymentLogFile);
                     var log = await taskExecutor.Execute();
 
-                    Console.WriteLine($"Result: {log.status}");
+                    Console.WriteLine($"Result: {log.Status}");
                 }
             }
             catch (Exception ex)

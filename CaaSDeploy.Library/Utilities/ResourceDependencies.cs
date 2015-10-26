@@ -31,8 +31,8 @@ namespace CaasDeploy.Library.Utilities
 
             try
             {
-                Dictionary<string, Resource> resourcesById = resources.ToDictionary(resource => resource.resourceId);
-                Dictionary<string, ExistingResource> existingResourcesById = existingResources.ToDictionary(resource => resource.resourceId);
+                Dictionary<string, Resource> resourcesById = resources.ToDictionary(resource => resource.ResourceId);
+                Dictionary<string, ExistingResource> existingResourcesById = existingResources.ToDictionary(resource => resource.ResourceId);
 
                 AdjacencyGraph<Resource, Edge<Resource>> resourceDependencies = new AdjacencyGraph<Resource, Edge<Resource>>();
 
@@ -42,7 +42,7 @@ namespace CaasDeploy.Library.Utilities
                     if (!resourceDependencies.AddVertex(resource))
                         continue; // Already processed.
 
-                    foreach (string dependsOnResourceId in resource.dependsOn)
+                    foreach (string dependsOnResourceId in resource.DependsOn)
                     {
                         if (existingResourcesById.ContainsKey(dependsOnResourceId))
                         {

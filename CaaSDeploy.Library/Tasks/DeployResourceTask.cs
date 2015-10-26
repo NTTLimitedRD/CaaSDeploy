@@ -62,16 +62,16 @@ namespace CaasDeploy.Library.Tasks
         /// <returns>The async <see cref="Task"/>.</returns>
         public async Task Execute(TaskContext context)
         {
-            TokenHelper.SubstituteTokensInJObject(_resource.resourceDefinition, context.Parameters, context.ResourcesProperties);
-            var deployer = new ResourceDeployer(_logProvider, _accountDetails, _resource.resourceId, _resource.resourceType);
-            var resourceLog = await deployer.DeployAndWait(_resource.resourceDefinition.ToString());
+            TokenHelper.SubstituteTokensInJObject(_resource.ResourceDefinition, context.Parameters, context.ResourcesProperties);
+            var deployer = new ResourceDeployer(_logProvider, _accountDetails, _resource.ResourceId, _resource.ResourceType);
+            var resourceLog = await deployer.DeployAndWait(_resource.ResourceDefinition.ToString());
 
-            context.Log.resources.Add(resourceLog);
-            context.ResourcesProperties.Add(resourceLog.resourceId, resourceLog.details);
+            context.Log.Resources.Add(resourceLog);
+            context.ResourcesProperties.Add(resourceLog.ResourceId, resourceLog.Details);
 
-            if (resourceLog.deploymentStatus == ResourceLogStatus.Failed)
+            if (resourceLog.DeploymentStatus == ResourceLogStatus.Failed)
             {
-                context.Log.status = DeploymentLogStatus.Failed;
+                context.Log.Status = DeploymentLogStatus.Failed;
             }
         }
     }

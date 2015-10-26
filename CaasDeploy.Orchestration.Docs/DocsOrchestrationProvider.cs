@@ -220,7 +220,7 @@ namespace CaasDeploy.Orchestration.Docs
                 string ipAddress = resourcesProperties[prop.Name]["networkInfo"]["primaryNic"]["privateIpv4"].Value<string>();
                 string osFamily = resourcesProperties[prop.Name]["operatingSystem"]["family"].Value<string>();
                 string adminUser = osFamily.ToLower() == "windows" ? "administrator" : "root";
-                string adminPassword = resources.Where(r => r.resourceId == prop.Name).Single().resourceDefinition["administratorPassword"].Value<string>();
+                string adminPassword = resources.Where(r => r.ResourceId == prop.Name).Single().ResourceDefinition["administratorPassword"].Value<string>();
 
                 var scopeName = prop.Value.Value<string>();
                 var scope = await _docsApiClient.GetScope(scopeName);
