@@ -96,7 +96,7 @@
     <Compile Include="Config\ComputeConfigurationSectionTests.cs" />
     <Compile Include="Helpers\FakeHttpClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TaskBuilderAndExecutorTests.cs" />
+    <Compile Include="TemplateParserTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CaaSDeploy.Library\CaasDeploy.Library.csproj">

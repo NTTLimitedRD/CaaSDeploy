@@ -120,14 +120,14 @@ namespace DD.CBU.CaasDeploy
                     arguments["region"]);
 
                 var logProvider = new ConsoleLogProvider();
-                var parser = new DeploymentTemplateParser(new ConsoleLogProvider());
+                var parser = new TemplateParser(new ConsoleLogProvider());
 
                 if (arguments["action"].ToLower() == "deploy")
                 {
                     var parametersFile = arguments.ContainsKey("parameters") ? arguments["parameters"] : null;
                     var templateFile = arguments["template"];
 
-                    var taskExecutor = parser.GetDeploymentTasks(accountDetails, templateFile, parametersFile);
+                    var taskExecutor = parser.ParseDeploymentTemplate(accountDetails, templateFile, parametersFile);
                     var log = await taskExecutor.Execute();
 
                     Console.WriteLine($"Result: {log.Status}");
@@ -139,7 +139,7 @@ namespace DD.CBU.CaasDeploy
                 {
                     var deploymentLogFile = arguments["deploymentlog"];
 
-                    var taskExecutor = parser.GetDeletionTasks(accountDetails, deploymentLogFile);
+                    var taskExecutor = parser.ParseDeploymentLog(accountDetails, deploymentLogFile);
                     var log = await taskExecutor.Execute();
 
                     Console.WriteLine($"Result: {log.Status}");
