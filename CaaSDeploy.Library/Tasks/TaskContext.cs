@@ -18,16 +18,21 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         /// <summary>
         /// Gets or sets the parameters.
         /// </summary>
-        public Dictionary<string, string> Parameters { get; set; }
+        public IDictionary<string, string> Parameters { get; set; }
 
         /// <summary>
         /// Gets or sets the resources properties.
         /// </summary>
-        public Dictionary<string, JObject> ResourcesProperties { get; set; }
+        public IDictionary<string, JObject> ResourcesProperties { get; set; }
 
         /// <summary>
         /// Gets or sets the deployment log.
         /// </summary>
         public DeploymentLog Log { get; set; }
+
+        /// <summary>
+        /// Gets or sets the account details.
+        /// </summary>
+        public CaasAccountDetails AccountDetails { get; set; }
     }
 }

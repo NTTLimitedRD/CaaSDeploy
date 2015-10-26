@@ -6,7 +6,7 @@ namespace DD.CBU.CaasDeploy.Library.Config
     /// <summary>
     /// Represents a single configured region.
     /// </summary>
-    public sealed class RegionConfigurationElement : ConfigurationElement, IRegion
+    public sealed class RegionConfigurationElement : ConfigurationElement
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RegionConfigurationElement"/> class.

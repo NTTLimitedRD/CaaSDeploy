@@ -20,7 +20,7 @@ namespace DD.CBU.CaasDeploy.Library.Tests.Config
         {
             var config = (ComputeConfigurationSection)ConfigurationManager.GetSection("compute");
 
-            Assert.AreEqual(3, config.GetRegions().Count());
+            Assert.AreEqual(3, config.Regions.Cast<RegionConfigurationElement>().Count());
         }
     }
 }

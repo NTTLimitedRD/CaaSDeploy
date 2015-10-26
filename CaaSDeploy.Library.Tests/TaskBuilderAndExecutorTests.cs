@@ -52,8 +52,8 @@ namespace DD.CBU.CaasDeploy.Library.Tests
 
             var templateFile = Path.Combine(_resourceFolder, "StandardTemplate.json");
             var parametersFile = Path.Combine(_resourceFolder, "StandardTemplateParams.json");
-            var taskBuilder = new TaskBuilder(new ConsoleLogProvider(), _accountDetails);
-            var taskExecutor = taskBuilder.GetDeploymentTasks(templateFile, parametersFile);
+            var parser = new DeploymentTemplateParser(new ConsoleLogProvider());
+            var taskExecutor = parser.GetDeploymentTasks(_accountDetails, templateFile, parametersFile);
             var log = await taskExecutor.Execute();
 
             Assert.AreEqual(DeploymentLogStatus.Success, log.Status);
@@ -77,8 +77,8 @@ namespace DD.CBU.CaasDeploy.Library.Tests
             client.AddResponse("/network/vlan/997e2084-00b1-4d1d-96ce-099946679c6f", "Vlan_Get_NotFound.json", HttpStatusCode.BadRequest);
 
             var logFile = Path.Combine(_resourceFolder, "StandardTemplateLog.json");
-            var taskBuilder = new TaskBuilder(new ConsoleLogProvider(), _accountDetails);
-            var taskExecutor = taskBuilder.GetDeletionTasks(logFile);
+            var parser = new DeploymentTemplateParser(new ConsoleLogProvider());
+            var taskExecutor = parser.GetDeletionTasks(_accountDetails, logFile);
             var log = await taskExecutor.Execute();
 
             Assert.AreEqual(DeploymentLogStatus.Success, log.Status);
@@ -93,8 +93,8 @@ namespace DD.CBU.CaasDeploy.Library.Tests
         {
             var templateFile = Path.Combine(_resourceFolder, "MissingDependency.json");
             var parametersFile = Path.Combine(_resourceFolder, "StandardTemplateParams.json");
-            var taskBuilder = new TaskBuilder(new ConsoleLogProvider(), _accountDetails);
-            var taskExecutor = taskBuilder.GetDeploymentTasks(templateFile, parametersFile);
+            var parser = new DeploymentTemplateParser(new ConsoleLogProvider());
+            var taskExecutor = parser.GetDeploymentTasks(_accountDetails, templateFile, parametersFile);
         }
 
         /// <summary>
@@ -106,8 +106,8 @@ namespace DD.CBU.CaasDeploy.Library.Tests
         {
             var templateFile = Path.Combine(_resourceFolder, "CircularDependency.json");
             var parametersFile = Path.Combine(_resourceFolder, "StandardTemplateParams.json");
-            var taskBuilder = new TaskBuilder(new ConsoleLogProvider(), _accountDetails);
-            var taskExecutor = taskBuilder.GetDeploymentTasks(templateFile, parametersFile);
+            var parser = new DeploymentTemplateParser(new ConsoleLogProvider());
+            var taskExecutor = parser.GetDeploymentTasks(_accountDetails, templateFile, parametersFile);
         }
     }
 }

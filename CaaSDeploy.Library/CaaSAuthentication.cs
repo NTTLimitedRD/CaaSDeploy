@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-using DD.CBU.CaasDeploy.Library.Contracts;
+using DD.CBU.CaasDeploy.Library.Config;
 using DD.CBU.CaasDeploy.Library.Models;
 
 namespace DD.CBU.CaasDeploy.Library
@@ -23,19 +24,19 @@ namespace DD.CBU.CaasDeploy.Library
         /// <summary>
         /// Authenticates a user.
         /// </summary>
-        /// <param name="config">The compute configuration.</param>
         /// <param name="userName">Name of the user.</param>
         /// <param name="password">The password.</param>
         /// <param name="regionKey">The region key.</param>
         /// <returns>The async <see cref="Task"/>.</returns>
-        public static async Task<CaasAccountDetails> Authenticate(IComputeConfiguration config, string userName, string password, string regionKey)
+        public static async Task<CaasAccountDetails> Authenticate(string userName, string password, string regionKey)
         {
+            var config = (ComputeConfigurationSection)ConfigurationManager.GetSection("compute");
             var credentials = new NetworkCredential(userName, password);
             var handler = new HttpClientHandler { Credentials = credentials };
 
             using (var client = new HttpClient(handler))
             {
-                var region = config.GetRegions().FirstOrDefault(r => r.Key == regionKey);
+                var region = config.Regions.Cast<RegionConfigurationElement>().FirstOrDefault(r => r.Key == regionKey);
                 if (region == null)
                 {
                     throw new ArgumentException($"The region with key '{regionKey}' does not exist in the app.config file.");
@@ -50,7 +51,6 @@ namespace DD.CBU.CaasDeploy.Library
                     UserName = userName,
                     Password = password,
                     OrgId = orgId,
-                    Region = regionKey,
                     BaseUrl = region.BaseUrl
                 };
             }

@@ -13,11 +13,6 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
     internal sealed class DeployResourceTask : ITask
     {
         /// <summary>
-        /// The CaaS account details
-        /// </summary>
-        private readonly CaasAccountDetails _accountDetails;
-
-        /// <summary>
         /// The log provider
         /// </summary>
         private readonly ILogProvider _logProvider;
@@ -30,16 +25,10 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         /// <summary>
         /// Initializes a new instance of the <see cref="DeployResourceTask"/> class.
         /// </summary>
-        /// <param name="accountDetails">The CaaS account details.</param>
         /// <param name="logProvider">The log provider.</param>
         /// <param name="resource">The resource to deploy.</param>
-        public DeployResourceTask(CaasAccountDetails accountDetails, ILogProvider logProvider, Resource resource)
+        public DeployResourceTask(ILogProvider logProvider, Resource resource)
         {
-            if (accountDetails == null)
-            {
-                throw new ArgumentNullException(nameof(accountDetails));
-            }
-
             if (logProvider == null)
             {
                 throw new ArgumentNullException(nameof(logProvider));
@@ -50,7 +39,6 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
                 throw new ArgumentNullException(nameof(resource));
             }
 
-            _accountDetails = accountDetails;
             _logProvider = logProvider;
             _resource = resource;
         }
@@ -63,7 +51,7 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         public async Task Execute(TaskContext context)
         {
             TokenHelper.SubstituteTokensInJObject(_resource.ResourceDefinition, context.Parameters, context.ResourcesProperties);
-            var deployer = new ResourceDeployer(_logProvider, _accountDetails, _resource.ResourceId, _resource.ResourceType);
+            var deployer = new ResourceDeployer(_logProvider, context.AccountDetails, _resource.ResourceId, _resource.ResourceType);
             var resourceLog = await deployer.DeployAndWait(_resource.ResourceDefinition.ToString());
 
             context.Log.Resources.Add(resourceLog);

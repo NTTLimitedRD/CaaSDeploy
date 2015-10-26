@@ -8,7 +8,7 @@ namespace DD.CBU.CaasDeploy.Library.Config
     /// <summary>
     /// Contains the configuration for the Compute API.
     /// </summary>
-    public sealed class ComputeConfigurationSection : ConfigurationSection, IComputeConfiguration
+    public sealed class ComputeConfigurationSection : ConfigurationSection
     {
         /// <summary>
         /// Gets or sets all configured regions.
@@ -18,15 +18,6 @@ namespace DD.CBU.CaasDeploy.Library.Config
         {
             get { return (RegionConfigurationElementCollection)this["regions"]; }
             set { this["regions"] = (RegionConfigurationElementCollection)value; }
-        }
-
-        /// <summary>
-        /// Gets all configured regions.
-        /// </summary>
-        /// <returns>The configured regions</returns>
-        public IEnumerable<IRegion> GetRegions()
-        {
-            return Regions.Cast<IRegion>();
         }
     }
 }

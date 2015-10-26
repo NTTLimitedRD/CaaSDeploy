@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using DD.CBU.CaasDeploy.Library.Contracts;
 using DD.CBU.CaasDeploy.Library.Models;
 
 namespace DD.CBU.CaasDeploy.Library.Tasks
