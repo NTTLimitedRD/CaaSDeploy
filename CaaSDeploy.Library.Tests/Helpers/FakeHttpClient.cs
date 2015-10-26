@@ -12,21 +12,45 @@ using Moq;
 
 namespace CaasDeploy.Library.Tests.Helpers
 {
+    /// <summary>
+    /// Replaces the default <see cref="IHttpClient"/> instance with a mock and handles fake requests and responses.
+    /// </summary>
     public class FakeHttpClient
     {
-        private Mock<IHttpClient> _fakeClient;
-        private IDictionary<string, Queue<HttpResponseMessage>> _responses;
+        /// <summary>
+        /// The response dictionary.
+        /// </summary>
+        private readonly IDictionary<string, Queue<HttpResponseMessage>> _responses;
 
+        /// <summary>
+        /// The fake HTTP client mock.
+        /// </summary>
+        private Mock<IHttpClient> _fakeClient;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FakeHttpClient"/> class.
+        /// </summary>
         public FakeHttpClient()
         {
             _responses = new Dictionary<string, Queue<HttpResponseMessage>>();
         }
 
+        /// <summary>
+        /// Adds a fake response.
+        /// </summary>
+        /// <param name="relativeUrl">The relative URL.</param>
+        /// <param name="fileName">Name of the response file.</param>
         public void AddResponse(string relativeUrl, string fileName)
         {
             AddResponse(relativeUrl, fileName, HttpStatusCode.OK);
         }
 
+        /// <summary>
+        /// Adds a fake response.
+        /// </summary>
+        /// <param name="relativeUrl">The relative URL.</param>
+        /// <param name="fileName">Name of the response file.</param>
+        /// <param name="statusCode">The response status code.</param>
         public void AddResponse(string relativeUrl, string fileName, HttpStatusCode statusCode)
         {
             if (_fakeClient == null)
@@ -54,6 +78,11 @@ namespace CaasDeploy.Library.Tests.Helpers
             _responses[relativeUrl].Enqueue(message);
         }
 
+        /// <summary>
+        /// Gets the fake response message for the supplied absolute URL.
+        /// </summary>
+        /// <param name="absoluteUrl">The absolute URL.</param>
+        /// <returns>The fake response message.</returns>
         private Task<HttpResponseMessage> GetMessage(string absoluteUrl)
         {
             Console.WriteLine(absoluteUrl);

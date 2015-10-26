@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -9,8 +8,8 @@ using System.Threading.Tasks;
 
 using CaasDeploy.Library.Contracts;
 using CaasDeploy.Library.Models;
-using Newtonsoft.Json.Linq;
 using CaasDeploy.Library.Utilities;
+using Newtonsoft.Json.Linq;
 
 namespace CaasDeploy.Library
 {
@@ -18,16 +17,16 @@ namespace CaasDeploy.Library
     {
         private Dictionary<ResourceType, CaasApiUrls> _resourceApis = new Dictionary<ResourceType, CaasApiUrls>
         {
-            { ResourceType.NetworkDomain, new CaasApiUrls { DeployUrl = "/network/deployNetworkDomain", GetUrl = "/network/networkDomain/{0}", ListUrl="/network/networkDomain?name={0}", DeleteUrl = "/network/deleteNetworkDomain", EditUrl = "/network/editNetworkDomain" } },
-            { ResourceType.Vlan, new CaasApiUrls { DeployUrl = "/network/deployVlan", GetUrl = "/network/vlan/{0}", ListUrl="/network/vlan?name={0}", DeleteUrl = "/network/deleteVlan", EditUrl = "/network/editVlan" } },
+            { ResourceType.NetworkDomain, new CaasApiUrls { DeployUrl = "/network/deployNetworkDomain", GetUrl = "/network/networkDomain/{0}", ListUrl = "/network/networkDomain?name={0}", DeleteUrl = "/network/deleteNetworkDomain", EditUrl = "/network/editNetworkDomain" } },
+            { ResourceType.Vlan, new CaasApiUrls { DeployUrl = "/network/deployVlan", GetUrl = "/network/vlan/{0}", ListUrl = "/network/vlan?name={0}", DeleteUrl = "/network/deleteVlan", EditUrl = "/network/editVlan" } },
             { ResourceType.Server, new CaasApiUrls { DeployUrl = "/server/deployServer", GetUrl = "/server/server/{0}", ListUrl = "/server/server?name={0}", DeleteUrl = "/server/deleteServer", EditUrl = null } },
             { ResourceType.FirewallRule, new CaasApiUrls { DeployUrl = "/network/createFirewallRule", GetUrl = "/network/firewallRule/{0}", ListUrl = "/network/firewallRule?name={0}&networkDomainId={1}", DeleteUrl = "/network/deleteFirewallRule", EditUrl = "/network/editFirewallRule" } },
-            { ResourceType.PublicIpBlock, new CaasApiUrls { DeployUrl = "/network/addPublicIpBlock", GetUrl = "/network/publicIpBlock/{0}", ListUrl = null, DeleteUrl = "/network/removePublicIpBlock", EditUrl= null } },
+            { ResourceType.PublicIpBlock, new CaasApiUrls { DeployUrl = "/network/addPublicIpBlock", GetUrl = "/network/publicIpBlock/{0}", ListUrl = null, DeleteUrl = "/network/removePublicIpBlock", EditUrl = null } },
             { ResourceType.NatRule, new CaasApiUrls { DeployUrl = "/network/createNatRule", GetUrl = "/network/natRule/{0}", ListUrl = "/network/natRule?networkDomainId={0}&internalIp={1}", DeleteUrl = "/network/deleteNatRule", EditUrl = null } },
             { ResourceType.VirtualListener, new CaasApiUrls { DeployUrl = "/networkDomainVip/createVirtualListener", GetUrl = "/networkDomainVip/virtualListener/{0}", ListUrl = "/networkDomainVip/virtualListener?name={0}", DeleteUrl = "/networkDomainVip/deleteVirtualListener", EditUrl = "/networkDomainVip/editVirtualListener" } },
             { ResourceType.Pool, new CaasApiUrls { DeployUrl = "/networkDomainVip/createPool", GetUrl = "/networkDomainVip/pool/{0}", ListUrl = "/networkDomainVip/pool?name={0}", DeleteUrl = "/networkDomainVip/deletePool", EditUrl = "/networkDomainVip/editPool" } },
             { ResourceType.Node, new CaasApiUrls { DeployUrl = "/networkDomainVip/createNode", GetUrl = "/networkDomainVip/node/{0}", ListUrl = "/networkDomainVip/node?name={0}", DeleteUrl = "/networkDomainVip/deleteNode",  EditUrl = "/networkDomainVip/editNode" } },
-            { ResourceType.PoolMember, new CaasApiUrls { DeployUrl = "/networkDomainVip/addPoolMember", GetUrl = "/networkDomainVip/poolMember/{0}", ListUrl = "/networkDomainVip/poolMember?poolId={0}&nodeId={1}", DeleteUrl = "/networkDomainVip/removePoolMember", EditUrl= "/networkDomainVip/editPoolMember"} },
+            { ResourceType.PoolMember, new CaasApiUrls { DeployUrl = "/networkDomainVip/addPoolMember", GetUrl = "/networkDomainVip/poolMember/{0}", ListUrl = "/networkDomainVip/poolMember?poolId={0}&nodeId={1}", DeleteUrl = "/networkDomainVip/removePoolMember", EditUrl = "/networkDomainVip/editPoolMember" } },
         };
 
         private Dictionary<ResourceType, string[]> _propertiesNotSupportedForEdit = new Dictionary<ResourceType, string[]>
@@ -125,7 +124,6 @@ namespace CaasDeploy.Library
                 response.error = ex.FullResponse;
                 return response;
             }
-
         }
 
         private async Task UpdateExistingResource(string existingId, JObject resourceDefinition)
@@ -142,7 +140,6 @@ namespace CaasDeploy.Library
                 var response = await client.PostAsync(url, content);
                 var responseBody = await response.Content.ReadAsStringAsync();
                 await ThrowForHttpFailure(response);
-
             }
         }
 
@@ -164,7 +161,6 @@ namespace CaasDeploy.Library
                 await ThrowForHttpFailure(response);
                 var jsonResponse = JObject.Parse(responseBody);
                 return jsonResponse;
-                
             }
         }
 
@@ -220,7 +216,7 @@ namespace CaasDeploy.Library
         private async Task<JObject> WaitForDeploy(string caasId)
         {
             DateTime startTime = DateTime.Now;
-            while(true)
+            while (true)
             {
                 if ((DateTime.Now - startTime).TotalMinutes >= _pollingTimeOutMinutes)
                 {
@@ -237,7 +233,6 @@ namespace CaasDeploy.Library
                 _logWriter.IncrementProgress();
                 await Task.Delay(TimeSpan.FromSeconds(_pollingDelaySeconds));
             }
-
         }
 
         private async Task WaitForDelete(string caasId)
@@ -265,10 +260,10 @@ namespace CaasDeploy.Library
                     }
                     throw;
                 }
+
                 _logWriter.IncrementProgress();
                 await Task.Delay(TimeSpan.FromSeconds(_pollingDelaySeconds));
             }
-
         }
 
         /// <summary>

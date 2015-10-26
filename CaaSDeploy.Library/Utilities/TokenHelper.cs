@@ -13,7 +13,7 @@ namespace CaasDeploy.Library.Utilities
         private static Regex _parameterRegex = new Regex("\\$parameters\\['([^']*)'\\]");
         private static Regex _resourcePropertyRegex = new Regex("\\$resources\\['([^']*)'\\]\\.([A-Za-z0-9\\.]+)");
 
-        public static void SubstituteTokensInJObject(JObject resourceDefinition, Dictionary<string, string> parameters, Dictionary<string, JObject> resourcesProperties)
+        public static void SubstituteTokensInJObject(JObject resourceDefinition, IDictionary<string, string> parameters, IDictionary<string, JObject> resourcesProperties)
         {
             foreach (var parameter in resourceDefinition)
             {
@@ -35,12 +35,11 @@ namespace CaasDeploy.Library.Utilities
                     {
                         SubstituteTokensInJObject((JObject)jtoken, parameters, resourcesProperties);
                     }
-
                 }
             }
         }
 
-        public static string SubstitutePropertyTokensInString(string input, Dictionary<string, string> parameters)
+        public static string SubstitutePropertyTokensInString(string input, IDictionary<string, string> parameters)
         {
             var paramsMatches = _parameterRegex.Matches(input);
             string output = input;
@@ -51,12 +50,12 @@ namespace CaasDeploy.Library.Utilities
                     string newValue = parameters[paramsMatch.Groups[1].Value];
                     output = output.Replace(paramsMatch.Groups[0].Value, newValue);
                 }
-
             }
+
             return output;
         }
 
-        public static string SubstituteResourceTokensInString(string input, Dictionary<string, JObject> resourcesProperties)
+        public static string SubstituteResourceTokensInString(string input, IDictionary<string, JObject> resourcesProperties)
         {
             string output = input;
             if (resourcesProperties != null)

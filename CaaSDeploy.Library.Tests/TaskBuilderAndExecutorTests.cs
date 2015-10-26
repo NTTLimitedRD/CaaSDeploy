@@ -9,17 +9,30 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CaasDeploy.Library.Tests
 {
+    /// <summary>
+    /// Integration tests for the <see cref="TaskBuilder" /> class.
+    /// </summary>
     [TestClass]
     public class TaskBuilderAndExecutorTests
     {
+        /// <summary>
+        /// The path to the resources folder.
+        /// </summary>
         private string _resourceFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\Resources\Templates");
 
+        /// <summary>
+        /// The account details.
+        /// </summary>
         private CaasAccountDetails _accountDetails = new CaasAccountDetails
         {
             BaseUrl = "https://api-na.dimensiondata.com",
             OrgId = "68819F2B-22F9-4D46-86B8-7926B640464C"
         };
 
+        /// <summary>
+        /// Tests the deployment process of a template.
+        /// </summary>
+        /// <returns>The async <see cref="Task"/>.</returns>
         [TestMethod]
         public async Task GetAndExecuteDeploymentTasks()
         {
@@ -46,6 +59,10 @@ namespace CaasDeploy.Library.Tests
             Assert.AreEqual(DeploymentLogStatus.Success, log.status);
         }
 
+        /// <summary>
+        /// Tests the deletion process of a template.
+        /// </summary>
+        /// <returns>The async <see cref="Task"/>.</returns>
         [TestMethod]
         public async Task GetAndExecuteDeletionTasks()
         {
@@ -67,6 +84,9 @@ namespace CaasDeploy.Library.Tests
             Assert.AreEqual(DeploymentLogStatus.Success, log.status);
         }
 
+        /// <summary>
+        /// Tests that parsing a template throws an exception if a dependency is missing.
+        /// </summary>
         [TestMethod]
         [ExpectedException(typeof(TemplateParserException))]
         public void MissingDependency()
@@ -77,6 +97,9 @@ namespace CaasDeploy.Library.Tests
             var taskExecutor = taskBuilder.GetDeploymentTasks(templateFile, parametersFile);
         }
 
+        /// <summary>
+        /// Tests that parsing a template throws an exception if circular dependencies exist.
+        /// </summary>
         [TestMethod]
         [ExpectedException(typeof(TemplateParserException))]
         public void CircularDependency()
