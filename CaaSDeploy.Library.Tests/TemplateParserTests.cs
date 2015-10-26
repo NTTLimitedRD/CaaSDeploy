@@ -10,10 +10,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace DD.CBU.CaasDeploy.Library.Tests
 {
     /// <summary>
-    /// Integration tests for the <see cref="TaskBuilder" /> class.
+    /// Integration tests for the <see cref="TemplateParser" /> class.
     /// </summary>
     [TestClass]
-    public class TaskBuilderAndExecutorTests
+    public class TemplateParserTests
     {
         /// <summary>
         /// The path to the resources folder.
@@ -34,7 +34,7 @@ namespace DD.CBU.CaasDeploy.Library.Tests
         /// </summary>
         /// <returns>The async <see cref="Task"/>.</returns>
         [TestMethod]
-        public async Task GetAndExecuteDeploymentTasks()
+        public async Task ParseAndExecuteDeploymentTasks()
         {
             var client = new FakeHttpClient();
             client.AddResponse("/network/networkDomain/d5791a6d-2b69-47e2-be06-f26a2ec4bff8", "NetworkDomain_Get.json");
@@ -52,8 +52,8 @@ namespace DD.CBU.CaasDeploy.Library.Tests
 
             var templateFile = Path.Combine(_resourceFolder, "StandardTemplate.json");
             var parametersFile = Path.Combine(_resourceFolder, "StandardTemplateParams.json");
-            var parser = new DeploymentTemplateParser(new ConsoleLogProvider());
-            var taskExecutor = parser.GetDeploymentTasks(_accountDetails, templateFile, parametersFile);
+            var parser = new TemplateParser(new ConsoleLogProvider());
+            var taskExecutor = parser.ParseDeploymentTemplate(_accountDetails, templateFile, parametersFile);
             var log = await taskExecutor.Execute();
 
             Assert.AreEqual(DeploymentLogStatus.Success, log.Status);
@@ -64,7 +64,7 @@ namespace DD.CBU.CaasDeploy.Library.Tests
         /// </summary>
         /// <returns>The async <see cref="Task"/>.</returns>
         [TestMethod]
-        public async Task GetAndExecuteDeletionTasks()
+        public async Task ParseAndExecuteDeletionTasks()
         {
             var client = new FakeHttpClient();
             client.AddResponse("/network/deleteNatRule", "NatRule_Delete.json");
@@ -77,8 +77,8 @@ namespace DD.CBU.CaasDeploy.Library.Tests
             client.AddResponse("/network/vlan/997e2084-00b1-4d1d-96ce-099946679c6f", "Vlan_Get_NotFound.json", HttpStatusCode.BadRequest);
 
             var logFile = Path.Combine(_resourceFolder, "StandardTemplateLog.json");
-            var parser = new DeploymentTemplateParser(new ConsoleLogProvider());
-            var taskExecutor = parser.GetDeletionTasks(_accountDetails, logFile);
+            var parser = new TemplateParser(new ConsoleLogProvider());
+            var taskExecutor = parser.ParseDeploymentLog(_accountDetails, logFile);
             var log = await taskExecutor.Execute();
 
             Assert.AreEqual(DeploymentLogStatus.Success, log.Status);
@@ -93,8 +93,8 @@ namespace DD.CBU.CaasDeploy.Library.Tests
         {
             var templateFile = Path.Combine(_resourceFolder, "MissingDependency.json");
             var parametersFile = Path.Combine(_resourceFolder, "StandardTemplateParams.json");
-            var parser = new DeploymentTemplateParser(new ConsoleLogProvider());
-            var taskExecutor = parser.GetDeploymentTasks(_accountDetails, templateFile, parametersFile);
+            var parser = new TemplateParser(new ConsoleLogProvider());
+            var taskExecutor = parser.ParseDeploymentTemplate(_accountDetails, templateFile, parametersFile);
         }
 
         /// <summary>
@@ -106,8 +106,8 @@ namespace DD.CBU.CaasDeploy.Library.Tests
         {
             var templateFile = Path.Combine(_resourceFolder, "CircularDependency.json");
             var parametersFile = Path.Combine(_resourceFolder, "StandardTemplateParams.json");
-            var parser = new DeploymentTemplateParser(new ConsoleLogProvider());
-            var taskExecutor = parser.GetDeploymentTasks(_accountDetails, templateFile, parametersFile);
+            var parser = new TemplateParser(new ConsoleLogProvider());
+            var taskExecutor = parser.ParseDeploymentTemplate(_accountDetails, templateFile, parametersFile);
         }
     }
 }

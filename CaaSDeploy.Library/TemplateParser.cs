@@ -15,7 +15,7 @@ namespace DD.CBU.CaasDeploy.Library
     /// <summary>
     /// Builds task lists and contexts from deployment template documents.
     /// </summary>
-    public sealed class DeploymentTemplateParser : IDeploymentTemplateParser
+    public sealed class TemplateParser : ITemplateParser
     {
         /// <summary>
         /// The log provider
@@ -23,10 +23,10 @@ namespace DD.CBU.CaasDeploy.Library
         private readonly ILogProvider _logProvider;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DeploymentTemplateParser"/> class.
+        /// Initializes a new instance of the <see cref="TemplateParser"/> class.
         /// </summary>
         /// <param name="logProvider">The log provider.</param>
-        public DeploymentTemplateParser(ILogProvider logProvider)
+        public TemplateParser(ILogProvider logProvider)
         {
             if (logProvider == null)
             {
@@ -43,7 +43,7 @@ namespace DD.CBU.CaasDeploy.Library
         /// <param name="templateFilePath">The template file path.</param>
         /// <param name="parametersFilePath">The parameters file path.</param>
         /// <returns>Instance of <see cref="TaskExecutor"/> with tasks and task execution context.</returns>
-        public TaskExecutor GetDeploymentTasks(CaasAccountDetails accountDetails, string templateFilePath, string parametersFilePath)
+        public TaskExecutor ParseDeploymentTemplate(CaasAccountDetails accountDetails, string templateFilePath, string parametersFilePath)
         {
             var template = ParseTemplate(templateFilePath);
             var parameters = ParseParameters(parametersFilePath);
@@ -96,10 +96,10 @@ namespace DD.CBU.CaasDeploy.Library
         /// <param name="accountDetails">The CaaS account details.</param>
         /// <param name="deploymentLogFilePath">The deployment log file path.</param>
         /// <returns>Instance of <see cref="TaskExecutor"/> with tasks and task execution context.</returns>
-        public TaskExecutor GetDeletionTasks(CaasAccountDetails accountDetails, string deploymentLogFilePath)
+        public TaskExecutor ParseDeploymentLog(CaasAccountDetails accountDetails, string deploymentLogFilePath)
         {
             // Create a sequential list of tasks we need to execute.
-            var deploymentLog = ParseDeploymentLog(deploymentLogFilePath);
+            var deploymentLog = ParseLog(deploymentLogFilePath);
             var reversedResources = new List<ResourceLog>(deploymentLog.Resources);
             reversedResources.Reverse();
 
@@ -167,7 +167,7 @@ namespace DD.CBU.CaasDeploy.Library
         /// </summary>
         /// <param name="fileName">Path to the file.</param>
         /// <returns>The parsed deployment log.</returns>
-        private DeploymentLog ParseDeploymentLog(string fileName)
+        private DeploymentLog ParseLog(string fileName)
         {
             using (var reader = new StreamReader(fileName))
             {
