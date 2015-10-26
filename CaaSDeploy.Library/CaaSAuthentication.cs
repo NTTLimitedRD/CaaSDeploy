@@ -4,15 +4,30 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+
 using CaasDeploy.Library.Contracts;
 using CaasDeploy.Library.Models;
 
 namespace CaasDeploy.Library
 {
+    /// <summary>
+    /// Performs authentication with CaaS.
+    /// </summary>
     public static class CaasAuthentication
     {
+        /// <summary>
+        /// The authentication base URL.
+        /// </summary>
         private const string authUrl = "/oec/0.9/myaccount";
 
+        /// <summary>
+        /// Authenticates a user.
+        /// </summary>
+        /// <param name="config">The compute configuration.</param>
+        /// <param name="userName">Name of the user.</param>
+        /// <param name="password">The password.</param>
+        /// <param name="regionKey">The region key.</param>
+        /// <returns>The async <see cref="Task"/>.</returns>
         public static async Task<CaasAccountDetails> Authenticate(IComputeConfiguration config, string userName, string password, string regionKey)
         {
             var credentials = new NetworkCredential(userName, password);

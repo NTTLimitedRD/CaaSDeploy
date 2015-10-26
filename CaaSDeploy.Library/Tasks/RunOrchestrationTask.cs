@@ -13,8 +13,19 @@ namespace CaasDeploy.Library.Tasks
     /// </summary>
     internal sealed class RunOrchestrationTask : ITask
     {
+        /// <summary>
+        /// The log provider.
+        /// </summary>
         private readonly ILogProvider _logProvider;
+
+        /// <summary>
+        /// The orchestration
+        /// </summary>
         private readonly JObject _orchestration;
+
+        /// <summary>
+        /// The resources
+        /// </summary>
         private readonly IReadOnlyList<Resource> _resources;
 
         /// <summary>

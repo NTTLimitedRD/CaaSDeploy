@@ -13,8 +13,19 @@ namespace CaasDeploy.Library.Tasks
     /// </summary>
     internal sealed class LoadExistingResourcesTask : ITask
     {
+        /// <summary>
+        /// The CaaS account details
+        /// </summary>
         private readonly CaasAccountDetails _accountDetails;
+
+        /// <summary>
+        /// The log provider
+        /// </summary>
         private readonly ILogProvider _logProvider;
+
+        /// <summary>
+        /// The existing resources
+        /// </summary>
         private readonly IList<ExistingResource> _existingResources;
 
         /// <summary>

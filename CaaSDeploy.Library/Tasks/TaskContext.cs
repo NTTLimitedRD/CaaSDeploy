@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 namespace CaasDeploy.Library.Tasks
 {
     /// <summary>
-    /// The task execution context provides template and runtime information accross tasks.
+    /// The task execution context provides template and runtime information across tasks.
     /// </summary>
     public sealed class TaskContext
     {

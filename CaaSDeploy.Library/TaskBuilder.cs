@@ -16,7 +16,14 @@ namespace CaasDeploy.Library
     /// </summary>
     public sealed class TaskBuilder
     {
+        /// <summary>
+        /// The log provider
+        /// </summary>
         private readonly ILogProvider _logProvider;
+
+        /// <summary>
+        /// The CaaS account details
+        /// </summary>
         private readonly CaasAccountDetails _accountDetails;
 
         /// <summary>

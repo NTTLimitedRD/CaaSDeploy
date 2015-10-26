@@ -13,9 +13,15 @@ using Newtonsoft.Json.Linq;
 
 namespace CaasDeploy.Library
 {
-    public class ResourceDeployer
+    /// <summary>
+    /// Helper class to deploy or delete a resource.
+    /// </summary>
+    internal class ResourceDeployer
     {
-        private Dictionary<ResourceType, CaasApiUrls> _resourceApis = new Dictionary<ResourceType, CaasApiUrls>
+        /// <summary>
+        /// The resource API URLs.
+        /// </summary>
+        private readonly Dictionary<ResourceType, CaasApiUrls> _resourceApis = new Dictionary<ResourceType, CaasApiUrls>
         {
             { ResourceType.NetworkDomain, new CaasApiUrls { DeployUrl = "/network/deployNetworkDomain", GetUrl = "/network/networkDomain/{0}", ListUrl = "/network/networkDomain?name={0}", DeleteUrl = "/network/deleteNetworkDomain", EditUrl = "/network/editNetworkDomain" } },
             { ResourceType.Vlan, new CaasApiUrls { DeployUrl = "/network/deployVlan", GetUrl = "/network/vlan/{0}", ListUrl = "/network/vlan?name={0}", DeleteUrl = "/network/deleteVlan", EditUrl = "/network/editVlan" } },
@@ -29,7 +35,10 @@ namespace CaasDeploy.Library
             { ResourceType.PoolMember, new CaasApiUrls { DeployUrl = "/networkDomainVip/addPoolMember", GetUrl = "/networkDomainVip/poolMember/{0}", ListUrl = "/networkDomainVip/poolMember?poolId={0}&nodeId={1}", DeleteUrl = "/networkDomainVip/removePoolMember", EditUrl = "/networkDomainVip/editPoolMember" } },
         };
 
-        private Dictionary<ResourceType, string[]> _propertiesNotSupportedForEdit = new Dictionary<ResourceType, string[]>
+        /// <summary>
+        /// The properties not supported for edit.
+        /// </summary>
+        private readonly Dictionary<ResourceType, string[]> _propertiesNotSupportedForEdit = new Dictionary<ResourceType, string[]>
         {
             { ResourceType.NetworkDomain, new[] { "datacenterId" } },
             { ResourceType.Vlan, new[] { "networkDomainId", "privateIpv4BaseAddress" } },
@@ -43,28 +52,70 @@ namespace CaasDeploy.Library
             { ResourceType.PoolMember, new[] { "networkDomainId" } },
         };
 
-
+        /// <summary>
+        /// The MCP2 base API URL.
+        /// </summary>
         private const string _mcp2UrlStem = "/caas/2.0";
-        private string _resourceId;
-        private ResourceType _resourceType;
-        private CaasApiUrls _resourceApi;
-        private CaasAccountDetails _accountDetails;
-        private const int _pollingDelaySeconds = 30;
-        private const int _pollingTimeOutMinutes = 20;
-        private ILogProvider _logWriter;
 
-        public ResourceDeployer(ILogProvider logWriter, CaasAccountDetails accountDetails, string resourceId, ResourceType resourceType)
+        /// <summary>
+        /// The polling delay in seconds.
+        /// </summary>
+        private const int _pollingDelaySeconds = 30;
+
+        /// <summary>
+        /// The polling time out in minutes.
+        /// </summary>
+        private const int _pollingTimeOutMinutes = 20;
+
+        /// <summary>
+        /// The log provider
+        /// </summary>
+        private readonly ILogProvider _logProvider;
+
+        /// <summary>
+        /// The account details
+        /// </summary>
+        private readonly CaasAccountDetails _accountDetails;
+
+        /// <summary>
+        /// The resource API URLs for the resource.
+        /// </summary>
+        private readonly CaasApiUrls _resourceApi;
+
+        /// <summary>
+        /// The resource identifier
+        /// </summary>
+        private readonly string _resourceId;
+
+        /// <summary>
+        /// The resource type
+        /// </summary>
+        private readonly ResourceType _resourceType;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResourceDeployer"/> class.
+        /// </summary>
+        /// <param name="logProvider">The log provider.</param>
+        /// <param name="accountDetails">The account details.</param>
+        /// <param name="resourceId">The resource identifier.</param>
+        /// <param name="resourceType">Type of the resource.</param>
+        public ResourceDeployer(ILogProvider logProvider, CaasAccountDetails accountDetails, string resourceId, ResourceType resourceType)
         {
             _resourceId = resourceId;
             _resourceType = resourceType;
             _resourceApi = _resourceApis[resourceType];
             _accountDetails = accountDetails;
-            _logWriter = logWriter;
+            _logProvider = logProvider;
         }
 
+        /// <summary>
+        /// Deploys the supplied JSON payload.
+        /// </summary>
+        /// <param name="jsonPayload">The JSON payload.</param>
+        /// <returns>The async <see cref="Task"/>.</returns>
         private async Task<string> Deploy(string jsonPayload)
         {
-            _logWriter.LogMessage($"Deploying {_resourceType}: '{_resourceId}' ");
+            _logProvider.LogMessage($"Deploying {_resourceType}: '{_resourceId}' ");
 
             using (var client = HttpClientFactory.GetClient(_accountDetails))
             {
@@ -79,6 +130,11 @@ namespace CaasDeploy.Library
             }
         }
 
+        /// <summary>
+        /// Deploys the supplied JSON payload waits.
+        /// </summary>
+        /// <param name="jsonPayload">The JSON payload.</param>
+        /// <returns>The async <see cref="Task"/>.</returns>
         public async Task<ResourceLog> DeployAndWait(string jsonPayload)
         {
             var response = new ResourceLog() { resourceId = _resourceId, resourceType = _resourceType };
@@ -94,10 +150,10 @@ namespace CaasDeploy.Library
                     {
                         if (_resourceApi.EditUrl == null)
                         {
-                            _logWriter.LogMessage($"Resource '{_resourceId}' already exists and cannot be updated. Using existing resource even if its definition doesn't match the template.");
+                            _logProvider.LogMessage($"Resource '{_resourceId}' already exists and cannot be updated. Using existing resource even if its definition doesn't match the template.");
                             response.details = existingResourceDetails;
                             response.caasId = response.details["id"].Value<string>();
-                            response.deploymentStatus = DeploymentStatus.UsedExisting;
+                            response.deploymentStatus = ResourceLogStatus.UsedExisting;
                             return response;
                         }
                         else
@@ -106,7 +162,7 @@ namespace CaasDeploy.Library
                             await UpdateExistingResource(existingId, resourceDefinition);
                             response.details = await Get(existingId);
                             response.caasId = response.details["id"].Value<string>();
-                            response.deploymentStatus = DeploymentStatus.Updated;
+                            response.deploymentStatus = ResourceLogStatus.Updated;
                             return response;
                         }
                     }
@@ -115,20 +171,26 @@ namespace CaasDeploy.Library
                 var id = await Deploy(jsonPayload);
                 response.details = await WaitForDeploy(id);
                 response.caasId = response.details["id"].Value<string>();
-                response.deploymentStatus = DeploymentStatus.Deployed;
+                response.deploymentStatus = ResourceLogStatus.Deployed;
                 return response;
             }
             catch (CaasException ex)
             {
-                response.deploymentStatus = DeploymentStatus.Failed;
+                response.deploymentStatus = ResourceLogStatus.Failed;
                 response.error = ex.FullResponse;
                 return response;
             }
         }
 
+        /// <summary>
+        /// Updates an existing resource.
+        /// </summary>
+        /// <param name="existingId">The existing resource identifier.</param>
+        /// <param name="resourceDefinition">The resource definition.</param>
+        /// <returns>The async <see cref="Task"/>.</returns>
         private async Task UpdateExistingResource(string existingId, JObject resourceDefinition)
         {
-            _logWriter.LogMessage($"Updating existing {_resourceType}: '{_resourceId}' ");
+            _logProvider.LogMessage($"Updating existing {_resourceType}: '{_resourceId}' ");
 
             using (var client = HttpClientFactory.GetClient(_accountDetails))
             {
@@ -143,6 +205,10 @@ namespace CaasDeploy.Library
             }
         }
 
+        /// <summary>
+        /// Removes the properties unsupported for edit.
+        /// </summary>
+        /// <param name="resourceDefinition">The resource definition.</param>
         private void RemovePropertiesUnsupportedForEdit(JObject resourceDefinition)
         {
             foreach (var prop in _propertiesNotSupportedForEdit[_resourceType])
@@ -151,6 +217,11 @@ namespace CaasDeploy.Library
             }
         }
 
+        /// <summary>
+        /// Gets a resource by CaaS identifier.
+        /// </summary>
+        /// <param name="caasId">The CaaS identifier.</param>
+        /// <returns>The async <see cref="Task"/>.</returns>
         public async Task<JObject> Get(string caasId)
         {
             using (var client = HttpClientFactory.GetClient(_accountDetails))
@@ -164,6 +235,11 @@ namespace CaasDeploy.Library
             }
         }
 
+        /// <summary>
+        /// Deletes a resource by CaaS identifier and waits.
+        /// </summary>
+        /// <param name="caasId">The CaaS identifier.</param>
+        /// <returns>The async <see cref="Task"/>.</returns>
         public async Task DeleteAndWait(string caasId)
         {
             bool wait = await Delete(caasId);
@@ -173,9 +249,14 @@ namespace CaasDeploy.Library
             }
         }
 
+        /// <summary>
+        /// Deletes a resource by CaaS identifier.
+        /// </summary>
+        /// <param name="caasId">The CaaS identifier.</param>
+        /// <returns>The async <see cref="Task"/>.</returns>
         private async Task<bool> Delete(string caasId) // Returns true if waiting is required
         {
-            _logWriter.LogMessage($"Deleting {_resourceType}: '{_resourceId}' (ID: {caasId}) ");
+            _logProvider.LogMessage($"Deleting {_resourceType}: '{_resourceId}' (ID: {caasId}) ");
             using (var client = HttpClientFactory.GetClient(_accountDetails))
             {
                 try
@@ -191,7 +272,7 @@ namespace CaasDeploy.Library
                     // Check detail
                     if (ex.ResponseCode == "RESOURCE_NOT_FOUND")
                     {
-                        _logWriter.LogMessage("Not found.");
+                        _logProvider.LogMessage("Not found.");
                         return false;
                     }
                     throw;
@@ -199,6 +280,11 @@ namespace CaasDeploy.Library
             }
         }
 
+        /// <summary>
+        /// Throws an exception if the supplied HTTP response message represents a failure.
+        /// </summary>
+        /// <param name="response">The response message.</param>
+        /// <returns>The async <see cref="Task"/>.</returns>
         private async Task ThrowForHttpFailure(HttpResponseMessage response)
         {
             var responseBody = await response.Content.ReadAsStringAsync();
@@ -208,11 +294,21 @@ namespace CaasDeploy.Library
             }
         }
 
-        private string GetApiUrl(string url)
+        /// <summary>
+        /// Gets the absolute API URL.
+        /// </summary>
+        /// <param name="relativeUrl">The relative URL.</param>
+        /// <returns>The absolute URL.</returns>
+        private string GetApiUrl(string relativeUrl)
         {
-            return _accountDetails.BaseUrl + _mcp2UrlStem + "/" + _accountDetails.OrgId + url;
+            return _accountDetails.BaseUrl + _mcp2UrlStem + "/" + _accountDetails.OrgId + relativeUrl;
         }
 
+        /// <summary>
+        /// Waits for deployment operation.
+        /// </summary>
+        /// <param name="caasId">The CaaS identifier.</param>
+        /// <returns>The async <see cref="Task"/>.</returns>
         private async Task<JObject> WaitForDeploy(string caasId)
         {
             DateTime startTime = DateTime.Now;
@@ -227,14 +323,19 @@ namespace CaasDeploy.Library
                 var props = await Get(caasId);
                 if (props["state"].Value<string>() == "NORMAL")
                 {
-                    _logWriter.CompleteProgress();
+                    _logProvider.CompleteProgress();
                     return props;
                 }
-                _logWriter.IncrementProgress();
+                _logProvider.IncrementProgress();
                 await Task.Delay(TimeSpan.FromSeconds(_pollingDelaySeconds));
             }
         }
 
+        /// <summary>
+        /// Waits for a delete operation.
+        /// </summary>
+        /// <param name="caasId">The CaaS identifier.</param>
+        /// <returns>The async <see cref="Task"/>.</returns>
         private async Task WaitForDelete(string caasId)
         {
             DateTime startTime = DateTime.Now;
@@ -252,23 +353,22 @@ namespace CaasDeploy.Library
                 }
                 catch (CaasException ex)
                 {
-                    // Check detail
                     if (ex.ResponseCode == "RESOURCE_NOT_FOUND")
                     {
-                        _logWriter.CompleteProgress();
+                        _logProvider.CompleteProgress();
                         return;
                     }
                     throw;
                 }
 
-                _logWriter.IncrementProgress();
+                _logProvider.IncrementProgress();
                 await Task.Delay(TimeSpan.FromSeconds(_pollingDelaySeconds));
             }
         }
 
         /// <summary>
         /// Retrieves the values from the template resource definition that can be used to uniquely identify an
-        /// alredy deployed resource, in the order specified in the ListUrl parameters. 
+        /// already deployed resource, in the order specified in the ListUrl parameters. 
         /// </summary>
         /// <param name="resourceDefinition">The JSON resource definition from the template</param>
         /// <returns>The list of parameter values to be used for the List API call</returns>
@@ -287,6 +387,11 @@ namespace CaasDeploy.Library
             }
         }
 
+        /// <summary>
+        /// Gets multiple resources by identifiers.
+        /// </summary>
+        /// <param name="ids">The ids.</param>
+        /// <returns>The resources</returns>
         private async Task<IEnumerable<JObject>> GetResourceByIdentifiers(string[] ids)
         {
             if (_resourceApi.ListUrl == null)

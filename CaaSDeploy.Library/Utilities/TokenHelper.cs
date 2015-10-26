@@ -1,18 +1,31 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+
+using Newtonsoft.Json.Linq;
 
 namespace CaasDeploy.Library.Utilities
 {
+    /// <summary>
+    /// Provides commonly used helper methods to replace tokens in JSON templates.
+    /// </summary>
     public static class TokenHelper
     {
-        private static Regex _parameterRegex = new Regex("\\$parameters\\['([^']*)'\\]");
-        private static Regex _resourcePropertyRegex = new Regex("\\$resources\\['([^']*)'\\]\\.([A-Za-z0-9\\.]+)");
+        /// <summary>
+        /// The parameter regex
+        /// </summary>
+        private static readonly Regex ParameterRegex = new Regex("\\$parameters\\['([^']*)'\\]");
 
+        /// <summary>
+        /// The resource property regex
+        /// </summary>
+        private static readonly Regex ResourcePropertyRegex = new Regex("\\$resources\\['([^']*)'\\]\\.([A-Za-z0-9\\.]+)");
+
+        /// <summary>
+        /// Substitutes the tokens in supplied JSON object.
+        /// </summary>
+        /// <param name="resourceDefinition">The resource definition.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <param name="resourcesProperties">The resources properties.</param>
         public static void SubstituteTokensInJObject(JObject resourceDefinition, IDictionary<string, string> parameters, IDictionary<string, JObject> resourcesProperties)
         {
             foreach (var parameter in resourceDefinition)
@@ -39,9 +52,15 @@ namespace CaasDeploy.Library.Utilities
             }
         }
 
+        /// <summary>
+        /// Substitutes the property tokens in the supplied string.
+        /// </summary>
+        /// <param name="input">The input string.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>The substituted string</returns>
         public static string SubstitutePropertyTokensInString(string input, IDictionary<string, string> parameters)
         {
-            var paramsMatches = _parameterRegex.Matches(input);
+            var paramsMatches = ParameterRegex.Matches(input);
             string output = input;
             if (paramsMatches.Count > 0)
             {
@@ -55,12 +74,18 @@ namespace CaasDeploy.Library.Utilities
             return output;
         }
 
+        /// <summary>
+        /// Substitutes the resource tokens in the supplied string.
+        /// </summary>
+        /// <param name="input">The input string.</param>
+        /// <param name="resourcesProperties">The resources properties.</param>
+        /// <returns>The substituted string</returns>
         public static string SubstituteResourceTokensInString(string input, IDictionary<string, JObject> resourcesProperties)
         {
             string output = input;
             if (resourcesProperties != null)
             {
-                var resourceMatches = _resourcePropertyRegex.Matches(input);
+                var resourceMatches = ResourcePropertyRegex.Matches(input);
                 if (resourceMatches.Count > 0)
                 {
                     foreach (Match resourceMatch in resourceMatches)
