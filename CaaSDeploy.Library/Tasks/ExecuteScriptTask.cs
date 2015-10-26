@@ -12,11 +12,18 @@ using Newtonsoft.Json.Linq;
 namespace CaasDeploy.Library.Tasks
 {
     /// <summary>
-    /// An implemetation of <see cref="ITask"/> which executes a post deployment script.
+    /// An implementation of <see cref="ITask"/> which executes a post deployment script.
     /// </summary>
     internal sealed class ExecuteScriptTask : ITask
     {
+        /// <summary>
+        /// The log provider
+        /// </summary>
         private readonly ILogProvider _logProvider;
+
+        /// <summary>
+        /// The resource
+        /// </summary>
         private readonly Resource _resource;
 
         /// <summary>
@@ -74,6 +81,12 @@ namespace CaasDeploy.Library.Tasks
             await scriptRunner.ExecuteScript(deployScript);
         }
 
+        /// <summary>
+        /// Unzips the script bundle.
+        /// </summary>
+        /// <param name="scriptPath">The script path.</param>
+        /// <param name="bundleFile">The bundle file name.</param>
+        /// <returns>The absolute path to the extracted folder.</returns>
         private string UnzipScriptBundle(string scriptPath, string bundleFile)
         {
             var bundlePath = Path.Combine(scriptPath, bundleFile);
@@ -82,6 +95,11 @@ namespace CaasDeploy.Library.Tasks
             return path;
         }
 
+        /// <summary>
+        /// Converts an IP V6 address to a UNC path.
+        /// </summary>
+        /// <param name="ipv6Address">The IP V6 address.</param>
+        /// <returns>The UNC path</returns>
         private string IPv6ToUnc(string ipv6Address)
         {
             return ipv6Address.Replace(':', '-').Replace('%', 's') + ".ipv6-literal.net";

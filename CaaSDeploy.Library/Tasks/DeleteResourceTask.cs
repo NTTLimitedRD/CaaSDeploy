@@ -12,8 +12,19 @@ namespace CaasDeploy.Library.Tasks
     /// </summary>
     internal sealed class DeleteResourceTask : ITask
     {
+        /// <summary>
+        /// The account details
+        /// </summary>
         private readonly CaasAccountDetails _accountDetails;
+
+        /// <summary>
+        /// The log provider
+        /// </summary>
         private readonly ILogProvider _logProvider;
+
+        /// <summary>
+        /// The resource
+        /// </summary>
         private readonly ResourceLog _resource;
 
         /// <summary>

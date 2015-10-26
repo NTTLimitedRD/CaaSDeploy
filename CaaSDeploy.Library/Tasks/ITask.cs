@@ -3,7 +3,7 @@
 namespace CaasDeploy.Library.Tasks
 {
     /// <summary>
-    /// Abstraction for tasks perfomed as part of a deployment.
+    /// Abstraction for tasks performed as part of a deployment.
     /// </summary>
     public interface ITask
     {

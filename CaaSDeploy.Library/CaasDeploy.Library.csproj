@@ -89,10 +89,10 @@
     <Compile Include="Contracts\IOrchestrationProvider.cs" />
     <Compile Include="TemplateParserException.cs" />
     <Compile Include="Models\CaasAccountDetails.cs" />
-    <Compile Include="CaasApiUrls.cs" />
+    <Compile Include="Models\CaasApiUrls.cs" />
     <Compile Include="CaasAuthentication.cs" />
     <Compile Include="CaasException.cs" />
-    <Compile Include="Models\DeploymentStatus.cs" />
+    <Compile Include="Models\ResourceLogStatus.cs" />
     <Compile Include="Models\DeploymentLogStatus.cs" />
     <Compile Include="Models\DeploymentLog.cs" />
     <Compile Include="Models\DeploymentTemplateMetadata.cs" />

@@ -12,8 +12,19 @@ namespace CaasDeploy.Library.Tasks
     /// </summary>
     internal sealed class DeployResourceTask : ITask
     {
+        /// <summary>
+        /// The CaaS account details
+        /// </summary>
         private readonly CaasAccountDetails _accountDetails;
+
+        /// <summary>
+        /// The log provider
+        /// </summary>
         private readonly ILogProvider _logProvider;
+
+        /// <summary>
+        /// The resource
+        /// </summary>
         private readonly Resource _resource;
 
         /// <summary>
@@ -58,7 +69,7 @@ namespace CaasDeploy.Library.Tasks
             context.Log.resources.Add(resourceLog);
             context.ResourcesProperties.Add(resourceLog.resourceId, resourceLog.details);
 
-            if (resourceLog.deploymentStatus == DeploymentStatus.Failed)
+            if (resourceLog.deploymentStatus == ResourceLogStatus.Failed)
             {
                 context.Log.status = DeploymentLogStatus.Failed;
             }
