@@ -16,8 +16,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{388893F1-EF71-4A4D-9502-FCBED8B4690B}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\nuget.config = .nuget\nuget.config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaasDeploy.PostDeployScriptRunner", "CaasDeploy.PostDeployScriptRunner\CaasDeploy.PostDeployScriptRunner.csproj", "{3FB85ED6-C120-44CC-A339-18A9D6212E35}"
