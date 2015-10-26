@@ -3,12 +3,12 @@
 namespace DD.CBU.CaasDeploy.PostDeployScriptRunner
 {
     /// <summary>
-    /// Creates a new instance of <see cref=""/> for the supplied <see cref="OSType"/>.
+    /// Creates a new instance of <see cref="IPostDeployScriptRunner"/> for the supplied <see cref="OSType"/>.
     /// </summary>
     public static class PostDeployScriptRunnerFactory
     {
         /// <summary>
-        /// Creates a new instance of <see cref=""/> for the supplied <see cref="OSType"/>.
+        /// Creates a new instance of <see cref="IPostDeployScriptRunner"/> for the supplied <see cref="OSType"/>.
         /// </summary>
         /// <param name="serverIP">The server ip.</param>
         /// <param name="userName">Name of the user.</param>
