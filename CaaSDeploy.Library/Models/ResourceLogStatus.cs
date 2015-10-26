@@ -28,6 +28,11 @@
         /// <summary>
         /// The used existing status
         /// </summary>
-        UsedExisting
+        UsedExisting,
+
+        /// <summary>
+        /// The deleted status
+        /// </summary>
+        Deleted
     }
 }

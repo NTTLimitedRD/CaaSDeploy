@@ -39,7 +39,7 @@ namespace DD.CBU.CaasDeploy.Library.Models
         /// Gets or sets the error.
         /// </summary>
         [JsonProperty("error")]
-        public JObject Error { get; set; }
+        public Error Error { get; set; }
 
         /// <summary>
         /// Gets or sets the details.

@@ -54,9 +54,14 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
             if (_resourceLog.CaasId != null)
             {
                 var deployer = new ResourceDeployer(_logProvider, accountDetails, _resourceLog.ResourceId, _resourceLog.ResourceType);
-                await deployer.DeleteAndWait(_resourceLog.CaasId);
+                var resourceLog = await deployer.DeleteAndWait(_resourceLog.CaasId);
 
-                context.Log.Resources.Add(_resourceLog);
+                context.Log.Resources.Add(resourceLog);
+
+                if (resourceLog.DeploymentStatus == ResourceLogStatus.Failed)
+                {
+                    context.Log.Status = DeploymentLogStatus.Failed;
+                }
             }
         }
     }

@@ -34,7 +34,7 @@ namespace DD.CBU.CaasDeploy.Library.Tests
         /// </summary>
         /// <returns>The async <see cref="Task"/>.</returns>
         [TestMethod]
-        public async Task ParseAndExecuteDeploymentTasks()
+        public async Task ParseAndExecuteDeploymentTasks_Success()
         {
             var client = new FakeHttpClient();
             client.AddResponse("/network/networkDomain/d5791a6d-2b69-47e2-be06-f26a2ec4bff8", "NetworkDomain_Get.json");
@@ -60,11 +60,35 @@ namespace DD.CBU.CaasDeploy.Library.Tests
         }
 
         /// <summary>
+        /// Tests the deployment process of a template when an error occurs.
+        /// </summary>
+        /// <returns>The async <see cref="Task"/>.</returns>
+        [TestMethod]
+        public async Task ParseAndExecuteDeploymentTasks_Failed()
+        {
+            var client = new FakeHttpClient();
+            client.AddResponse("/network/networkDomain/d5791a6d-2b69-47e2-be06-f26a2ec4bff8", "NetworkDomain_Get.json");
+            client.AddResponse("/network/vlan?name=Unit Test VLAN", "GenericNotFound.json");
+            client.AddResponse("/network/deployVlan", "GenericError.json", HttpStatusCode.BadRequest);
+
+            var templateFile = Path.Combine(_resourceFolder, "StandardTemplate.json");
+            var parametersFile = Path.Combine(_resourceFolder, "StandardTemplateParams.json");
+            var parser = new TemplateParser(new ConsoleLogProvider());
+            var taskExecutor = parser.ParseDeploymentTemplate(templateFile, parametersFile);
+            var log = await taskExecutor.Execute(_accountDetails);
+
+            Assert.AreEqual(DeploymentLogStatus.Failed, log.Status);
+            Assert.AreEqual(1, log.Resources.Count);
+            Assert.AreEqual(ResourceLogStatus.Failed, log.Resources[0].DeploymentStatus);
+            Assert.AreEqual("UNEXPECTED_ERROR", log.Resources[0].Error.ResponseCode);
+        }
+
+        /// <summary>
         /// Tests the deletion process of a template.
         /// </summary>
         /// <returns>The async <see cref="Task"/>.</returns>
         [TestMethod]
-        public async Task ParseAndExecuteDeletionTasks()
+        public async Task ParseAndExecuteDeletionTasks_Success()
         {
             var client = new FakeHttpClient();
             client.AddResponse("/network/deleteNatRule", "NatRule_Delete.json");
@@ -82,6 +106,30 @@ namespace DD.CBU.CaasDeploy.Library.Tests
             var log = await taskExecutor.Execute(_accountDetails);
 
             Assert.AreEqual(DeploymentLogStatus.Success, log.Status);
+        }
+
+        /// <summary>
+        /// Tests the deletion process of a template when an error occurs.
+        /// </summary>
+        /// <returns>The async <see cref="Task"/>.</returns>
+        [TestMethod]
+        public async Task ParseAndExecuteDeletionTasks_Failed()
+        {
+            var client = new FakeHttpClient();
+            client.AddResponse("/network/deleteNatRule", "NatRule_Delete.json");
+            client.AddResponse("/network/natRule/a6b2e743-e330-4deb-a76e-0d9cb0b1d1bb", "NatRule_Get_NotFound.json", HttpStatusCode.BadRequest);
+            client.AddResponse("/network/removePublicIpBlock", "GenericError.json", HttpStatusCode.BadRequest);
+
+            var logFile = Path.Combine(_resourceFolder, "StandardTemplateLog.json");
+            var parser = new TemplateParser(new ConsoleLogProvider());
+            var taskExecutor = parser.ParseDeploymentLog(logFile);
+            var log = await taskExecutor.Execute(_accountDetails);
+
+            Assert.AreEqual(DeploymentLogStatus.Failed, log.Status);
+            Assert.AreEqual(2, log.Resources.Count);
+            Assert.AreEqual(ResourceLogStatus.Deleted, log.Resources[0].DeploymentStatus);
+            Assert.AreEqual(ResourceLogStatus.Failed, log.Resources[1].DeploymentStatus);
+            Assert.AreEqual("UNEXPECTED_ERROR", log.Resources[1].Error.ResponseCode);
         }
 
         /// <summary>
