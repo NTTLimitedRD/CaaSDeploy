@@ -79,18 +79,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StaticCaasAccountDetailsProvider.cs" />
+    <Compile Include="CaaSAuthentication.cs" />
     <Compile Include="Config\ComputeConfigurationSection.cs" />
     <Compile Include="Config\RegionConfigurationElement.cs" />
     <Compile Include="Config\RegionConfigurationElementCollection.cs" />
     <Compile Include="ConsoleLogProvider.cs" />
-    <Compile Include="Contracts\IRegion.cs" />
-    <Compile Include="Contracts\IComputeConfiguration.cs" />
+    <Compile Include="Contracts\ICaasAccountDetailsProvider.cs" />
     <Compile Include="Contracts\ILogProvider.cs" />
     <Compile Include="Contracts\IOrchestrationProvider.cs" />
+    <Compile Include="Contracts\IDeploymentTemplateParser.cs" />
     <Compile Include="TemplateParserException.cs" />
     <Compile Include="Models\CaasAccountDetails.cs" />
     <Compile Include="Models\CaasApiUrls.cs" />
-    <Compile Include="CaasAuthentication.cs" />
     <Compile Include="CaasException.cs" />
     <Compile Include="Models\ResourceLogStatus.cs" />
     <Compile Include="Models\DeploymentLogStatus.cs" />
@@ -102,23 +103,23 @@
     <Compile Include="Models\Scripts.cs" />
     <Compile Include="Tasks\DeleteResourceTask.cs" />
     <Compile Include="Tasks\ExecuteScriptTask.cs" />
-    <Compile Include="Tasks\ITask.cs" />
+    <Compile Include="Contracts\ITask.cs" />
     <Compile Include="Tasks\DeployResourceTask.cs" />
     <Compile Include="Tasks\LoadExistingResourcesTask.cs" />
     <Compile Include="Tasks\RunOrchestrationTask.cs" />
     <Compile Include="Tasks\TaskContext.cs" />
     <Compile Include="Tasks\TaskExecutor.cs" />
+    <Compile Include="Utilities\DeploymentTemplateLogExtensions.cs" />
     <Compile Include="Utilities\HttpClientAdapter.cs" />
     <Compile Include="Utilities\HttpClientFactory.cs" />
     <Compile Include="Utilities\IHttpClient.cs" />
     <Compile Include="Utilities\JsonEnumConverter.cs" />
     <Compile Include="Utilities\ResourceDependencies.cs" />
-    <Compile Include="TaskBuilder.cs" />
+    <Compile Include="DeploymentTemplateParser.cs" />
     <Compile Include="Models\DeploymentTemplate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\Resource.cs" />
     <Compile Include="Utilities\ResourceDeployer.cs" />
-    <Compile Include="TemplateParser.cs" />
     <Compile Include="Utilities\TokenHelper.cs" />
   </ItemGroup>
   <ItemGroup>

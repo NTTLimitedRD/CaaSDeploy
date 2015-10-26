@@ -12,7 +12,7 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
 	/// <summary>
 	///	Helper methods for working with inter-resource dependencies.
 	/// </summary>
-	public static class ResourceDependencies
+	internal static class ResourceDependencies
 	{
         /// <summary>
         ///	Sort the specified resources in dependency order (most-dependent-first).

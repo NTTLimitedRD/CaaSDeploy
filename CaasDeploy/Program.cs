@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using DD.CBU.CaasDeploy.Library;
 using DD.CBU.CaasDeploy.Library.Contracts;
+using DD.CBU.CaasDeploy.Library.Utilities;
 
 namespace DD.CBU.CaasDeploy
 {
@@ -111,36 +112,34 @@ namespace DD.CBU.CaasDeploy
         /// <returns>The async <see cref="Task"/>.</returns>
         static async Task PerformRequest(Dictionary<string, string> arguments)
         {
-            var config = (IComputeConfiguration)ConfigurationManager.GetSection("compute");
-
-            var accountDetails = await CaasAuthentication.Authenticate(
-                config,
-                arguments["username"],
-                arguments["password"],
-                arguments["region"]);
-
             try
             {
-                var taskBuilder = new TaskBuilder(new ConsoleLogProvider(), accountDetails);
+                var accountDetails = await CaasAuthentication.Authenticate(
+                    arguments["username"],
+                    arguments["password"],
+                    arguments["region"]);
+
+                var logProvider = new ConsoleLogProvider();
+                var parser = new DeploymentTemplateParser(new ConsoleLogProvider());
 
                 if (arguments["action"].ToLower() == "deploy")
                 {
                     var parametersFile = arguments.ContainsKey("parameters") ? arguments["parameters"] : null;
                     var templateFile = arguments["template"];
 
-                    var taskExecutor = taskBuilder.GetDeploymentTasks(templateFile, parametersFile);
+                    var taskExecutor = parser.GetDeploymentTasks(accountDetails, templateFile, parametersFile);
                     var log = await taskExecutor.Execute();
 
                     Console.WriteLine($"Result: {log.Status}");
 
-                    TemplateParser.SaveDeploymentLog(log, arguments["deploymentlog"]);
+                    log.SaveToFile(arguments["deploymentlog"]);
                     Console.WriteLine($"Complete! Deployment log written to {arguments["deploymentlog"]}.");
                 }
                 else if (arguments["action"].ToLower() == "delete")
                 {
                     var deploymentLogFile = arguments["deploymentlog"];
 
-                    var taskExecutor = taskBuilder.GetDeletionTasks(deploymentLogFile);
+                    var taskExecutor = parser.GetDeletionTasks(accountDetails, deploymentLogFile);
                     var log = await taskExecutor.Execute();
 
                     Console.WriteLine($"Result: {log.Status}");

@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Configuration;
 using System.IO;
 using System.Management.Automation;
 using System.Threading.Tasks;
 
 using DD.CBU.CaasDeploy.Library;
-using DD.CBU.CaasDeploy.Library.Contracts;
 
 namespace DD.CBU.CaasDeploy.PowerShell
 {
@@ -67,10 +65,9 @@ namespace DD.CBU.CaasDeploy.PowerShell
         /// <returns>The async <see cref="Task"/>.</returns>
         private async Task BeginProcessingAsync()
         {
-            var config = (IComputeConfiguration)ConfigurationManager.GetSection("compute");
-            var accountDetails = await CaasAuthentication.Authenticate(config, UserName, Password, Region);
-            var taskBuilder = new TaskBuilder(new ConsoleLogProvider(), accountDetails);
-            var taskExecutor = taskBuilder.GetDeletionTasks(ResolvePath(DeploymentLog));
+            var accountDetails = await CaasAuthentication.Authenticate(UserName, Password, Region);
+            var parser = new DeploymentTemplateParser(new ConsoleLogProvider());
+            var taskExecutor = parser.GetDeletionTasks(accountDetails, ResolvePath(DeploymentLog));
             var log = await taskExecutor.Execute();
 
             Console.WriteLine($"Result: {log.Status}");

@@ -14,11 +14,6 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
     internal sealed class LoadExistingResourcesTask : ITask
     {
         /// <summary>
-        /// The CaaS account details
-        /// </summary>
-        private readonly CaasAccountDetails _accountDetails;
-
-        /// <summary>
         /// The log provider
         /// </summary>
         private readonly ILogProvider _logProvider;
@@ -31,16 +26,10 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         /// <summary>
         /// Initializes a new instance of the <see cref="LoadExistingResourcesTask"/> class.
         /// </summary>
-        /// <param name="accountDetails">The CaaS account details.</param>
         /// <param name="logProvider">The log provider.</param>
         /// <param name="existingResources">The existing resources to load.</param>
-        public LoadExistingResourcesTask(CaasAccountDetails accountDetails, ILogProvider logProvider, IList<ExistingResource> existingResources)
+        public LoadExistingResourcesTask(ILogProvider logProvider, IList<ExistingResource> existingResources)
         {
-            if (accountDetails == null)
-            {
-                throw new ArgumentNullException(nameof(accountDetails));
-            }
-
             if (logProvider == null)
             {
                 throw new ArgumentNullException(nameof(logProvider));
@@ -51,7 +40,6 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
                 throw new ArgumentNullException(nameof(existingResources));
             }
 
-            _accountDetails = accountDetails;
             _logProvider = logProvider;
             _existingResources = existingResources;
         }
@@ -71,7 +59,7 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
             foreach (var existingResource in _existingResources)
             {
                 existingResource.CaasId = TokenHelper.SubstitutePropertyTokensInString(existingResource.CaasId, context.Parameters);
-                var deployer = new ResourceDeployer(_logProvider, _accountDetails, existingResource.ResourceId, existingResource.ResourceType);
+                var deployer = new ResourceDeployer(_logProvider, context.AccountDetails, existingResource.ResourceId, existingResource.ResourceType);
                 var resource = await deployer.Get(existingResource.CaasId);
                 context.ResourcesProperties.Add(existingResource.ResourceId, resource);
             }
