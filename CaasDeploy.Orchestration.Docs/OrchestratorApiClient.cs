@@ -1,39 +1,50 @@
-﻿using CaasDeploy.Orchestration.Docs.OrchestratorWebService;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Services.Client;
 using System.Linq;
+using System.Net;
 using System.Text;
-using System.Threading.Tasks;
+
+using CaasDeploy.Orchestration.Docs.OrchestratorWebService;
 
 namespace CaasDeploy.Orchestration.Docs
 {
-    class OrchestratorApiClient
+    /// <summary>
+    /// The orchestration API client.
+    /// </summary>
+    internal class OrchestratorApiClient
     {
+        /// <summary>
+        /// The service root.
+        /// </summary>
         private string _serviceRoot;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OrchestratorApiClient"/> class.
+        /// </summary>
+        /// <param name="serviceRoot">The service root.</param>
         public OrchestratorApiClient(string serviceRoot)
         {
             _serviceRoot = serviceRoot;
         }
 
-
-        public Guid StartRunbookWithParameters(Guid runbookId, Dictionary<string, string> parameters)
+        /// <summary>
+        /// Starts the runbook with parameters.
+        /// </summary>
+        /// <param name="runbookId">The runbook identifier.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>The identifier of the process.</returns>
+        public Guid StartRunbookWithParameters(Guid runbookId, IDictionary<string, string> parameters)
         {
-
             // Create Orchestrator context
-            OrchestratorContext context = new OrchestratorContext(new Uri(_serviceRoot));
-
-            // Set credentials to default or a specific user.
-            //context.Credentials = System.Net.CredentialCache.DefaultCredentials;
-            context.Credentials = new System.Net.NetworkCredential("administrator", "Password@1");
+            var context = new OrchestratorContext(new Uri(_serviceRoot));
+            context.Credentials = new NetworkCredential("administrator", "Password@1");
 
             // Retrieve parameters for the runbook
             var runbookParams = context.RunbookParameters.Where(runbookParam => runbookParam.RunbookId == runbookId && runbookParam.Direction == "In");
 
             // Configure the XML for the parameters
-            StringBuilder parametersXml = new StringBuilder();
+            var parametersXml = new StringBuilder();
             if (runbookParams != null && runbookParams.Count() > 0)
             {
                 parametersXml.Append("<Data>");
@@ -46,14 +57,14 @@ namespace CaasDeploy.Orchestration.Docs
 
             try
             {
-                // Create new job and assign runbook Id and parameters.
-                Job job = new Job();
-                job.RunbookId = runbookId;
-                job.Parameters = parametersXml.ToString();
-                job.CreationTime = DateTime.UtcNow;
-                job.LastModifiedTime = DateTime.UtcNow;
+                Job job = new Job
+                {
+                    RunbookId = runbookId,
+                    Parameters = parametersXml.ToString(),
+                    CreationTime = DateTime.UtcNow,
+                    LastModifiedTime = DateTime.UtcNow
+                };
 
-                // Add newly created job.
                 context.AddToJobs(job);
                 context.SaveChanges();
 
@@ -65,6 +76,4 @@ namespace CaasDeploy.Orchestration.Docs
             }
         }
     }
-
 }
-

@@ -83,6 +83,7 @@
     <Compile Include="Config\RegionConfigurationElement.cs" />
     <Compile Include="Config\RegionConfigurationElementCollection.cs" />
     <Compile Include="ConsoleLogProvider.cs" />
+    <Compile Include="Contracts\IRegion.cs" />
     <Compile Include="Contracts\IComputeConfiguration.cs" />
     <Compile Include="Contracts\ILogProvider.cs" />
     <Compile Include="Contracts\IOrchestrationProvider.cs" />

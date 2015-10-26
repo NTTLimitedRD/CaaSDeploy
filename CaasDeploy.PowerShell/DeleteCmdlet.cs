@@ -9,38 +9,51 @@ using CaasDeploy.Library.Contracts;
 
 namespace CaasDeploy.PowerShell
 {
+    /// <summary>
+    /// A PowerShell commandlet to delete a previously deployed template.
+    /// </summary>
     [Cmdlet(VerbsCommon.Remove, "CaasDeployment")]
     public class DeleteCmdlet : PSCmdlet
     {
+        /// <summary>
+        /// Gets or sets the path to the deployment log file.
+        /// </summary>
         [Parameter(
             Mandatory = true,
             HelpMessage = "The path to the deployment log file for the deployment that should be deleted.",
-            Position = 0
-            )]
+            Position = 0)]
         public string DeploymentLog { get; set; }
 
-
+        /// <summary>
+        /// Gets or sets the region.
+        /// </summary>
         [Parameter(
             Mandatory = true,
             HelpMessage = "The region that the template is deployed to.",
-            Position = 1
-            )]
+            Position = 1)]
         public string Region { get; set; }
 
+        /// <summary>
+        /// Gets or sets the user name.
+        /// </summary>
         [Parameter(
             Mandatory = true,
             HelpMessage = "The CaaS username for authentication.",
-            Position = 2
-            )]
+            Position = 2)]
         public string UserName { get; set; }
 
+        /// <summary>
+        /// Gets or sets the password.
+        /// </summary>
         [Parameter(
             Mandatory = true,
             HelpMessage = "The CaaS password for authentication.",
-            Position = 3
-            )]
+            Position = 3)]
         public string Password { get; set; }
 
+        /// <summary>
+        /// Begins the processing.
+        /// </summary>
         protected override void BeginProcessing()
         {
             var task = Task.Run(() => BeginProcessingAsync());
@@ -48,6 +61,10 @@ namespace CaasDeploy.PowerShell
             base.BeginProcessing();
         }
 
+        /// <summary>
+        /// Begins the processing asynchronously.
+        /// </summary>
+        /// <returns>The async <see cref="Task"/>.</returns>
         private async Task BeginProcessingAsync()
         {
             var config = (IComputeConfiguration)ConfigurationManager.GetSection("compute");
@@ -59,6 +76,11 @@ namespace CaasDeploy.PowerShell
             Console.WriteLine($"Result: {log.status}");
         }
 
+        /// <summary>
+        /// Resolves the supplied file path.
+        /// </summary>
+        /// <param name="path">The relative file path.</param>
+        /// <returns>The absolute file path.</returns>
         private string ResolvePath(string path)
         {
             var workingDir = this.CurrentProviderLocation("FileSystem").Path;

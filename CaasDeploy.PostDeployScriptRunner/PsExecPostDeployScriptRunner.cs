@@ -12,16 +12,30 @@ namespace CaasDeploy.PostDeployScriptRunner
     /// </summary>
     public sealed class PsExecPostDeployScriptRunner : IPostDeployScriptRunner
     {
-        private string _serverIP;
-        private string _userName;
-        private string _password;
+        /// <summary>
+        /// The server IP
+        /// </summary>
+        private readonly string _serverIP;
 
+        /// <summary>
+        /// The user name
+        /// </summary>
+        private readonly string _userName;
+
+        /// <summary>
+        /// The password
+        /// </summary>
+        private readonly string _password;
+
+        /// <summary>
+        /// A value indicating whether the server is ready.
+        /// </summary>
         private bool _serverReady;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PsExecPostDeployScriptRunner"/> class.
         /// </summary>
-        /// <param name="serverIP">The server ip.</param>
+        /// <param name="serverIP">The server IP.</param>
         /// <param name="userName">Name of the user.</param>
         /// <param name="password">The password.</param>
         public PsExecPostDeployScriptRunner(string serverIP, string userName, string password)
