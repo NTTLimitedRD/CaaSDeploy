@@ -18,7 +18,7 @@ namespace CaasDeploy.Library
         /// <summary>
         /// The authentication base URL.
         /// </summary>
-        private const string authUrl = "/oec/0.9/myaccount";
+        private const string AuthUrl = "/oec/0.9/myaccount";
 
         /// <summary>
         /// Authenticates a user.

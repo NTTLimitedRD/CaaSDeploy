@@ -54,19 +54,19 @@ namespace CaasDeploy.Library.Tasks
                 {
                     await task.Execute(Context);
 
-                    if (Context.Log.status == DeploymentLogStatus.Failed)
+                    if (Context.Log.Status == DeploymentLogStatus.Failed)
                     {
                         return Context.Log;
                     }
                 }
                 catch (Exception)
                 {
-                    Context.Log.status = DeploymentLogStatus.Failed;
+                    Context.Log.Status = DeploymentLogStatus.Failed;
                     throw;
                 }
             }
 
-            Context.Log.status = DeploymentLogStatus.Success;
+            Context.Log.Status = DeploymentLogStatus.Success;
             return Context.Log;
         }
     }

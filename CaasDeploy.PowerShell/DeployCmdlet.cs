@@ -93,7 +93,7 @@ namespace CaasDeploy.PowerShell
             var taskExecutor = taskBuilder.GetDeploymentTasks(ResolvePath(Template), ResolvePath(Parameters));
             var log = await taskExecutor.Execute();
 
-            Console.WriteLine($"Result: {log.status}");
+            Console.WriteLine($"Result: {log.Status}");
             WriteLog(log, ResolvePath(DeploymentLog));
             Console.WriteLine($"Complete! Deployment log written to {DeploymentLog}.");
         }

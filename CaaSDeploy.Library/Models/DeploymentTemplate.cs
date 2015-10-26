@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace CaasDeploy.Library.Models
@@ -12,26 +13,31 @@ namespace CaasDeploy.Library.Models
         /// <summary>
         /// Gets or sets the metadata.
         /// </summary>
-        public DeploymentTemplateMetadata metadata { get; set; }
+        [JsonProperty("metadata")]
+        public DeploymentTemplateMetadata Metadata { get; set; }
 
         /// <summary>
         /// Gets or sets the parameters.
         /// </summary>
-        public JObject parameters { get; set; }
+        [JsonProperty("parameters")]
+        public JObject Parameters { get; set; }
 
         /// <summary>
         /// Gets or sets the existing resources the template depends on.
         /// </summary>
-        public List<ExistingResource> existingResources { get; set; }
+        [JsonProperty("existingResources")]
+        public List<ExistingResource> ExistingResources { get; set; }
 
         /// <summary>
         /// Gets or sets the resources to deploy.
         /// </summary>
-        public List<Resource> resources { get; set; }
+        [JsonProperty("resources")]
+        public List<Resource> Resources { get; set; }
 
         /// <summary>
         /// Gets or sets the orchestration.
         /// </summary>
-        public JObject orchestration { get; set; }
+        [JsonProperty("orchestration")]
+        public JObject Orchestration { get; set; }
     }
 }

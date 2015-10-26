@@ -73,7 +73,7 @@ namespace CaasDeploy.PowerShell
             var taskExecutor = taskBuilder.GetDeletionTasks(ResolvePath(DeploymentLog));
             var log = await taskExecutor.Execute();
 
-            Console.WriteLine($"Result: {log.status}");
+            Console.WriteLine($"Result: {log.Status}");
         }
 
         /// <summary>

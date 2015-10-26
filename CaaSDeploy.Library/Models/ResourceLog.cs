@@ -12,34 +12,39 @@ namespace CaasDeploy.Library.Models
         /// <summary>
         /// Gets or sets the deployment status.
         /// </summary>
+        [JsonProperty("deploymentStatus")]
         [JsonConverter(typeof(JsonEnumConverter))]
-        public ResourceLogStatus deploymentStatus { get; set; }
+        public ResourceLogStatus DeploymentStatus { get; set; }
 
         /// <summary>
         /// Gets or sets the type of the resource.
         /// </summary>
+        [JsonProperty("resourceType")]
         [JsonConverter(typeof(JsonEnumConverter))]
-        public ResourceType resourceType { get; set; }
+        public ResourceType ResourceType { get; set; }
 
         /// <summary>
         /// Gets or sets the resource identifier.
         /// </summary>
-        public string resourceId { get; set; }
+        [JsonProperty("resourceId")]
+        public string ResourceId { get; set; }
 
         /// <summary>
         /// Gets or sets the CaaS identifier.
         /// </summary>
-        public string caasId { get; set; }
+        [JsonProperty("caasId")]
+        public string CaasId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the error.
+        /// </summary>
+        [JsonProperty("error")]
+        public JObject Error { get; set; }
 
         /// <summary>
         /// Gets or sets the details.
         /// </summary>
         [JsonIgnore]
-        public JObject details { get; set; }
-
-        /// <summary>
-        /// Gets or sets the error.
-        /// </summary>
-        public JObject error { get; set; }
+        public JObject Details { get; set; }
     }
 }

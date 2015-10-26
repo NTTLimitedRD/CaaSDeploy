@@ -21,7 +21,7 @@ namespace CaasDeploy.Library
         /// <summary>
         /// The resource API URLs.
         /// </summary>
-        private readonly Dictionary<ResourceType, CaasApiUrls> _resourceApis = new Dictionary<ResourceType, CaasApiUrls>
+        private readonly static Dictionary<ResourceType, CaasApiUrls> ResourceApis = new Dictionary<ResourceType, CaasApiUrls>
         {
             { ResourceType.NetworkDomain, new CaasApiUrls { DeployUrl = "/network/deployNetworkDomain", GetUrl = "/network/networkDomain/{0}", ListUrl = "/network/networkDomain?name={0}", DeleteUrl = "/network/deleteNetworkDomain", EditUrl = "/network/editNetworkDomain" } },
             { ResourceType.Vlan, new CaasApiUrls { DeployUrl = "/network/deployVlan", GetUrl = "/network/vlan/{0}", ListUrl = "/network/vlan?name={0}", DeleteUrl = "/network/deleteVlan", EditUrl = "/network/editVlan" } },
@@ -38,7 +38,7 @@ namespace CaasDeploy.Library
         /// <summary>
         /// The properties not supported for edit.
         /// </summary>
-        private readonly Dictionary<ResourceType, string[]> _propertiesNotSupportedForEdit = new Dictionary<ResourceType, string[]>
+        private readonly static Dictionary<ResourceType, string[]> PropertiesNotSupportedForEdit = new Dictionary<ResourceType, string[]>
         {
             { ResourceType.NetworkDomain, new[] { "datacenterId" } },
             { ResourceType.Vlan, new[] { "networkDomainId", "privateIpv4BaseAddress" } },
@@ -55,17 +55,17 @@ namespace CaasDeploy.Library
         /// <summary>
         /// The MCP2 base API URL.
         /// </summary>
-        private const string _mcp2UrlStem = "/caas/2.0";
+        private const string Mcp2UrlStem = "/caas/2.0";
 
         /// <summary>
         /// The polling delay in seconds.
         /// </summary>
-        private const int _pollingDelaySeconds = 30;
+        private const int PollingDelaySeconds = 30;
 
         /// <summary>
         /// The polling time out in minutes.
         /// </summary>
-        private const int _pollingTimeOutMinutes = 20;
+        private const int PollingTimeOutMinutes = 20;
 
         /// <summary>
         /// The log provider
@@ -103,7 +103,7 @@ namespace CaasDeploy.Library
         {
             _resourceId = resourceId;
             _resourceType = resourceType;
-            _resourceApi = _resourceApis[resourceType];
+            _resourceApi = ResourceApis[resourceType];
             _accountDetails = accountDetails;
             _logProvider = logProvider;
         }
@@ -137,7 +137,7 @@ namespace CaasDeploy.Library
         /// <returns>The async <see cref="Task"/>.</returns>
         public async Task<ResourceLog> DeployAndWait(string jsonPayload)
         {
-            var response = new ResourceLog() { resourceId = _resourceId, resourceType = _resourceType };
+            var response = new ResourceLog() { ResourceId = _resourceId, ResourceType = _resourceType };
 
             try
             {
@@ -151,33 +151,33 @@ namespace CaasDeploy.Library
                         if (_resourceApi.EditUrl == null)
                         {
                             _logProvider.LogMessage($"Resource '{_resourceId}' already exists and cannot be updated. Using existing resource even if its definition doesn't match the template.");
-                            response.details = existingResourceDetails;
-                            response.caasId = response.details["id"].Value<string>();
-                            response.deploymentStatus = ResourceLogStatus.UsedExisting;
+                            response.Details = existingResourceDetails;
+                            response.CaasId = response.Details["id"].Value<string>();
+                            response.DeploymentStatus = ResourceLogStatus.UsedExisting;
                             return response;
                         }
                         else
                         {
                             var existingId = existingResourceDetails["id"].Value<string>();
                             await UpdateExistingResource(existingId, resourceDefinition);
-                            response.details = await Get(existingId);
-                            response.caasId = response.details["id"].Value<string>();
-                            response.deploymentStatus = ResourceLogStatus.Updated;
+                            response.Details = await Get(existingId);
+                            response.CaasId = response.Details["id"].Value<string>();
+                            response.DeploymentStatus = ResourceLogStatus.Updated;
                             return response;
                         }
                     }
                 }
 
                 var id = await Deploy(jsonPayload);
-                response.details = await WaitForDeploy(id);
-                response.caasId = response.details["id"].Value<string>();
-                response.deploymentStatus = ResourceLogStatus.Deployed;
+                response.Details = await WaitForDeploy(id);
+                response.CaasId = response.Details["id"].Value<string>();
+                response.DeploymentStatus = ResourceLogStatus.Deployed;
                 return response;
             }
             catch (CaasException ex)
             {
-                response.deploymentStatus = ResourceLogStatus.Failed;
-                response.error = ex.FullResponse;
+                response.DeploymentStatus = ResourceLogStatus.Failed;
+                response.Error = ex.FullResponse;
                 return response;
             }
         }
@@ -211,7 +211,7 @@ namespace CaasDeploy.Library
         /// <param name="resourceDefinition">The resource definition.</param>
         private void RemovePropertiesUnsupportedForEdit(JObject resourceDefinition)
         {
-            foreach (var prop in _propertiesNotSupportedForEdit[_resourceType])
+            foreach (var prop in PropertiesNotSupportedForEdit[_resourceType])
             {
                 resourceDefinition.Remove(prop);
             }
@@ -301,7 +301,7 @@ namespace CaasDeploy.Library
         /// <returns>The absolute URL.</returns>
         private string GetApiUrl(string relativeUrl)
         {
-            return _accountDetails.BaseUrl + _mcp2UrlStem + "/" + _accountDetails.OrgId + relativeUrl;
+            return _accountDetails.BaseUrl + Mcp2UrlStem + "/" + _accountDetails.OrgId + relativeUrl;
         }
 
         /// <summary>
@@ -314,7 +314,7 @@ namespace CaasDeploy.Library
             DateTime startTime = DateTime.Now;
             while (true)
             {
-                if ((DateTime.Now - startTime).TotalMinutes >= _pollingTimeOutMinutes)
+                if ((DateTime.Now - startTime).TotalMinutes >= PollingTimeOutMinutes)
                 {
                     throw new TimeoutException(String.Format(
                         "Timed out waiting to create {0} with id {1}", _resourceType, caasId));
@@ -327,7 +327,7 @@ namespace CaasDeploy.Library
                     return props;
                 }
                 _logProvider.IncrementProgress();
-                await Task.Delay(TimeSpan.FromSeconds(_pollingDelaySeconds));
+                await Task.Delay(TimeSpan.FromSeconds(PollingDelaySeconds));
             }
         }
 
@@ -341,7 +341,7 @@ namespace CaasDeploy.Library
             DateTime startTime = DateTime.Now;
             while (true)
             {
-                if ((DateTime.Now - startTime).TotalMinutes >= _pollingTimeOutMinutes)
+                if ((DateTime.Now - startTime).TotalMinutes >= PollingTimeOutMinutes)
                 {
                     throw new TimeoutException(String.Format(
                         "Timed out waiting to delete {0} with id {1}", _resourceType, caasId));
@@ -362,7 +362,7 @@ namespace CaasDeploy.Library
                 }
 
                 _logProvider.IncrementProgress();
-                await Task.Delay(TimeSpan.FromSeconds(_pollingDelaySeconds));
+                await Task.Delay(TimeSpan.FromSeconds(PollingDelaySeconds));
             }
         }
 

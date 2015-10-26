@@ -70,10 +70,10 @@ namespace CaasDeploy.Library.Tasks
 
             foreach (var existingResource in _existingResources)
             {
-                existingResource.caasId = TokenHelper.SubstitutePropertyTokensInString(existingResource.caasId, context.Parameters);
-                var deployer = new ResourceDeployer(_logProvider, _accountDetails, existingResource.resourceId, existingResource.resourceType);
-                var resource = await deployer.Get(existingResource.caasId);
-                context.ResourcesProperties.Add(existingResource.resourceId, resource);
+                existingResource.CaasId = TokenHelper.SubstitutePropertyTokensInString(existingResource.CaasId, context.Parameters);
+                var deployer = new ResourceDeployer(_logProvider, _accountDetails, existingResource.ResourceId, existingResource.ResourceType);
+                var resource = await deployer.Get(existingResource.CaasId);
+                context.ResourcesProperties.Add(existingResource.ResourceId, resource);
             }
         }
     }
