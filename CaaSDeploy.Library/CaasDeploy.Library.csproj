@@ -79,13 +79,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="StaticCaasAccountDetailsProvider.cs" />
     <Compile Include="CaaSAuthentication.cs" />
     <Compile Include="Config\ComputeConfigurationSection.cs" />
     <Compile Include="Config\RegionConfigurationElement.cs" />
     <Compile Include="Config\RegionConfigurationElementCollection.cs" />
     <Compile Include="ConsoleLogProvider.cs" />
-    <Compile Include="Contracts\ICaasAccountDetailsProvider.cs" />
     <Compile Include="Contracts\ILogProvider.cs" />
     <Compile Include="Contracts\IOrchestrationProvider.cs" />
     <Compile Include="Contracts\IDeploymentTemplateParser.cs" />
