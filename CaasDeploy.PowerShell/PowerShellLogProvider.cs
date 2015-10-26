@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Management.Automation;
 
-using CaasDeploy.Library.Contracts;
+using DD.CBU.CaasDeploy.Library.Contracts;
 
-namespace CaasDeploy.PowerShell
+namespace DD.CBU.CaasDeploy.PowerShell
 {
     /// <summary>
     /// A <see cref="ILogProvider" /> implementation for the PowerShell commands.

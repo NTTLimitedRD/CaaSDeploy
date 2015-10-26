@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace CaasDeploy.Library.Contracts
+namespace DD.CBU.CaasDeploy.Library.Contracts
 {
     /// <summary>
     /// Represents a single configured region.

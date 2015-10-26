@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace CaasDeploy.PostDeployScriptRunner
+namespace DD.CBU.CaasDeploy.PostDeployScriptRunner
 {
     /// <summary>
     /// Runs post-deploy scripts on a remote Linux server using SSH.

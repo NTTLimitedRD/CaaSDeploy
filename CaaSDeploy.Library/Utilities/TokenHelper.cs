@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 using Newtonsoft.Json.Linq;
 
-namespace CaasDeploy.Library.Utilities
+namespace DD.CBU.CaasDeploy.Library.Utilities
 {
     /// <summary>
     /// Provides commonly used helper methods to replace tokens in JSON templates.

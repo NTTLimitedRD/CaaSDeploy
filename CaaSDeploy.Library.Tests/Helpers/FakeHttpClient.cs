@@ -7,10 +7,10 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-using CaasDeploy.Library.Utilities;
+using DD.CBU.CaasDeploy.Library.Utilities;
 using Moq;
 
-namespace CaasDeploy.Library.Tests.Helpers
+namespace DD.CBU.CaasDeploy.Library.Tests.Helpers
 {
     /// <summary>
     /// Replaces the default <see cref="IHttpClient"/> instance with a mock and handles fake requests and responses.

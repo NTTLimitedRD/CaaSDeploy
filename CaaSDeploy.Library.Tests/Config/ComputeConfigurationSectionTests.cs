@@ -1,10 +1,10 @@
 ﻿using System.Configuration;
 using System.Linq;
 
-using CaasDeploy.Library.Config;
+using DD.CBU.CaasDeploy.Library.Config;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CaasDeploy.Library.Tests.Config
+namespace DD.CBU.CaasDeploy.Library.Tests.Config
 {
     /// <summary>
     /// Unit tests for the <see cref="ComputeConfigurationSection"/> class.

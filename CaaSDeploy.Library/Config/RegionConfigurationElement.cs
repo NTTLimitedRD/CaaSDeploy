@@ -1,7 +1,7 @@
 ﻿using System.Configuration;
-using CaasDeploy.Library.Contracts;
+using DD.CBU.CaasDeploy.Library.Contracts;
 
-namespace CaasDeploy.Library.Config
+namespace DD.CBU.CaasDeploy.Library.Config
 {
     /// <summary>
     /// Represents a single configured region.

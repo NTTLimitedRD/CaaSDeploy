@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 
-namespace CaasDeploy.Library.Config
+namespace DD.CBU.CaasDeploy.Library.Config
 {
     /// <summary>
     /// Represents all configured regions.

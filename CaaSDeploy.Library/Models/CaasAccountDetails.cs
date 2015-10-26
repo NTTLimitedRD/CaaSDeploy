@@ -1,4 +1,4 @@
-﻿namespace CaasDeploy.Library.Models
+﻿namespace DD.CBU.CaasDeploy.Library.Models
 {
     /// <summary>
     /// Contains CaaS account details after successful authentication.

@@ -1,12 +1,13 @@
-﻿using CaasDeploy.Library.Models;
-using JetBrains.Annotations;
-using QuickGraph;
-using QuickGraph.Algorithms;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CaasDeploy.Library.Utilities
+using DD.CBU.CaasDeploy.Library.Models;
+using JetBrains.Annotations;
+using QuickGraph;
+using QuickGraph.Algorithms;
+
+namespace DD.CBU.CaasDeploy.Library.Utilities
 {
 	/// <summary>
 	///	Helper methods for working with inter-resource dependencies.
@@ -52,9 +53,7 @@ namespace CaasDeploy.Library.Utilities
                         Resource dependsOnResource;
                         if (!resourcesById.TryGetValue(dependsOnResourceId, out dependsOnResource))
                         {
-                            throw new TemplateParserException(
-                                $"Resource '{resourceId}' depends on non-existent resource '{dependsOnResourceId}'."
-                            );
+                            throw new TemplateParserException($"Resource '{resourceId}' depends on non-existent resource '{dependsOnResourceId}'.");
                         }
 
                         resourceDependencies.AddEdge(

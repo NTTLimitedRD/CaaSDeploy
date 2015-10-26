@@ -6,12 +6,12 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-using CaasDeploy.Library.Contracts;
-using CaasDeploy.Library.Models;
-using CaasDeploy.Library.Utilities;
+using DD.CBU.CaasDeploy.Library.Contracts;
+using DD.CBU.CaasDeploy.Library.Models;
+using DD.CBU.CaasDeploy.Library.Utilities;
 using Newtonsoft.Json.Linq;
 
-namespace CaasDeploy.Library
+namespace DD.CBU.CaasDeploy.Library.Utilities
 {
     /// <summary>
     /// Helper class to deploy or delete a resource.

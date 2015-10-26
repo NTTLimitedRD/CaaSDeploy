@@ -4,12 +4,12 @@ using System.IO;
 using System.Management.Automation;
 using System.Threading.Tasks;
 
-using CaasDeploy.Library;
-using CaasDeploy.Library.Contracts;
-using CaasDeploy.Library.Models;
+using DD.CBU.CaasDeploy.Library;
+using DD.CBU.CaasDeploy.Library.Contracts;
+using DD.CBU.CaasDeploy.Library.Models;
 using Newtonsoft.Json;
 
-namespace CaasDeploy.PowerShell
+namespace DD.CBU.CaasDeploy.PowerShell
 {
     /// <summary>
     /// A PowerShell commandlet to deploy a template.

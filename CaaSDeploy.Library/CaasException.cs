@@ -3,7 +3,7 @@ using System.Linq;
 
 using Newtonsoft.Json.Linq;
 
-namespace CaasDeploy.Library
+namespace DD.CBU.CaasDeploy.Library
 {
     /// <summary>
     /// Exception class for CaaS errors.

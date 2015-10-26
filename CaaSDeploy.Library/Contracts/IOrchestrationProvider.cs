@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using CaasDeploy.Library.Models;
+using DD.CBU.CaasDeploy.Library.Models;
 using Newtonsoft.Json.Linq;
 
-namespace CaasDeploy.Library.Contracts
+namespace DD.CBU.CaasDeploy.Library.Contracts
 {
     /// <summary>
     /// Implementations of this interface provide post-deploy orchestration capabilities.

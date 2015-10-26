@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace CaasDeploy.Library.Tasks
+namespace DD.CBU.CaasDeploy.Library.Tasks
 {
     /// <summary>
     /// Abstraction for tasks performed as part of a deployment.

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CaasDeploy.PostDeployScriptRunner
+namespace DD.CBU.CaasDeploy.PostDeployScriptRunner
 {
     /// <summary>
     /// Creates a new instance of <see cref=""/> for the supplied <see cref="OSType"/>.

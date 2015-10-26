@@ -7,8 +7,8 @@
     <ProjectGuid>{BA304B6F-B2C3-4F65-A9DE-5A1A5E4951EF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CaasDeploy.Library</RootNamespace>
-    <AssemblyName>CaasDeploy.Library</AssemblyName>
+    <RootNamespace>DD.CBU.CaasDeploy.Library</RootNamespace>
+    <AssemblyName>DD.CBU.CaasDeploy.Library</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -117,12 +117,11 @@
     <Compile Include="Models\DeploymentTemplate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\Resource.cs" />
-    <Compile Include="ResourceDeployer.cs" />
+    <Compile Include="Utilities\ResourceDeployer.cs" />
     <Compile Include="TemplateParser.cs" />
     <Compile Include="Utilities\TokenHelper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="Package.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>

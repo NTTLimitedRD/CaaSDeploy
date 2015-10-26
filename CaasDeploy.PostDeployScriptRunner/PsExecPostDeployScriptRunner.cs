@@ -3,9 +3,9 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 
-using CaasDeploy.PostDeployScriptRunner.Utilities;
+using DD.CBU.CaasDeploy.PostDeployScriptRunner.Utilities;
 
-namespace CaasDeploy.PostDeployScriptRunner
+namespace DD.CBU.CaasDeploy.PostDeployScriptRunner
 {
     /// <summary>
     /// Runs post-deploy scripts on a remote Windows server using PsExec.

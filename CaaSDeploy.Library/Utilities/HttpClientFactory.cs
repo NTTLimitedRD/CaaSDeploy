@@ -2,9 +2,9 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 
-using CaasDeploy.Library.Models;
+using DD.CBU.CaasDeploy.Library.Models;
 
-namespace CaasDeploy.Library.Utilities
+namespace DD.CBU.CaasDeploy.Library.Utilities
 {
     /// <summary>
     /// Provides instance of <see cref="IHttpClient"/>.

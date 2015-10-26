@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using CaasDeploy.Library.Utilities;
+using DD.CBU.CaasDeploy.Library.Utilities;
 using Newtonsoft.Json;
 
-namespace CaasDeploy.Library.Models
+namespace DD.CBU.CaasDeploy.Library.Models
 {
     /// <summary>
     /// Represents the entire log of a deployment operation.

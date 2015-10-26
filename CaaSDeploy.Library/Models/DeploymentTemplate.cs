@@ -3,7 +3,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace CaasDeploy.Library.Models
+namespace DD.CBU.CaasDeploy.Library.Models
 {
     /// <summary>
     /// Represents an entire deployment template.

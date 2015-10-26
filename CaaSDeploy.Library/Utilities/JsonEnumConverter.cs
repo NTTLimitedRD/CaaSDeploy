@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace CaasDeploy.Library.Utilities
+namespace DD.CBU.CaasDeploy.Library.Utilities
 {
     /// <summary>
     /// Serializes and deserializes enum values as strings instead of numbers.

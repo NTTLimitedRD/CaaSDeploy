@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Net;
 using System.Runtime.InteropServices;
 
-namespace CaasDeploy.PostDeployScriptRunner.Utilities
+namespace DD.CBU.CaasDeploy.PostDeployScriptRunner.Utilities
 {
     /// <summary>
     /// Wrapper for low-level network connection functionality.
