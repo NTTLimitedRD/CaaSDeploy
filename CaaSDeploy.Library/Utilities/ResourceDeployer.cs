@@ -108,33 +108,11 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
         }
 
         /// <summary>
-        /// Deploys the supplied JSON payload.
+        /// Deploys the supplied resource and waits.
         /// </summary>
-        /// <param name="jsonPayload">The JSON payload.</param>
+        /// <param name="resourceDefinition">The resource definition.</param>
         /// <returns>The async <see cref="Task"/>.</returns>
-        private async Task<string> Deploy(string jsonPayload)
-        {
-            _logProvider.LogMessage($"Deploying {_resourceType}: '{_resourceId}' ");
-
-            using (var client = HttpClientFactory.GetClient(_accountDetails))
-            {
-                var url = GetApiUrl(_resourceApi.DeployUrl);
-                var response = await client.PostAsync(url, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
-                var responseBody = await response.Content.ReadAsStringAsync();
-                await ThrowForHttpFailure(response);
-                var jsonResponse = JObject.Parse(responseBody);
-                var info = (JArray)jsonResponse["info"];
-                // TODO: Check if we ever get more than 1 
-                return info[0]["value"].Value<string>();
-            }
-        }
-
-        /// <summary>
-        /// Deploys the supplied JSON payload waits.
-        /// </summary>
-        /// <param name="jsonPayload">The JSON payload.</param>
-        /// <returns>The async <see cref="Task"/>.</returns>
-        public async Task<ResourceLog> DeployAndWait(string jsonPayload)
+        public async Task<ResourceLog> DeployAndWait(JObject resourceDefinition)
         {
             var response = new ResourceLog() { ResourceId = _resourceId, ResourceType = _resourceType };
 
@@ -142,7 +120,6 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
             {
                 if (_resourceApi.ListUrl != null)
                 {
-                    var resourceDefinition = JObject.Parse(jsonPayload);
                     var ids = GetResourceIdentifiers(resourceDefinition);
                     var existingResourceDetails = (await GetResourceByIdentifiers(ids)).SingleOrDefault();
                     if (existingResourceDetails != null)
@@ -167,7 +144,7 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
                     }
                 }
 
-                var id = await Deploy(jsonPayload);
+                var id = await DeployNewResource(resourceDefinition);
                 response.Details = await WaitForDeploy(id);
                 response.CaasId = response.Details["id"].Value<string>();
                 response.DeploymentStatus = ResourceLogStatus.Deployed;
@@ -175,9 +152,39 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
             }
             catch (CaasException ex)
             {
+                _logProvider.LogError(ex.Message);
+
                 response.DeploymentStatus = ResourceLogStatus.Failed;
-                response.Error = ex.FullResponse;
+                response.Error = new Error
+                {
+                    Message = ex.Message,
+                    Operation = ex.Operation,
+                    ResponseCode = ex.ResponseCode
+                };
+
                 return response;
+            }
+        }
+
+        /// <summary>
+        /// Deploys the supplied resource.
+        /// </summary>
+        /// <param name="resourceDefinition">The resource definition.</param>
+        /// <returns>The async <see cref="Task"/>.</returns>
+        private async Task<string> DeployNewResource(JObject resourceDefinition)
+        {
+            _logProvider.LogMessage($"Deploying {_resourceType}: '{_resourceId}' ");
+
+            using (var client = HttpClientFactory.GetClient(_accountDetails))
+            {
+                var url = GetApiUrl(_resourceApi.DeployUrl);
+                var response = await client.PostAsync(url, new StringContent(resourceDefinition.ToString(), Encoding.UTF8, "application/json"));
+                var responseBody = await response.Content.ReadAsStringAsync();
+                await ThrowForHttpFailure(response);
+                var jsonResponse = JObject.Parse(responseBody);
+                var info = (JArray)jsonResponse["info"];
+                // TODO: Check if we ever get more than 1 
+                return info[0]["value"].Value<string>();
             }
         }
 
@@ -239,13 +246,38 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
         /// </summary>
         /// <param name="caasId">The CaaS identifier.</param>
         /// <returns>The async <see cref="Task"/>.</returns>
-        public async Task DeleteAndWait(string caasId)
+        public async Task<ResourceLog> DeleteAndWait(string caasId)
         {
-            bool wait = await Delete(caasId);
-            if (wait)
+            var response = new ResourceLog
             {
-                await WaitForDelete(caasId);
+                CaasId = caasId,
+                ResourceId = _resourceId,
+                ResourceType = _resourceType,
+                DeploymentStatus = ResourceLogStatus.Deleted
+            };
+
+            try
+            {
+                bool wait = await DeleteExistingResource(caasId);
+                if (wait)
+                {
+                    await WaitForDelete(caasId);
+                }
             }
+            catch (CaasException ex)
+            {
+                _logProvider.LogError(ex.Message);
+
+                response.DeploymentStatus = ResourceLogStatus.Failed;
+                response.Error = new Error
+                {
+                    Message = ex.Message,
+                    Operation = ex.Operation,
+                    ResponseCode = ex.ResponseCode
+                };
+            }
+
+            return response;
         }
 
         /// <summary>
@@ -253,7 +285,7 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
         /// </summary>
         /// <param name="caasId">The CaaS identifier.</param>
         /// <returns>The async <see cref="Task"/>.</returns>
-        private async Task<bool> Delete(string caasId) // Returns true if waiting is required
+        private async Task<bool> DeleteExistingResource(string caasId)
         {
             _logProvider.LogMessage($"Deleting {_resourceType}: '{_resourceId}' (ID: {caasId}) ");
             using (var client = HttpClientFactory.GetClient(_accountDetails))

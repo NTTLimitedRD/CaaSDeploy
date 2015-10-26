@@ -53,7 +53,7 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         {
             TokenHelper.SubstituteTokensInJObject(_resource.ResourceDefinition, context.Parameters, context.ResourcesProperties);
             var deployer = new ResourceDeployer(_logProvider, accountDetails, _resource.ResourceId, _resource.ResourceType);
-            var resourceLog = await deployer.DeployAndWait(_resource.ResourceDefinition.ToString());
+            var resourceLog = await deployer.DeployAndWait(_resource.ResourceDefinition);
 
             context.Log.Resources.Add(resourceLog);
             context.ResourcesProperties.Add(resourceLog.ResourceId, resourceLog.Details);

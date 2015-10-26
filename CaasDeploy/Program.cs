@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 
 using DD.CBU.CaasDeploy.Library;
-using DD.CBU.CaasDeploy.Library.Contracts;
 using DD.CBU.CaasDeploy.Library.Utilities;
 
 namespace DD.CBU.CaasDeploy
@@ -19,7 +17,7 @@ namespace DD.CBU.CaasDeploy
         /// The main entry point of the application.
         /// </summary>
         /// <param name="args">The command line arguments.</param>
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             Dictionary<string, string> arguments = ParseArguments(args);
             if (!ValidateArguments(arguments))
@@ -110,7 +108,7 @@ namespace DD.CBU.CaasDeploy
         /// </summary>
         /// <param name="arguments">The arguments.</param>
         /// <returns>The async <see cref="Task"/>.</returns>
-        static async Task PerformRequest(Dictionary<string, string> arguments)
+        private static async Task PerformRequest(Dictionary<string, string> arguments)
         {
             try
             {
@@ -119,14 +117,12 @@ namespace DD.CBU.CaasDeploy
                     arguments["password"],
                     arguments["region"]);
 
-                var logProvider = new ConsoleLogProvider();
-                var parser = new TemplateParser(new ConsoleLogProvider());
-
                 if (arguments["action"].ToLower() == "deploy")
                 {
                     var parametersFile = arguments.ContainsKey("parameters") ? arguments["parameters"] : null;
                     var templateFile = arguments["template"];
 
+                    var parser = new TemplateParser(new ConsoleLogProvider());
                     var taskExecutor = parser.ParseDeploymentTemplate(templateFile, parametersFile);
                     var log = await taskExecutor.Execute(accountDetails);
 
@@ -139,6 +135,7 @@ namespace DD.CBU.CaasDeploy
                 {
                     var deploymentLogFile = arguments["deploymentlog"];
 
+                    var parser = new TemplateParser(new ConsoleLogProvider());
                     var taskExecutor = parser.ParseDeploymentLog(deploymentLogFile);
                     var log = await taskExecutor.Execute(accountDetails);
 
