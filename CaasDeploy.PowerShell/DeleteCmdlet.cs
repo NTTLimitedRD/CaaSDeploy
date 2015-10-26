@@ -67,8 +67,8 @@ namespace DD.CBU.CaasDeploy.PowerShell
         {
             var accountDetails = await CaasAuthentication.Authenticate(UserName, Password, Region);
             var parser = new TemplateParser(new ConsoleLogProvider());
-            var taskExecutor = parser.ParseDeploymentLog(accountDetails, ResolvePath(DeploymentLog));
-            var log = await taskExecutor.Execute();
+            var taskExecutor = parser.ParseDeploymentLog(ResolvePath(DeploymentLog));
+            var log = await taskExecutor.Execute(accountDetails);
 
             Console.WriteLine($"Result: {log.Status}");
         }

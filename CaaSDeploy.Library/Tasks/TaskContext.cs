@@ -29,10 +29,5 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         /// Gets or sets the deployment log.
         /// </summary>
         public DeploymentLog Log { get; set; }
-
-        /// <summary>
-        /// Gets or sets the account details.
-        /// </summary>
-        public CaasAccountDetails AccountDetails { get; set; }
     }
 }

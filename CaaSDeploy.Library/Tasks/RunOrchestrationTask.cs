@@ -11,7 +11,7 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
     /// <summary>
     /// An implementation of <see cref="ITask"/> which executes an orchestration.
     /// </summary>
-    internal sealed class RunOrchestrationTask : ITask
+    public sealed class RunOrchestrationTask : ITask
     {
         /// <summary>
         /// The log provider.
@@ -59,9 +59,10 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         /// <summary>
         /// Executes the task.
         /// </summary>
+        /// <param name="accountDetails">The account details.</param>
         /// <param name="context">The task execution context.</param>
         /// <returns>The async <see cref="Task"/>.</returns>
-        public async Task Execute(TaskContext context)
+        public async Task Execute(CaasAccountDetails accountDetails, TaskContext context)
         {
             var providerTypeName = _orchestration["provider"].Value<String>();
             var providerType = Type.GetType(providerTypeName);

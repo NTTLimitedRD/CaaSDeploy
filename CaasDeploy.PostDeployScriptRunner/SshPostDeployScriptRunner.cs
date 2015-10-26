@@ -6,7 +6,7 @@ namespace DD.CBU.CaasDeploy.PostDeployScriptRunner
     /// <summary>
     /// Runs post-deploy scripts on a remote Linux server using SSH.
     /// </summary>
-    public sealed class SshPostDeployScriptRunner : IPostDeployScriptRunner
+    internal sealed class SshPostDeployScriptRunner : IPostDeployScriptRunner
     {
         /// <summary>
         /// The server IP

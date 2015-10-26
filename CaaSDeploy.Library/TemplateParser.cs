@@ -39,11 +39,10 @@ namespace DD.CBU.CaasDeploy.Library
         /// <summary>
         /// Gets the deployment tasks for the supplied deployment template.
         /// </summary>
-        /// <param name="accountDetails">The CaaS account details.</param>
         /// <param name="templateFilePath">The template file path.</param>
         /// <param name="parametersFilePath">The parameters file path.</param>
         /// <returns>Instance of <see cref="TaskExecutor"/> with tasks and task execution context.</returns>
-        public TaskExecutor ParseDeploymentTemplate(CaasAccountDetails accountDetails, string templateFilePath, string parametersFilePath)
+        public TaskExecutor ParseDeploymentTemplate(string templateFilePath, string parametersFilePath)
         {
             var template = ParseTemplate(templateFilePath);
             var parameters = ParseParameters(parametersFilePath);
@@ -75,7 +74,6 @@ namespace DD.CBU.CaasDeploy.Library
             // Create the task execution context.
             var context = new TaskContext
             {
-                AccountDetails = accountDetails,
                 ScriptPath = new FileInfo(templateFilePath).DirectoryName,
                 Parameters = parameters,
                 ResourcesProperties = new Dictionary<string, JObject>(),
@@ -93,10 +91,9 @@ namespace DD.CBU.CaasDeploy.Library
         /// <summary>
         /// Gets the deletion tasks for the supplied deployment log.
         /// </summary>
-        /// <param name="accountDetails">The CaaS account details.</param>
         /// <param name="deploymentLogFilePath">The deployment log file path.</param>
         /// <returns>Instance of <see cref="TaskExecutor"/> with tasks and task execution context.</returns>
-        public TaskExecutor ParseDeploymentLog(CaasAccountDetails accountDetails, string deploymentLogFilePath)
+        public TaskExecutor ParseDeploymentLog(string deploymentLogFilePath)
         {
             // Create a sequential list of tasks we need to execute.
             var deploymentLog = ParseLog(deploymentLogFilePath);
@@ -111,7 +108,6 @@ namespace DD.CBU.CaasDeploy.Library
             // Create the task execution context.
             var context = new TaskContext
             {
-                AccountDetails = accountDetails,
                 Log = new DeploymentLog()
                 {
                     DeploymentTime = DateTime.Now,
