@@ -4,7 +4,7 @@ using System.Linq;
 using DD.CBU.CaasDeploy.Library.Config;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace DD.CBU.CaasDeploy.Library.Tests.Config
+namespace DD.CBU.CaasDeploy.Library.Tests
 {
     /// <summary>
     /// Unit tests for the <see cref="ComputeConfigurationSection"/> class.
