@@ -5,10 +5,10 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-using CaasDeploy.Library.Contracts;
-using CaasDeploy.Library.Models;
+using DD.CBU.CaasDeploy.Library.Contracts;
+using DD.CBU.CaasDeploy.Library.Models;
 
-namespace CaasDeploy.Library
+namespace DD.CBU.CaasDeploy.Library
 {
     /// <summary>
     /// Performs authentication with CaaS.

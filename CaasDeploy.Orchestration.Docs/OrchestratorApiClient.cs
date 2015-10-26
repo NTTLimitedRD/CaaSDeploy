@@ -5,9 +5,9 @@ using System.Linq;
 using System.Net;
 using System.Text;
 
-using CaasDeploy.Orchestration.Docs.OrchestratorWebService;
+using DD.CBU.CaasDeploy.Orchestration.Docs.OrchestratorWebService;
 
-namespace CaasDeploy.Orchestration.Docs
+namespace DD.CBU.CaasDeploy.Orchestration.Docs
 {
     /// <summary>
     /// The orchestration API client.

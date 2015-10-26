@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 
-using CaasDeploy.Library.Models;
+using DD.CBU.CaasDeploy.Library.Models;
 using Newtonsoft.Json.Linq;
 
-namespace CaasDeploy.Library.Tasks
+namespace DD.CBU.CaasDeploy.Library.Tasks
 {
     /// <summary>
     /// The task execution context provides template and runtime information across tasks.

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace CaasDeploy.Library.Contracts
+namespace DD.CBU.CaasDeploy.Library.Contracts
 {
     /// <summary>
     /// Contains the configuration for the Compute API.

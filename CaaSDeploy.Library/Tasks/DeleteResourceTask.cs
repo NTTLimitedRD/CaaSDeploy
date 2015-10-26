@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-using CaasDeploy.Library.Contracts;
-using CaasDeploy.Library.Models;
-using Newtonsoft.Json.Linq;
+using DD.CBU.CaasDeploy.Library.Contracts;
+using DD.CBU.CaasDeploy.Library.Models;
+using DD.CBU.CaasDeploy.Library.Utilities;
 
-namespace CaasDeploy.Library.Tasks
+namespace DD.CBU.CaasDeploy.Library.Tasks
 {
     /// <summary>
     /// An implementation of <see cref="ITask"/> which deletes a resource.

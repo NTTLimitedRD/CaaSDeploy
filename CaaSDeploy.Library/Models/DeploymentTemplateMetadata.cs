@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace CaasDeploy.Library.Models
+namespace DD.CBU.CaasDeploy.Library.Models
 {
     /// <summary>
     /// Represents the metadata of a deployment template.

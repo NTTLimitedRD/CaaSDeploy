@@ -20,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaasDeploy.PostDeployScriptRunner", "CaasDeploy.PostDeployScriptRunner\CaasDeploy.PostDeployScriptRunner.csproj", "{3FB85ED6-C120-44CC-A339-18A9D6212E35}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9C7D9471-E90A-4EE3-A181-7A020980C655}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,5 +55,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1F7F2CDB-B824-4276-834C-B88D590ED011} = {9C7D9471-E90A-4EE3-A181-7A020980C655}
 	EndGlobalSection
 EndGlobal

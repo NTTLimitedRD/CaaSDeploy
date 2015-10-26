@@ -7,7 +7,7 @@
     <ProjectGuid>{13556378-32E3-4E3A-B34B-A97FEE7D658F}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CaasDeploy</RootNamespace>
+    <RootNamespace>DD.CBU.CaasDeploy</RootNamespace>
     <AssemblyName>CaasDeploy</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -33,6 +33,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>DD.CBU.CaasDeploy.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="JetBrains.Annotations, Version=9.2.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
@@ -70,26 +73,26 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="LittleTemplate.json">
+    <None Include="Samples\LittleTemplate.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
-    <None Include="Sharepoint.json">
+    <None Include="Samples\Sharepoint.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TestScripts.zip">
+    <None Include="Samples\TestScripts.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="TestTemplate.json">
+    <None Include="Samples\TestTemplate.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Sharepoint.params.json">
+    <None Include="Samples\Sharepoint.params.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TestTemplate.params.json">
+    <None Include="Samples\TestTemplate.params.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="VIPTemplate.json">
+    <None Include="Samples\VIPTemplate.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

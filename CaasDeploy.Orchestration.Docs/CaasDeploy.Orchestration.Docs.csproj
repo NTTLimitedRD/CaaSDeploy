@@ -7,8 +7,8 @@
     <ProjectGuid>{4EAAD5FD-B85D-41FE-9A43-3E1CCD2E9165}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CaasDeploy.Orchestration.Docs</RootNamespace>
-    <AssemblyName>CaasDeploy.Orchestration.Docs</AssemblyName>
+    <RootNamespace>DD.CBU.CaasDeploy.Orchestration.Docs</RootNamespace>
+    <AssemblyName>DD.CBU.CaasDeploy.Orchestration.Docs</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

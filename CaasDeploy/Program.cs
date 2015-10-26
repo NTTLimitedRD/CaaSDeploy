@@ -4,10 +4,10 @@ using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 
-using CaasDeploy.Library;
-using CaasDeploy.Library.Contracts;
+using DD.CBU.CaasDeploy.Library;
+using DD.CBU.CaasDeploy.Library.Contracts;
 
-namespace CaasDeploy
+namespace DD.CBU.CaasDeploy
 {
     /// <summary>
     /// A command line application wrapper for the template deployment library.

@@ -7,8 +7,8 @@
     <ProjectGuid>{3FB85ED6-C120-44CC-A339-18A9D6212E35}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CaasDeploy.PostDeployScriptRunner</RootNamespace>
-    <AssemblyName>CaasDeploy.PostDeployScriptRunner</AssemblyName>
+    <RootNamespace>DD.CBU.CaasDeploy.PostDeployScriptRunner</RootNamespace>
+    <AssemblyName>DD.CBU.CaasDeploy.PostDeployScriptRunner</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>b382574c</NuGetPackageImportStamp>

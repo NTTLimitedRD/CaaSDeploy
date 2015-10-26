@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace CaasDeploy.Library.Utilities
+namespace DD.CBU.CaasDeploy.Library.Utilities
 {
 	/// <summary>
 	/// The HTTP client adapter.

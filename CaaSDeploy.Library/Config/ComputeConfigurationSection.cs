@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using CaasDeploy.Library.Contracts;
+using DD.CBU.CaasDeploy.Library.Contracts;
 
-namespace CaasDeploy.Library.Config
+namespace DD.CBU.CaasDeploy.Library.Config
 {
     /// <summary>
     /// Contains the configuration for the Compute API.

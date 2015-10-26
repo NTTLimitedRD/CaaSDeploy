@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CaasDeploy.Library
+namespace DD.CBU.CaasDeploy.Library
 {
     /// <summary>
     /// An exception which is thrown when errors in a template are caught.

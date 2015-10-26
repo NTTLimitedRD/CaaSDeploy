@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace CaasDeploy.Orchestration.Docs
+namespace DD.CBU.CaasDeploy.Orchestration.Docs
 {
     /// <summary>
     /// The docs API client.

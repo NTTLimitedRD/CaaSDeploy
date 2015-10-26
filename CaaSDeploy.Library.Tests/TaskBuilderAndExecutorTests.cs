@@ -3,11 +3,11 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 
-using CaasDeploy.Library.Models;
-using CaasDeploy.Library.Tests.Helpers;
+using DD.CBU.CaasDeploy.Library.Models;
+using DD.CBU.CaasDeploy.Library.Tests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CaasDeploy.Library.Tests
+namespace DD.CBU.CaasDeploy.Library.Tests
 {
     /// <summary>
     /// Integration tests for the <see cref="TaskBuilder" /> class.

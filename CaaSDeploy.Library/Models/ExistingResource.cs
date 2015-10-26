@@ -1,7 +1,7 @@
-﻿using CaasDeploy.Library.Utilities;
+﻿using DD.CBU.CaasDeploy.Library.Utilities;
 using Newtonsoft.Json;
 
-namespace CaasDeploy.Library.Models
+namespace DD.CBU.CaasDeploy.Library.Models
 {
     /// <summary>
     /// Represents an existing CaaS resource a new resource depends on.

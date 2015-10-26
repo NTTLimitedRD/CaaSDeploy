@@ -1,4 +1,4 @@
-﻿namespace CaasDeploy.Library.Models
+﻿namespace DD.CBU.CaasDeploy.Library.Models
 {
     /// <summary>
     /// The status for a <see cref="ResourceLog"/>.

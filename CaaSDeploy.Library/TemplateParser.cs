@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-using CaasDeploy.Library.Models;
+using DD.CBU.CaasDeploy.Library.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace CaasDeploy.Library
+namespace DD.CBU.CaasDeploy.Library
 {
     /// <summary>
     /// Parses JSON deployment documents.

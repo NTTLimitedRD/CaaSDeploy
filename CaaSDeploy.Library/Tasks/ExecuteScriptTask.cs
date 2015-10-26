@@ -3,13 +3,13 @@ using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
 
-using CaasDeploy.Library.Contracts;
-using CaasDeploy.Library.Models;
-using CaasDeploy.Library.Utilities;
-using CaasDeploy.PostDeployScriptRunner;
+using DD.CBU.CaasDeploy.Library.Contracts;
+using DD.CBU.CaasDeploy.Library.Models;
+using DD.CBU.CaasDeploy.Library.Utilities;
+using DD.CBU.CaasDeploy.PostDeployScriptRunner;
 using Newtonsoft.Json.Linq;
 
-namespace CaasDeploy.Library.Tasks
+namespace DD.CBU.CaasDeploy.Library.Tasks
 {
     /// <summary>
     /// An implementation of <see cref="ITask"/> which executes a post deployment script.

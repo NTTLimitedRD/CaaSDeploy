@@ -1,4 +1,4 @@
-﻿namespace CaasDeploy.PostDeployScriptRunner
+﻿namespace DD.CBU.CaasDeploy.PostDeployScriptRunner
 {
     /// <summary>
     /// Specifies the type of operating system to create runners for.

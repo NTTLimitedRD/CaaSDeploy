@@ -9,8 +9,8 @@
 //------------------------------------------------------------------------------
 
 // Original file name:
-// Generation date: 2/10/2015 2:24:31 PM
-namespace CaasDeploy.Orchestration.Docs.OrchestratorWebService
+// Generation date: 26/10/2015 1:43:09 PM
+namespace DD.CBU.CaasDeploy.Orchestration.Docs.OrchestratorWebService
 {
     
     /// <summary>
@@ -38,7 +38,7 @@ namespace CaasDeploy.Orchestration.Docs.OrchestratorWebService
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
         protected global::System.Type ResolveTypeFromName(string typeName)
         {
-            global::System.Type resolvedType = this.DefaultResolveType(typeName, "Microsoft.SystemCenter.Orchestrator.WebService", "CaasDeploy.Orchestration.Docs.OrchestratorWebService");
+            global::System.Type resolvedType = this.DefaultResolveType(typeName, "Microsoft.SystemCenter.Orchestrator.WebService", "DD.CBU.CaasDeploy.Orchestration.Docs.OrchestratorWebService");
             if ((resolvedType != null))
             {
                 return resolvedType;
@@ -53,7 +53,7 @@ namespace CaasDeploy.Orchestration.Docs.OrchestratorWebService
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
         protected string ResolveNameFromType(global::System.Type clientType)
         {
-            if (clientType.Namespace.Equals("CaasDeploy.Orchestration.Docs.OrchestratorWebService", global::System.StringComparison.Ordinal))
+            if (clientType.Namespace.Equals("DD.CBU.CaasDeploy.Orchestration.Docs.OrchestratorWebService", global::System.StringComparison.Ordinal))
             {
                 return string.Concat("Microsoft.SystemCenter.Orchestrator.WebService.", clientType.Name);
             }

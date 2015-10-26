@@ -1,4 +1,4 @@
-﻿namespace CaasDeploy.Library.Models
+﻿namespace DD.CBU.CaasDeploy.Library.Models
 {
     /// <summary>
     /// Contains the action URLs for a particular type of CaaS resource.

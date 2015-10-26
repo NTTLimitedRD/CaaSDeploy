@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CaasDeploy.Library.Contracts
+namespace DD.CBU.CaasDeploy.Library.Contracts
 {
     /// <summary>
     /// Implementations of this interface provide logging capabilities.

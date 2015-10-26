@@ -1,8 +1,8 @@
 ﻿using System;
 
-using CaasDeploy.Library.Contracts;
+using DD.CBU.CaasDeploy.Library.Contracts;
 
-namespace CaasDeploy.Library
+namespace DD.CBU.CaasDeploy.Library
 {
     /// <summary>
     /// A <see cref="ILogProvider"/> implementation which writes to the console.

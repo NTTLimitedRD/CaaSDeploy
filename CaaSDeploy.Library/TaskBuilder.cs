@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using CaasDeploy.Library.Contracts;
-using CaasDeploy.Library.Models;
-using CaasDeploy.Library.Tasks;
-using CaasDeploy.Library.Utilities;
+using DD.CBU.CaasDeploy.Library.Contracts;
+using DD.CBU.CaasDeploy.Library.Models;
+using DD.CBU.CaasDeploy.Library.Tasks;
+using DD.CBU.CaasDeploy.Library.Utilities;
 using Newtonsoft.Json.Linq;
 
-namespace CaasDeploy.Library
+namespace DD.CBU.CaasDeploy.Library
 {
     /// <summary>
     /// Builds task lists and contexts from deployment documents.

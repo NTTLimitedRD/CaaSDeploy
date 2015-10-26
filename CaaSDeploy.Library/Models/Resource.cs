@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 
-using CaasDeploy.Library.Utilities;
+using DD.CBU.CaasDeploy.Library.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace CaasDeploy.Library.Models
+namespace DD.CBU.CaasDeploy.Library.Models
 {
     /// <summary>
     /// Represents a deployment resource.
