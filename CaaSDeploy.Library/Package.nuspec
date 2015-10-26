@@ -12,7 +12,7 @@
     <summary>Library for deploying templates to CaaS</summary>
     <copyright>2015 (c) Dimension Data</copyright>
     <language>en-AU</language>
-    <tags>aperture</tags>
+    <tags>CaaS</tags>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System" targetFramework="net451" />
     </frameworkAssemblies>

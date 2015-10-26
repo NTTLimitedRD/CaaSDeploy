@@ -93,7 +93,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Config\ComputeConfigurationSectionTests.cs" />
+    <Compile Include="ComputeConfigurationSectionTests.cs" />
     <Compile Include="Helpers\FakeHttpClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TemplateParserTests.cs" />
