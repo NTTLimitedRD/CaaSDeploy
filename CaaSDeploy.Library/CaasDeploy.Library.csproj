@@ -80,11 +80,12 @@
     <Compile Include="Config\ComputeConfigurationSection.cs" />
     <Compile Include="Config\RegionConfigurationElement.cs" />
     <Compile Include="Config\RegionConfigurationElementCollection.cs" />
+    <Compile Include="NullLogProvider.cs" />
     <Compile Include="ConsoleLogProvider.cs" />
     <Compile Include="Contracts\ILogProvider.cs" />
     <Compile Include="Contracts\IOrchestrationProvider.cs" />
-    <Compile Include="Contracts\ITemplateParser.cs" />
     <Compile Include="Models\Error.cs" />
+    <Compile Include="TaskBuilder.cs" />
     <Compile Include="TemplateParserException.cs" />
     <Compile Include="Models\CaasAccountDetails.cs" />
     <Compile Include="Models\CaasApiUrls.cs" />
@@ -103,8 +104,8 @@
     <Compile Include="Tasks\DeployResourceTask.cs" />
     <Compile Include="Tasks\LoadExistingResourcesTask.cs" />
     <Compile Include="Tasks\RunOrchestrationTask.cs" />
-    <Compile Include="Tasks\TaskContext.cs" />
-    <Compile Include="Tasks\TaskExecutor.cs" />
+    <Compile Include="TaskContext.cs" />
+    <Compile Include="TaskExecutor.cs" />
     <Compile Include="Utilities\DeploymentTemplateLogExtensions.cs" />
     <Compile Include="Utilities\HttpClientAdapter.cs" />
     <Compile Include="Utilities\HttpClientFactory.cs" />

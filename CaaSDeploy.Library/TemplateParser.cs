@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
-using DD.CBU.CaasDeploy.Library.Contracts;
 using DD.CBU.CaasDeploy.Library.Models;
-using DD.CBU.CaasDeploy.Library.Tasks;
-using DD.CBU.CaasDeploy.Library.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -15,116 +11,14 @@ namespace DD.CBU.CaasDeploy.Library
     /// <summary>
     /// Builds task lists and contexts from deployment template documents.
     /// </summary>
-    public sealed class TemplateParser : ITemplateParser
+    public static class TemplateParser
     {
-        /// <summary>
-        /// The log provider
-        /// </summary>
-        private readonly ILogProvider _logProvider;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TemplateParser"/> class.
-        /// </summary>
-        /// <param name="logProvider">The log provider.</param>
-        public TemplateParser(ILogProvider logProvider)
-        {
-            if (logProvider == null)
-            {
-                throw new ArgumentNullException(nameof(logProvider));
-            }
-
-            _logProvider = logProvider;
-        }
-
-        /// <summary>
-        /// Gets the deployment tasks for the supplied deployment template.
-        /// </summary>
-        /// <param name="templateFilePath">The template file path.</param>
-        /// <param name="parametersFilePath">The parameters file path.</param>
-        /// <returns>Instance of <see cref="TaskExecutor"/> with tasks and task execution context.</returns>
-        public TaskExecutor ParseDeploymentTemplate(string templateFilePath, string parametersFilePath)
-        {
-            var template = ParseTemplate(templateFilePath);
-            var parameters = ParseParameters(parametersFilePath);
-            var sortedResources = ResourceDependencies.DependencySort(template.Resources, template.ExistingResources).Reverse().ToList();
-
-            // Create a sequential list of tasks we need to execute.
-            var tasks = new List<ITask>();
-
-            if ((template.ExistingResources != null) && (template.ExistingResources.Count > 0))
-            {
-                tasks.Add(new LoadExistingResourcesTask(_logProvider, template.ExistingResources));
-            }
-
-            foreach (var resource in sortedResources)
-            {
-                tasks.Add(new DeployResourceTask(_logProvider, resource));
-
-                if ((resource.Scripts != null) && (resource.ResourceType == ResourceType.Server))
-                {
-                    tasks.Add(new ExecuteScriptTask(_logProvider, resource));
-                }
-            }
-
-            if (template.Orchestration != null)
-            {
-                tasks.Add(new RunOrchestrationTask(_logProvider, template.Orchestration, sortedResources));
-            }
-
-            // Create the task execution context.
-            var context = new TaskContext
-            {
-                ScriptPath = new FileInfo(templateFilePath).DirectoryName,
-                Parameters = parameters,
-                ResourcesProperties = new Dictionary<string, JObject>(),
-                Log = new DeploymentLog()
-                {
-                    DeploymentTime = DateTime.Now,
-                    TemplateName = template.Metadata.TemplateName,
-                    Resources = new List<ResourceLog>()
-                }
-            };
-
-            return new TaskExecutor(template, tasks, context);
-        }
-
-        /// <summary>
-        /// Gets the deletion tasks for the supplied deployment log.
-        /// </summary>
-        /// <param name="deploymentLogFilePath">The deployment log file path.</param>
-        /// <returns>Instance of <see cref="TaskExecutor"/> with tasks and task execution context.</returns>
-        public TaskExecutor ParseDeploymentLog(string deploymentLogFilePath)
-        {
-            // Create a sequential list of tasks we need to execute.
-            var deploymentLog = ParseLog(deploymentLogFilePath);
-            var reversedResources = new List<ResourceLog>(deploymentLog.Resources);
-            reversedResources.Reverse();
-
-            var tasks = reversedResources
-                .Where(resource => resource.CaasId != null)
-                .Select(resource => (ITask)new DeleteResourceTask(_logProvider, resource))
-                .ToList();
-
-            // Create the task execution context.
-            var context = new TaskContext
-            {
-                Log = new DeploymentLog()
-                {
-                    DeploymentTime = DateTime.Now,
-                    TemplateName = deploymentLog.TemplateName,
-                    Resources = new List<ResourceLog>()
-                }
-            };
-
-            return new TaskExecutor(null, tasks, context);
-        }
-
         /// <summary>
         /// Parses the template.
         /// </summary>
         /// <param name="fileName">Path to the file.</param>
         /// <returns>The parsed deployment template.</returns>
-        private DeploymentTemplate ParseTemplate(string fileName)
+        public static DeploymentTemplate ParseDeploymentTemplate(string fileName)
         {
             using (var reader = new StreamReader(fileName))
             {
@@ -138,7 +32,7 @@ namespace DD.CBU.CaasDeploy.Library
         /// </summary>
         /// <param name="fileName">Path to the file.</param>
         /// <returns>The parsed parameters.</returns>
-        private Dictionary<string, string> ParseParameters(string fileName)
+        public static Dictionary<string, string> ParseDeploymentParameters(string fileName)
         {
             var dict = new Dictionary<string, string>();
             if (fileName == null)
@@ -163,7 +57,7 @@ namespace DD.CBU.CaasDeploy.Library
         /// </summary>
         /// <param name="fileName">Path to the file.</param>
         /// <returns>The parsed deployment log.</returns>
-        private DeploymentLog ParseLog(string fileName)
+        public static DeploymentLog ParseDeploymentLog(string fileName)
         {
             using (var reader = new StreamReader(fileName))
             {

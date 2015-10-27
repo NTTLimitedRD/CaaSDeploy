@@ -66,8 +66,8 @@ namespace DD.CBU.CaasDeploy.PowerShell
         private async Task BeginProcessingAsync()
         {
             var accountDetails = await CaasAuthentication.Authenticate(UserName, Password, Region);
-            var parser = new TemplateParser(new ConsoleLogProvider());
-            var taskExecutor = parser.ParseDeploymentLog(ResolvePath(DeploymentLog));
+            var taskBuilder = new TaskBuilder(new ConsoleLogProvider());
+            var taskExecutor = taskBuilder.BuildTasksFromDeploymentLog(ResolvePath(DeploymentLog));
             var log = await taskExecutor.Execute(accountDetails);
 
             Console.WriteLine($"Result: {log.Status}");

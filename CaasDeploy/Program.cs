@@ -122,8 +122,8 @@ namespace DD.CBU.CaasDeploy
                     var parametersFile = arguments.ContainsKey("parameters") ? arguments["parameters"] : null;
                     var templateFile = arguments["template"];
 
-                    var parser = new TemplateParser(new ConsoleLogProvider());
-                    var taskExecutor = parser.ParseDeploymentTemplate(templateFile, parametersFile);
+                    var taskBuilder = new TaskBuilder(new ConsoleLogProvider());
+                    var taskExecutor = taskBuilder.BuildTasksFromDeploymentTemplate(templateFile, parametersFile);
                     var log = await taskExecutor.Execute(accountDetails);
 
                     Console.WriteLine($"Result: {log.Status}");
@@ -135,8 +135,8 @@ namespace DD.CBU.CaasDeploy
                 {
                     var deploymentLogFile = arguments["deploymentlog"];
 
-                    var parser = new TemplateParser(new ConsoleLogProvider());
-                    var taskExecutor = parser.ParseDeploymentLog(deploymentLogFile);
+                    var taskBuilder = new TaskBuilder(new ConsoleLogProvider());
+                    var taskExecutor = taskBuilder.BuildTasksFromDeploymentLog(deploymentLogFile);
                     var log = await taskExecutor.Execute(accountDetails);
 
                     Console.WriteLine($"Result: {log.Status}");

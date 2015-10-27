@@ -232,14 +232,14 @@ First, you need obtain an initialized instance of _CaasAccountDetails_. If you d
 CaasAccountDetails accountDetails = await CaasAuthentication.Authenticate(userName, password, region);
 ```
 
-Next you create an instance of the _TemplateParser_ class and pass it an implementation of _ILogProvider_.
+Next you create an instance of the _TaskBuilder_ class and pass it an implementation of _ILogProvider_.
 ```c#
-TemplateParser parser = new TemplateParser(new ConsoleLogProvider());
+TaskBuilder taskBuilder = new TaskBuilder(new ConsoleLogProvider());
 ```
 
-Then use the parser to parse either a deployment template or deployment log file.
+Then use the task builder to parse either a deployment template or deployment log file.
 ```c#
-TaskExecutor taskExecutor = parser.ParseDeploymentTemplate(templateFile, parametersFile);
+TaskExecutor taskExecutor = taskBuilder.BuildTasksFromDeploymentTemplate(templateFile, parametersFile);
 ```
 
 Finally, execute the parsed tasks.

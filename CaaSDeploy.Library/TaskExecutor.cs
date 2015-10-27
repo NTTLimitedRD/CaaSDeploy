@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using DD.CBU.CaasDeploy.Library.Contracts;
 using DD.CBU.CaasDeploy.Library.Models;
 
-namespace DD.CBU.CaasDeploy.Library.Tasks
+namespace DD.CBU.CaasDeploy.Library
 {
     /// <summary>
     /// Contains the tasks and the context to execute them.
