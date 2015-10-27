@@ -28,6 +28,6 @@
     <file src="bin\Release\DD.CBU.CaasDeploy.Library.xml" target="lib\net451\DD.CBU.CaasDeploy.Library.xml" />
     <file src="bin\Release\DD.CBU.CaasDeploy.PostDeployScriptRunner.dll" target="lib\net451\DD.CBU.CaasDeploy.PostDeployScriptRunner.dll" />
     <file src="bin\Release\DD.CBU.CaasDeploy.PostDeployScriptRunner.xml" target="lib\net451\DD.CBU.CaasDeploy.PostDeployScriptRunner.xml" />
-    <file src="bin\Release\PsExec.exe" target="lib\net451\PsExec.exe" />
+    <!--<file src="bin\Release\PsExec.exe" target="lib\net451\PsExec.exe" />-->
   </files>
 </package>

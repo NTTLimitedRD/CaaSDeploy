@@ -15,9 +15,10 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         /// <summary>
         /// Initializes a new instance of the <see cref="TaskExecutor"/> class.
         /// </summary>
+        /// <param name="template">The deployment template.</param>
         /// <param name="tasks">The tasks to execute.</param>
         /// <param name="context">The task execution context.</param>
-        public TaskExecutor(IList<ITask> tasks, TaskContext context)
+        public TaskExecutor(DeploymentTemplate template, IList<ITask> tasks, TaskContext context)
         {
             if (tasks == null)
             {
@@ -29,9 +30,15 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
                 throw new ArgumentNullException(nameof(context));
             }
 
+            Template = template;
             Tasks = tasks;
             Context = context;
         }
+
+        /// <summary>
+        /// Gets the deployment template.
+        /// </summary>
+        public DeploymentTemplate Template { get; private set; }
 
         /// <summary>
         /// Gets the tasks to execute.

@@ -85,7 +85,7 @@ namespace DD.CBU.CaasDeploy.Library
                 }
             };
 
-            return new TaskExecutor(tasks, context);
+            return new TaskExecutor(template, tasks, context);
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace DD.CBU.CaasDeploy.Library
                 }
             };
 
-            return new TaskExecutor(tasks, context);
+            return new TaskExecutor(null, tasks, context);
         }
 
         /// <summary>
