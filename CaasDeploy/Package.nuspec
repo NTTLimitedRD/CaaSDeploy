@@ -18,8 +18,8 @@
     </frameworkAssemblies>
     <dependencies>
       <group targetFramework=".NETFramework4.5">
-        <dependency id="DD.CBU.CaasDeploy.Library" version="0.2.0" />
-        <dependency id="DD.CBU.CaasDeploy.Orchestration.Docs" version="0.2.0" />
+        <dependency id="DD.CBU.CaasDeploy.Library" version="$version$" />
+        <dependency id="DD.CBU.CaasDeploy.Orchestration.Docs" version="$version$" />
         <dependency id="Microsoft.Data.Edm" version="5.6.4" />
         <dependency id="Microsoft.Data.OData" version="5.6.4" />
         <dependency id="Microsoft.Data.Services.Client" />
@@ -28,7 +28,4 @@
       </group>
     </dependencies>
   </metadata>
-  <files>
-    <file src="bin\Release\DD.CBU.CaasDeploy.Orchestration.Docs.dll" target="lib\net451\DD.CBU.CaasDeploy.Orchestration.Docs.dll" />
-  </files>
 </package>
