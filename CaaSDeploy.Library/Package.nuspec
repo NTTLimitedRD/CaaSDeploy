@@ -10,7 +10,6 @@
     <description>Library for deploying templates to CaaS</description>
     <summary>Library for deploying templates to CaaS</summary>
     <projectUrl>https://github.com/DimensionDataCBUSydney/CaaSDeploy</projectUrl>
-    <iconUrl>http://aperturewebcontent.blob.core.windows.net/web-images/ApertureLogoTiny.png</iconUrl>
     <copyright>2015 (c) Dimension Data</copyright>
     <language>en-AU</language>
     <tags>CaaS</tags>
@@ -25,10 +24,10 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\DD.CBU.CaasDeploy.Library.dll" target="lib\net45\DD.CBU.CaasDeploy.Library.dll" />
-    <file src="bin\Release\DD.CBU.CaasDeploy.Library.xml" target="lib\net45\DD.CBU.CaasDeploy.Library.xml" />
-    <file src="bin\Release\DD.CBU.CaasDeploy.PostDeployScriptRunner.dll" target="lib\net45\DD.CBU.CaasDeploy.PostDeployScriptRunner.dll" />
-    <file src="bin\Release\DD.CBU.CaasDeploy.PostDeployScriptRunner.xml" target="lib\net45\DD.CBU.CaasDeploy.PostDeployScriptRunner.xml" />
+    <file src="bin\Release\DD.CBU.CaasDeploy.Library.dll" target="lib\net451\DD.CBU.CaasDeploy.Library.dll" />
+    <file src="bin\Release\DD.CBU.CaasDeploy.Library.xml" target="lib\net451\DD.CBU.CaasDeploy.Library.xml" />
+    <file src="bin\Release\DD.CBU.CaasDeploy.PostDeployScriptRunner.dll" target="lib\net451\DD.CBU.CaasDeploy.PostDeployScriptRunner.dll" />
+    <file src="bin\Release\DD.CBU.CaasDeploy.PostDeployScriptRunner.xml" target="lib\net451\DD.CBU.CaasDeploy.PostDeployScriptRunner.xml" />
     <file src="bin\Release\PsExec.exe" target="lib\net45\PsExec.exe" />
   </files>
 </package>
