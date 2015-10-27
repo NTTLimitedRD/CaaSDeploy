@@ -19,10 +19,6 @@
     </frameworkAssemblies>
     <dependencies>
       <group targetFramework=".NETFramework4.5">
-        <dependency id="JetBrains.Annotations" version="9.2.0" />
-        <dependency id="Microsoft.Bcl" version="1.1.10" />
-        <dependency id="Microsoft.Bcl.Build" version="1.0.14" />
-        <dependency id="Microsoft.Net.Http" version="2.2.29" />
         <dependency id="Newtonsoft.Json" version="7.0.1" />
         <dependency id="QuickGraph" version="3.6.61119.7" />
       </group>
