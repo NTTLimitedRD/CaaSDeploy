@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/ktrs07n3r9s4m6nm?svg=true)](https://ci.appveyor.com/project/tonybaloney/caasdeploy)
+
 # CaaSDeploy
 Deployment of CaaS infrastructure using JSON templates
 
@@ -218,6 +220,41 @@ Note that the template defines three parameters. You'll need to supply a paramet
         "datacenterId": {
             "value": "NA9"
         }
+    }
+}
+```
+
+## Using the .NET Library
+You can also use the .NET library in your own projects instead of the console application.
+
+First, you need obtain an initialized instance of _CaasAccountDetails_. If you don't know the details like URLs and OrgID, you can use the _CaasAuthentication_ helper class.
+```c#
+CaasAccountDetails accountDetails = await CaasAuthentication.Authenticate(userName, password, region);
+```
+
+Next you create an instance of the _TemplateParser_ class and pass it an implementation of _ILogProvider_.
+```c#
+TemplateParser parser = new TemplateParser(new ConsoleLogProvider());
+```
+
+Then use the parser to parse either a deployment template or deployment log file.
+```c#
+TaskExecutor taskExecutor = parser.ParseDeploymentTemplate(templateFile, parametersFile);
+```
+
+Finally, execute the parsed tasks.
+```c#
+DeploymentLog log = await taskExecutor.Execute(accountDetails);
+```
+
+Note, the _Execute_ method of the task executor is just a helper method for convenience. If you need more control over the task execution, you can simply enumerate the tasks and execute them individually.
+```c#
+foreach (var task in taskExecutor.Tasks)
+{
+    await task.Execute(accountDetails, taskExecutor.Context);
+    if (taskExecutor.Context.Log.Status == DeploymentLogStatus.Failed)
+    {
+        throw new Exception(taskExecutor.Context.Log.Resources.Last().Error.Message);
     }
 }
 ```
