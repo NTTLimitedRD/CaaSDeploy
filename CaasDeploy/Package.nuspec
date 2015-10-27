@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
-    <id>DD.CBU.CaasDeploy.Orchestration.Docs</id>
+    <id>DD.CBU.CaasDeploy</id>
     <version>$version$</version>
-    <title>Dimension Data CaaS Template Deploy DOCS Orchestration</title>
+    <title>Dimension Data CaaS Template Deploy Console</title>
     <authors>Dimension Data</authors>
     <owners>tom.hollander@dimensiondata.com</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>CaasDeploy plug-in for DOCS and Orcheatrator</description>
-    <summary>CaasDeploy plug-in for DOCS and Orcheatrator</summary>
+    <description>Console Application for deploying templates to CaaS</description>
+    <summary>Console Application for deploying templates to CaaS</summary>
     <projectUrl>https://github.com/DimensionDataCBUSydney/CaaSDeploy</projectUrl>
     <copyright>2015 (c) Dimension Data</copyright>
     <language>en-AU</language>
@@ -19,6 +19,7 @@
     <dependencies>
       <group targetFramework=".NETFramework4.5">
         <dependency id="DD.CBU.CaasDeploy.Library" version="0.2.0" />
+        <dependency id="DD.CBU.CaasDeploy.Orchestration.Docs" version="0.2.0" />
         <dependency id="Microsoft.Data.Edm" version="5.6.4" />
         <dependency id="Microsoft.Data.OData" version="5.6.4" />
         <dependency id="Microsoft.Data.Services.Client" />
