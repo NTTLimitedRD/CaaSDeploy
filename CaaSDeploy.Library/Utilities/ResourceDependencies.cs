@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using DD.CBU.CaasDeploy.Library.Models;
-using JetBrains.Annotations;
 using QuickGraph;
 using QuickGraph.Algorithms;
 
@@ -22,8 +21,7 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
         /// <returns>
         ///	A read-only list of <see cref="Resource"/>s in dependency order.
         /// </returns>
-        [NotNull]
-		public static IReadOnlyList<Resource> DependencySort([NotNull] IReadOnlyCollection<Resource> resources, [NotNull] IReadOnlyCollection<ExistingResource> existingResources)
+		public static IReadOnlyList<Resource> DependencySort(IReadOnlyCollection<Resource> resources, IReadOnlyCollection<ExistingResource> existingResources)
 		{
 			if (resources == null)
             {
