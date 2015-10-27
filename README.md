@@ -258,3 +258,7 @@ foreach (var task in taskExecutor.Tasks)
     }
 }
 ```
+
+## Terms
+This library has been provided as a utility for clients, it does not form part of a service provided by Dimension Data.
+This utility is provided 'as-is' and Dimension Data cannot provide support for its usage.
