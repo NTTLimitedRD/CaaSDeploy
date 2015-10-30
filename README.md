@@ -12,7 +12,7 @@ Usage:
 
 The -parameters argument can be omited if you don't have any parameters in your template.
 
-The -region argument should use the CaaS region code, e.g. AU or NA.
+The -region argument should use the CaaS region code, e.g. AU or NA. (The regions can be configured in the _app.config_ file.)
 
 *To delete a deployment using a previous deployment log*:
 
@@ -26,18 +26,19 @@ The templates are in JSON format and contain up to five sections: **metadata** (
 **parameters** contains a single JSON element containing the list of parameter names and their descriptions. The values for the parameters
 (which will vary per deployment) go in a separate file.
 
-**existingResources** contains an array of CaaS resources which are _not_ to be deployed as a part of the template, but
-whose properties should be retrieved for use with the $resources macro. Each entry has the following properties.
-
-* **resourceType**: The type of the CaaS resource. Acceptable values (case sensitive) are NetworkDomain, Vlan, Server, FirewallRule, PublicIpBlock, NatRule, Node, Pool, PoolMember, VirtualListener.
-* **resourceId**: A unique identifier for the resource. This isn't used by CaaS, but is used to identify the resource with the
-$resources macro.
-* **caasId**: The CaaS unique identifier (GUID) for the resource.
+* **title**: A user friendly display title.
+* **description**: An extended description of the purpose and usage of the parameter.
+* **type**: The parameter type. Supported values are: _string_ (default)_, integer, boolean, password, caas.dataCenterId, caas.networkDomainId, caas.vlanId_.
+* **group**: An optional group identifier for the parameter. Supported values are _Environment_ (default) and _Application_.
+* **required**: An optional value indicating whether the parameter is required. The default is _true_.
+* **minLength**: An optional value specifiyng the minimum string length.
+* **maxLength**: An optional value specifiyng the maximum string length.
 
 **resources** contains an array with the list of resources to be deployed. Each element in the array has the following properties.
 
-* **resourceType**: The type of CaaS resource to deploy. Acceptable values (case sensitive) are NetworkDomain, Vlan, Server, FirewallRule, PublicIpBlock, NatRule, Node, Pool, PoolMember, VirtualListener.
+* **resourceType**: The type of CaaS resource to deploy. Acceptable values (case sensitive) are _NetworkDomain, Vlan, Server, FirewallRule, PublicIpBlock, NatRule, Node, Pool, PoolMember, VirtualListener_.
 * **resourceId**: A unique identifier for the resource. This isn't used by CaaS, so it's only valid within the template for deploying templates.
+* **existingCaasId**: A unique identifier for the resource in CaaS if it already exists. This property is optional. If provided, the deployment tool will reuse the existing resource instead of creating a new one and the resourceDefinition property can be omitted.
 * **dependsOn**: An array with the resourceIds for any other resources which must be created before this one.
 * **resourceDefinition**: A blob of JSON that is passed to the CloudControl 2.0 API to create the resource (see [documentation](https://community.opsourcecloud.net/Browse.jsp?id=e5b1a66815188ad439f76183b401f026) for syntax).
 * **scripts**: For Server resources only, used to specify that you want to run scripts on the VM after deployment. Contains two child properties:
@@ -52,7 +53,9 @@ JSON properties within the template may use the following macros to retrieve val
 
 * **$parameters['*paramName*']**: Retrieves the value of the specfied parameter
 * **$resources['*resourceId*']._propertyPath_**: Retrieves the value of the requested property for a previously created resource (including those defined in **existingResources**). The properties can be several levels deep, e.g. "$resources['MyVM'].networkInfo.primaryNic.privateIpv4"
-
+* **$serverImage['*dataCenterId*', '*ImageName*']**: Retrieves the base server image with the supplied name from the supplied data center.
+* **$customerImage['*dataCenterId*', '*ImageName*']**: Retrieves the customer server image with the supplied name from the supplied data center.
+* 
 ## Sample Template
 This template deploys a new Network Domain with a VNET, a Public IP Block and a Server. It also creates a NAT rule mapping the 
 public IP to the private IP, and opens firewall ports for web and RDP traffic.
@@ -65,13 +68,16 @@ public IP to the private IP, and opens firewall ports for web and RDP traffic.
   },
   "parameters": {
     "myVMName": {
-      "description": "The name to use for the Virtual Machine"
+      "description": "The name to use for the Virtual Machine",
+      "type": "string"
     },
     "myNetworkDomainName": {
-      "description": "The name to use for the Network Domain"
+      "description": "The name to use for the Network Domain",
+      "type": "string"
     },
     "datacenterId": {
-      "description": "The region to deploy to"
+      "description": "The region to deploy to",
+      "type": "caas.dataCenterId"
     }
   },
   "resources": [
@@ -227,14 +233,18 @@ Note that the template defines three parameters. You'll need to supply a paramet
 ## Using the .NET Library
 You can also use the .NET library in your own projects instead of the console application.
 
-First, you need obtain an initialized instance of _CaasAccountDetails_. If you don't know the details like URLs and OrgID, you can use the _CaasAuthentication_ helper class.
+First, you need to initialize a new instance of _RuntimeContext_ with _CaasAccountDetails_. If you don't know the details like URLs and OrgID, you can use the _CaasAuthentication_ helper class.
 ```c#
-CaasAccountDetails accountDetails = await CaasAuthentication.Authenticate(userName, password, region);
+RuntimeContext runtimeContext = new RuntimeContext
+{
+    AccountDetails = await CaasAuthentication.Authenticate(userName, password, region),
+    LogProvider = new ConsoleLogProvider()
+};
 ```
 
 Next you create an instance of the _TaskBuilder_ class and pass it an implementation of _ILogProvider_.
 ```c#
-TaskBuilder taskBuilder = new TaskBuilder(new ConsoleLogProvider());
+TaskBuilder taskBuilder = new TaskBuilder();
 ```
 
 Then use the task builder to parse either a deployment template or deployment log file.
@@ -244,14 +254,14 @@ TaskExecutor taskExecutor = taskBuilder.BuildTasksFromDeploymentTemplate(templat
 
 Finally, execute the parsed tasks.
 ```c#
-DeploymentLog log = await taskExecutor.Execute(accountDetails);
+DeploymentLog log = await taskExecutor.Execute(runtimeContext);
 ```
 
 Note, the _Execute_ method of the task executor is just a helper method for convenience. If you need more control over the task execution, you can simply enumerate the tasks and execute them individually.
 ```c#
 foreach (var task in taskExecutor.Tasks)
 {
-    await task.Execute(accountDetails, taskExecutor.Context);
+    await task.Execute(runtimeContext, taskExecutor.Context);
     if (taskExecutor.Context.Log.Status == DeploymentLogStatus.Failed)
     {
         throw new Exception(taskExecutor.Context.Log.Resources.Last().Error.Message);
