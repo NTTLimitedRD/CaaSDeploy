@@ -19,10 +19,6 @@ namespace DD.CBU.CaasDeploy.Library.Contracts
         /// <param name="orchestrationObject">The orchestration object.</param>
         /// <param name="resources">The resources.</param>
         /// <returns>The async <see cref="Task"/>.</returns>
-        Task RunOrchestration(
-            RuntimeContext runtimeContext,
-            TaskContext taskContext,
-            JObject orchestrationObject,
-            IEnumerable<Resource> resources);
+        Task RunOrchestration(RuntimeContext runtimeContext, TaskContext taskContext, JObject orchestrationObject, IEnumerable<Resource> resources);
     }
 }

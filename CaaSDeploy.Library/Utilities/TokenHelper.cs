@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 
 using DD.CBU.CaasDeploy.Library.Contracts;
 using DD.CBU.CaasDeploy.Library.Macros;
-using DD.CBU.CaasDeploy.Library.Models;
 using Newtonsoft.Json.Linq;
 
 namespace DD.CBU.CaasDeploy.Library.Utilities
@@ -41,7 +40,7 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
                 else if (parameter.Value is JValue)
                 {
                     var value = parameter.Value.Value<string>();
-                    value = await SubstitutePropertyTokensInString(runtimeContext, taskContext, value);
+                    value = await SubstituteTokensInString(runtimeContext, taskContext, value);
                     parameter.Value.Replace(new JValue(value));
                 }
                 else if (parameter.Value is JArray)
@@ -61,9 +60,14 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
         /// <param name="taskContext">The task execution context.</param>
         /// <param name="input">The input string.</param>
         /// <returns>The substituted string</returns>
-        public static async Task<string> SubstitutePropertyTokensInString(RuntimeContext runtimeContext, TaskContext taskContext, string input)
+        public static async Task<string> SubstituteTokensInString(RuntimeContext runtimeContext, TaskContext taskContext, string input)
         {
             var value = input;
+
+            if (string.IsNullOrEmpty(value))
+            {
+                return value;
+            }
 
             foreach (var macro in Macros)
             {

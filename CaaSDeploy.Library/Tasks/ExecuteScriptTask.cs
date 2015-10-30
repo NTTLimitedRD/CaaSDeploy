@@ -65,7 +65,7 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
             }
             scriptDirectory.Delete();
 
-            string deployScript = await TokenHelper.SubstitutePropertyTokensInString(runtimeContext, taskContext, _resource.Scripts.OnDeploy);
+            string deployScript = await TokenHelper.SubstituteTokensInString(runtimeContext, taskContext, _resource.Scripts.OnDeploy);
             runtimeContext.LogProvider.LogMessage("\tExecuting script " + deployScript);
             await scriptRunner.ExecuteScript(deployScript);
         }

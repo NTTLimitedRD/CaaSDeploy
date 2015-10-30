@@ -17,11 +17,10 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
         ///	Sort the specified resources in dependency order (most-dependent-first).
         /// </summary>
         /// <param name="resources">The resources to examine.</param>
-		/// <param name="existingResources">The existing resources to examine.</param>
         /// <returns>
         ///	A read-only list of <see cref="Resource"/>s in dependency order.
         /// </returns>
-		public static IReadOnlyList<Resource> DependencySort(IReadOnlyCollection<Resource> resources, IReadOnlyCollection<ExistingResource> existingResources)
+		public static IReadOnlyList<Resource> DependencySort(IReadOnlyCollection<Resource> resources)
 		{
 			if (resources == null)
             {
@@ -31,7 +30,6 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
             try
             {
                 Dictionary<string, Resource> resourcesById = resources.ToDictionary(resource => resource.ResourceId);
-                Dictionary<string, ExistingResource> existingResourcesById = existingResources.ToDictionary(resource => resource.ResourceId);
 
                 AdjacencyGraph<Resource, Edge<Resource>> resourceDependencies = new AdjacencyGraph<Resource, Edge<Resource>>();
 
@@ -41,22 +39,18 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
                     if (!resourceDependencies.AddVertex(resource))
                         continue; // Already processed.
 
-                    foreach (string dependsOnResourceId in resource.DependsOn)
+                    if (resource.DependsOn != null)
                     {
-                        if (existingResourcesById.ContainsKey(dependsOnResourceId))
+                        foreach (string dependsOnResourceId in resource.DependsOn)
                         {
-                            continue;
-                        }
+                            Resource dependsOnResource;
+                            if (!resourcesById.TryGetValue(dependsOnResourceId, out dependsOnResource))
+                            {
+                                throw new TemplateParserException($"Resource '{resourceId}' depends on non-existent resource '{dependsOnResourceId}'.");
+                            }
 
-                        Resource dependsOnResource;
-                        if (!resourcesById.TryGetValue(dependsOnResourceId, out dependsOnResource))
-                        {
-                            throw new TemplateParserException($"Resource '{resourceId}' depends on non-existent resource '{dependsOnResourceId}'.");
+                            resourceDependencies.AddEdge(new Edge<Resource>(resource, dependsOnResource));
                         }
-
-                        resourceDependencies.AddEdge(
-                            new Edge<Resource>(resource, dependsOnResource)
-                        );
                     }
                 }
 

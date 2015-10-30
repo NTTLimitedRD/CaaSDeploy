@@ -23,12 +23,6 @@ namespace DD.CBU.CaasDeploy.Library.Models
         public JObject Parameters { get; set; }
 
         /// <summary>
-        /// Gets or sets the existing resources the template depends on.
-        /// </summary>
-        [JsonProperty("existingResources")]
-        public List<ExistingResource> ExistingResources { get; set; }
-
-        /// <summary>
         /// Gets or sets the resources to deploy.
         /// </summary>
         [JsonProperty("resources")]

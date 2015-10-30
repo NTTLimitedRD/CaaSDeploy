@@ -25,6 +25,12 @@ namespace DD.CBU.CaasDeploy.Library.Models
         public string ResourceId { get; set; }
 
         /// <summary>
+        /// Gets or sets the CaaS identifier if the resource already exists.
+        /// </summary>
+        [JsonProperty("existingCaasId")]
+        public string ExistingCaasId { get; set; }
+
+        /// <summary>
         /// Gets or sets the identifiers of the existing or new resources this resource depends on.
         /// </summary>
         [JsonProperty("dependsOn")]

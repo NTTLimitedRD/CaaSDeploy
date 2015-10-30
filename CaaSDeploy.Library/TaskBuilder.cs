@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 
 using DD.CBU.CaasDeploy.Library.Contracts;
+using DD.CBU.CaasDeploy.Library.Macros;
 using DD.CBU.CaasDeploy.Library.Models;
 using DD.CBU.CaasDeploy.Library.Tasks;
 using DD.CBU.CaasDeploy.Library.Utilities;
@@ -71,16 +72,33 @@ namespace DD.CBU.CaasDeploy.Library
         /// <returns>Instance of <see cref="TaskExecutor"/> with tasks and task execution context.</returns>
         public TaskExecutor BuildTasks(DeploymentTemplate template, string scriptPath, IDictionary<string, string> parameters)
         {
-            var sortedResources = ResourceDependencies.DependencySort(template.Resources, template.ExistingResources).Reverse().ToList();
+            var sortedResources = ResourceDependencies.DependencySort(template.Resources).Reverse().ToList();
 
-            // Create a sequential list of tasks we need to execute.
-            var tasks = new List<ITask>();
+            // First we convert Resource objects to ExistingResource objects if they already have a CaaS id.
+            var existingResources = new List<Resource>();
+            var resourcesWithExistingCaasId = sortedResources
+                .Where(resource => !string.IsNullOrEmpty(resource.ExistingCaasId))
+                .ToList();
 
-            if ((template.ExistingResources != null) && (template.ExistingResources.Count > 0))
+            foreach (var resource in resourcesWithExistingCaasId)
             {
-                tasks.Add(new LoadExistingResourcesTask(template.ExistingResources));
+                var existingCaasId = ParametersMacro.SubstituteTokensInString(resource.ExistingCaasId, parameters, false);
+                if (!string.IsNullOrEmpty(existingCaasId))
+                {
+                    sortedResources.Remove(resource);
+                    existingResources.Add(resource);
+                }
             }
 
+            // Create the tasks to load existing resources.
+            var tasks = new List<ITask>();
+
+            if (existingResources.Count > 0)
+            {
+                tasks.Add(new LoadExistingResourcesTask(existingResources));
+            }
+
+            // Create the tasks to deploy resources.
             foreach (var resource in sortedResources)
             {
                 tasks.Add(new DeployResourceTask(resource));

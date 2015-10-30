@@ -16,13 +16,13 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         /// <summary>
         /// The existing resources
         /// </summary>
-        private readonly IList<ExistingResource> _existingResources;
+        private readonly IList<Resource> _existingResources;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LoadExistingResourcesTask"/> class.
         /// </summary>
         /// <param name="existingResources">The existing resources to load.</param>
-        public LoadExistingResourcesTask(IList<ExistingResource> existingResources)
+        public LoadExistingResourcesTask(IList<Resource> existingResources)
         {
             if (existingResources == null)
             {
@@ -47,9 +47,9 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
 
             foreach (var existingResource in _existingResources)
             {
-                existingResource.CaasId = await TokenHelper.SubstitutePropertyTokensInString(runtimeContext, taskContext, existingResource.CaasId);
+                existingResource.ExistingCaasId = await TokenHelper.SubstituteTokensInString(runtimeContext, taskContext, existingResource.ExistingCaasId);
                 var deployer = new ResourceDeployer(runtimeContext, existingResource.ResourceId, existingResource.ResourceType);
-                var resource = await deployer.Get(existingResource.CaasId);
+                var resource = await deployer.Get(existingResource.ExistingCaasId);
                 taskContext.ResourcesProperties.Add(existingResource.ResourceId, resource);
             }
         }

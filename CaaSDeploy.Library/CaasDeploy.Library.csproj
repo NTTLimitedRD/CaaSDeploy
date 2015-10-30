@@ -99,7 +99,6 @@
     <Compile Include="Models\DeploymentLogStatus.cs" />
     <Compile Include="Models\DeploymentLog.cs" />
     <Compile Include="Models\DeploymentTemplateMetadata.cs" />
-    <Compile Include="Models\ExistingResource.cs" />
     <Compile Include="Models\ResourceType.cs" />
     <Compile Include="Models\ResourceLog.cs" />
     <Compile Include="Models\Scripts.cs" />

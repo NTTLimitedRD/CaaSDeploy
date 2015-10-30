@@ -68,19 +68,17 @@
       "enum": [ "EST", "STG", "NAT" ]
     }
   },
-  "existingResources": [
+  "resources": [ 
     {
       "resourceType": "NetworkDomain",
       "resourceId": "networkDomain",
-      "caasId": "$parameters['networkDomainId']"
+      "existingCaasId": "$parameters['networkDomainId']"
     },
     {
       "resourceType": "Vlan",
       "resourceId": "vlan",
-      "caasId": "$parameters['vlanId']"
-    }
-  ],
-  "resources": [ 
+      "existingCaasId": "$parameters['vlanId']"
+    },
     {
       "resourceType": "FirewallRule",
       "resourceId": "AllowHTTPFirewallRule",

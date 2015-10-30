@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 
 using DD.CBU.CaasDeploy.Library.Contracts;
-using DD.CBU.CaasDeploy.Library.Models;
 using DD.CBU.CaasDeploy.Library.Utilities;
 
 namespace DD.CBU.CaasDeploy.Library.Macros

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 
 using DD.CBU.CaasDeploy.Library.Contracts;
-using DD.CBU.CaasDeploy.Library.Models;
 using Newtonsoft.Json.Linq;
 
 namespace DD.CBU.CaasDeploy.Library.Macros

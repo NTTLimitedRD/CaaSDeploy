@@ -7,6 +7,7 @@ namespace DD.CBU.CaasDeploy.Library.Contracts
 {
     /// <summary>
     /// The task execution context provides template and runtime information across tasks.
+    /// The object can be stored in a database between the execution of tasks.
     /// </summary>
     public sealed class TaskContext
     {
