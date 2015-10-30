@@ -26,9 +26,9 @@ The templates are in JSON format and contain up to five sections: **metadata** (
 **parameters** contains a single JSON element containing the list of parameter names and their descriptions. The values for the parameters
 (which will vary per deployment) go in a separate file.
 
-* **title**: A user friendly display title.
-* **description**: An extended description of the purpose and usage of the parameter.
 * **type**: The parameter type. Supported values are: _string_ (default)_, integer, boolean, password, caas.dataCenterId, caas.networkDomainId, caas.vlanId_.
+* **title**: A user friendly display title.
+* **description**: An optional description of the purpose and usage of the parameter.
 * **group**: An optional group identifier for the parameter. Supported values are _Environment_ (default) and _Application_.
 * **required**: An optional value indicating whether the parameter is required. The default is _true_.
 * **minLength**: An optional value specifiyng the minimum string length.
@@ -68,14 +68,17 @@ public IP to the private IP, and opens firewall ports for web and RDP traffic.
   },
   "parameters": {
     "myVMName": {
-      "description": "The name to use for the Virtual Machine",
+      "title": "VM Name",
+      "description": "The name to use for the new Virtual Machine",
       "type": "string"
     },
     "myNetworkDomainName": {
-      "description": "The name to use for the Network Domain",
+      "title": "Network Domain Name",
+      "description": "The name to use for the new Network Domain",
       "type": "string"
     },
     "datacenterId": {
+      "title": "Data Center",
       "description": "The region to deploy to",
       "type": "caas.dataCenterId"
     }
@@ -242,13 +245,9 @@ RuntimeContext runtimeContext = new RuntimeContext
 };
 ```
 
-Next you create an instance of the _TaskBuilder_ class and pass it an implementation of _ILogProvider_.
+Next you create an instance of the _TaskBuilder_ class and use it to parse either a deployment template or deployment log file.
 ```c#
 TaskBuilder taskBuilder = new TaskBuilder();
-```
-
-Then use the task builder to parse either a deployment template or deployment log file.
-```c#
 TaskExecutor taskExecutor = taskBuilder.BuildTasksFromDeploymentTemplate(templateFile, parametersFile);
 ```
 
