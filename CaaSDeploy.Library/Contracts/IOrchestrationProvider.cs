@@ -14,17 +14,15 @@ namespace DD.CBU.CaasDeploy.Library.Contracts
         /// <summary>
         /// Runs the orchestration.
         /// </summary>
-        /// <param name="configuration">The configuration.</param>
-        /// <param name="parameters">The parameters.</param>
+        /// <param name="runtimeContext">The runtime context.</param>
+        /// <param name="taskContext">The task execution context.</param>
+        /// <param name="orchestrationObject">The orchestration object.</param>
         /// <param name="resources">The resources.</param>
-        /// <param name="resourcesProperties">The resources properties.</param>
-        /// <param name="logProvider">The log provider.</param>
         /// <returns>The async <see cref="Task"/>.</returns>
         Task RunOrchestration(
-            JObject configuration,
-            IDictionary<string, string> parameters,
-            IEnumerable<Resource> resources,
-            IDictionary<string, JObject> resourcesProperties,
-            ILogProvider logProvider);
+            RuntimeContext runtimeContext,
+            TaskContext taskContext,
+            JObject orchestrationObject,
+            IEnumerable<Resource> resources);
     }
 }

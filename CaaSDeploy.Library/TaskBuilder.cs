@@ -17,25 +17,6 @@ namespace DD.CBU.CaasDeploy.Library
     public sealed class TaskBuilder
     {
         /// <summary>
-        /// The log provider
-        /// </summary>
-        private readonly ILogProvider _logProvider;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TaskBuilder"/> class.
-        /// </summary>
-        /// <param name="logProvider">The log provider.</param>
-        public TaskBuilder(ILogProvider logProvider)
-        {
-            if (logProvider == null)
-            {
-                throw new ArgumentNullException(nameof(logProvider));
-            }
-
-            _logProvider = logProvider;
-        }
-
-        /// <summary>
         /// Gets the deployment tasks for the supplied deployment template.
         /// </summary>
         /// <param name="templateFilePath">The template file path.</param>
@@ -97,22 +78,22 @@ namespace DD.CBU.CaasDeploy.Library
 
             if ((template.ExistingResources != null) && (template.ExistingResources.Count > 0))
             {
-                tasks.Add(new LoadExistingResourcesTask(_logProvider, template.ExistingResources));
+                tasks.Add(new LoadExistingResourcesTask(template.ExistingResources));
             }
 
             foreach (var resource in sortedResources)
             {
-                tasks.Add(new DeployResourceTask(_logProvider, resource));
+                tasks.Add(new DeployResourceTask(resource));
 
                 if ((resource.Scripts != null) && (resource.ResourceType == ResourceType.Server))
                 {
-                    tasks.Add(new ExecuteScriptTask(_logProvider, resource));
+                    tasks.Add(new ExecuteScriptTask(resource));
                 }
             }
 
             if (template.Orchestration != null)
             {
-                tasks.Add(new RunOrchestrationTask(_logProvider, template.Orchestration, sortedResources));
+                tasks.Add(new RunOrchestrationTask(template.Orchestration, sortedResources));
             }
 
             // Create the task execution context.
@@ -145,7 +126,7 @@ namespace DD.CBU.CaasDeploy.Library
 
             var tasks = reversedResources
                 .Where(resource => resource.CaasId != null)
-                .Select(resource => (ITask)new DeleteResourceTask(_logProvider, resource))
+                .Select(resource => (ITask)new DeleteResourceTask(resource))
                 .ToList();
 
             // Create the task execution context.

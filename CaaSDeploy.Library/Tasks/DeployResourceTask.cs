@@ -13,11 +13,6 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
     public sealed class DeployResourceTask : ITask
     {
         /// <summary>
-        /// The log provider
-        /// </summary>
-        private readonly ILogProvider _logProvider;
-
-        /// <summary>
         /// The resource
         /// </summary>
         private readonly Resource _resource;
@@ -25,42 +20,35 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         /// <summary>
         /// Initializes a new instance of the <see cref="DeployResourceTask"/> class.
         /// </summary>
-        /// <param name="logProvider">The log provider.</param>
         /// <param name="resource">The resource to deploy.</param>
-        public DeployResourceTask(ILogProvider logProvider, Resource resource)
+        public DeployResourceTask(Resource resource)
         {
-            if (logProvider == null)
-            {
-                throw new ArgumentNullException(nameof(logProvider));
-            }
-
             if (resource == null)
             {
                 throw new ArgumentNullException(nameof(resource));
             }
 
-            _logProvider = logProvider;
             _resource = resource;
         }
 
         /// <summary>
         /// Executes the task.
         /// </summary>
-        /// <param name="accountDetails">The account details.</param>
-        /// <param name="context">The task execution context.</param>
+        /// <param name="runtimeContext">The runtime context.</param>
+        /// <param name="taskContext">The task execution context.</param>
         /// <returns>The async <see cref="Task"/>.</returns>
-        public async Task Execute(CaasAccountDetails accountDetails, TaskContext context)
+        public async Task Execute(RuntimeContext runtimeContext, TaskContext taskContext)
         {
-            TokenHelper.SubstituteTokensInJObject(_resource.ResourceDefinition, context.Parameters, context.ResourcesProperties);
-            var deployer = new ResourceDeployer(_logProvider, accountDetails, _resource.ResourceId, _resource.ResourceType);
+            await TokenHelper.SubstituteTokensInJObject(runtimeContext, taskContext, _resource.ResourceDefinition);
+            var deployer = new ResourceDeployer(runtimeContext, _resource.ResourceId, _resource.ResourceType);
             var resourceLog = await deployer.DeployAndWait(_resource.ResourceDefinition);
 
-            context.Log.Resources.Add(resourceLog);
-            context.ResourcesProperties.Add(resourceLog.ResourceId, resourceLog.Details);
+            taskContext.Log.Resources.Add(resourceLog);
+            taskContext.ResourcesProperties.Add(resourceLog.ResourceId, resourceLog.Details);
 
             if (resourceLog.DeploymentStatus == ResourceLogStatus.Failed)
             {
-                context.Log.Status = DeploymentLogStatus.Failed;
+                taskContext.Log.Status = DeploymentLogStatus.Failed;
             }
         }
     }

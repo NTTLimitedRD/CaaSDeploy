@@ -17,11 +17,6 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
     public sealed class ExecuteScriptTask : ITask
     {
         /// <summary>
-        /// The log provider
-        /// </summary>
-        private readonly ILogProvider _logProvider;
-
-        /// <summary>
         /// The resource
         /// </summary>
         private readonly Resource _resource;
@@ -29,35 +24,28 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         /// <summary>
         /// Initializes a new instance of the <see cref="ExecuteScriptTask"/> class.
         /// </summary>
-        /// <param name="logProvider">The log provider.</param>
         /// <param name="resource">The resource.</param>
-        public ExecuteScriptTask(ILogProvider logProvider, Resource resource)
+        public ExecuteScriptTask(Resource resource)
         {
-            if (logProvider == null)
-            {
-                throw new ArgumentNullException(nameof(logProvider));
-            }
-
             if (resource == null)
             {
                 throw new ArgumentNullException(nameof(resource));
             }
 
-            _logProvider = logProvider;
             _resource = resource;
         }
 
         /// <summary>
         /// Executes the task.
         /// </summary>
-        /// <param name="accountDetails">The account details.</param>
-        /// <param name="context">The task execution context.</param>
+        /// <param name="runtimeContext">The runtime context.</param>
+        /// <param name="taskContext">The task execution context.</param>
         /// <returns>The async <see cref="Task"/>.</returns>
-        public async Task Execute(CaasAccountDetails accountDetails, TaskContext context)
+        public async Task Execute(RuntimeContext runtimeContext, TaskContext taskContext)
         {
-            var details = context.ResourcesProperties[_resource.ResourceId];
+            var details = taskContext.ResourcesProperties[_resource.ResourceId];
 
-            _logProvider.LogMessage($"Running deployment scripts.");
+            runtimeContext.LogProvider.LogMessage($"Running deployment scripts.");
             string ipv6Address = details["networkInfo"]["primaryNic"]["ipv6"].Value<string>();
             string ipv6Unc = IPv6ToUnc(ipv6Address);
             OSType osType = details["operatingSystem"]["family"].Value<string>() == "WINDOWS" ? OSType.Windows : OSType.Linux;
@@ -67,18 +55,18 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
 
             var scriptRunner = PostDeployScriptRunnerFactory.Create(ipv6Unc, userName, password, osType);
 
-            string scriptPath = UnzipScriptBundle(context.ScriptPath, _resource.Scripts.BundleFile);
+            string scriptPath = UnzipScriptBundle(taskContext.ScriptPath, _resource.Scripts.BundleFile);
             var scriptDirectory = new DirectoryInfo(scriptPath);
             foreach (var scriptFile in scriptDirectory.EnumerateFiles())
             {
-                _logProvider.LogMessage("\tCopying file " + scriptFile.Name);
+                runtimeContext.LogProvider.LogMessage("\tCopying file " + scriptFile.Name);
                 await scriptRunner.UploadScript(scriptFile.FullName);
                 scriptFile.Delete();
             }
             scriptDirectory.Delete();
 
-            string deployScript = TokenHelper.SubstitutePropertyTokensInString(_resource.Scripts.OnDeploy, context.Parameters);
-            _logProvider.LogMessage("\tExecuting script " + deployScript);
+            string deployScript = await TokenHelper.SubstitutePropertyTokensInString(runtimeContext, taskContext, _resource.Scripts.OnDeploy);
+            runtimeContext.LogProvider.LogMessage("\tExecuting script " + deployScript);
             await scriptRunner.ExecuteScript(deployScript);
         }
 

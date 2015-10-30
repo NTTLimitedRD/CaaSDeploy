@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
+using DD.CBU.CaasDeploy.Library.Contracts;
+using DD.CBU.CaasDeploy.Library.Macros;
+using DD.CBU.CaasDeploy.Library.Models;
 using Newtonsoft.Json.Linq;
 
 namespace DD.CBU.CaasDeploy.Library.Utilities
@@ -11,42 +14,41 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
     public static class TokenHelper
     {
         /// <summary>
-        /// The parameter regex
+        /// The macros to execute.
         /// </summary>
-        private static readonly Regex ParameterRegex = new Regex("\\$parameters\\['([^']*)'\\]");
-
-        /// <summary>
-        /// The resource property regex
-        /// </summary>
-        private static readonly Regex ResourcePropertyRegex = new Regex("\\$resources\\['([^']*)'\\]\\.([A-Za-z0-9\\.]+)");
+        private static readonly IList<IMacro> Macros = new List<IMacro>
+        {
+            new ParametersMacro(),
+            new ResourcesMacro(),
+            new ImageMacro()
+        };
 
         /// <summary>
         /// Substitutes the tokens in supplied JSON object.
         /// </summary>
+        /// <param name="runtimeContext">The runtime context.</param>
+        /// <param name="taskContext">The task execution context.</param>
         /// <param name="resourceDefinition">The resource definition.</param>
-        /// <param name="parameters">The parameters.</param>
-        /// <param name="resourcesProperties">The resources properties.</param>
-        public static void SubstituteTokensInJObject(JObject resourceDefinition, IDictionary<string, string> parameters, IDictionary<string, JObject> resourcesProperties)
+        /// <returns>The async <see cref="Task"/>.</returns>
+        public static async Task SubstituteTokensInJObject(RuntimeContext runtimeContext, TaskContext taskContext, JObject resourceDefinition)
         {
             foreach (var parameter in resourceDefinition)
             {
                 if (parameter.Value is JObject)
                 {
-                    SubstituteTokensInJObject((JObject)parameter.Value, parameters, resourcesProperties);
+                    await SubstituteTokensInJObject(runtimeContext, taskContext, (JObject)parameter.Value);
                 }
                 else if (parameter.Value is JValue)
                 {
-                    string tokenValue = parameter.Value.Value<string>();
-
-                    var newValue = SubstitutePropertyTokensInString(tokenValue, parameters);
-                    newValue = SubstituteResourceTokensInString(newValue, resourcesProperties);
-                    parameter.Value.Replace(new JValue(newValue));
+                    var value = parameter.Value.Value<string>();
+                    value = await SubstitutePropertyTokensInString(runtimeContext, taskContext, value);
+                    parameter.Value.Replace(new JValue(value));
                 }
                 else if (parameter.Value is JArray)
                 {
                     foreach (var jtoken in ((JArray)parameter.Value))
                     {
-                        SubstituteTokensInJObject((JObject)jtoken, parameters, resourcesProperties);
+                        await SubstituteTokensInJObject(runtimeContext, taskContext, (JObject)jtoken);
                     }
                 }
             }
@@ -55,49 +57,20 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
         /// <summary>
         /// Substitutes the property tokens in the supplied string.
         /// </summary>
+        /// <param name="runtimeContext">The runtime context.</param>
+        /// <param name="taskContext">The task execution context.</param>
         /// <param name="input">The input string.</param>
-        /// <param name="parameters">The parameters.</param>
         /// <returns>The substituted string</returns>
-        public static string SubstitutePropertyTokensInString(string input, IDictionary<string, string> parameters)
+        public static async Task<string> SubstitutePropertyTokensInString(RuntimeContext runtimeContext, TaskContext taskContext, string input)
         {
-            var paramsMatches = ParameterRegex.Matches(input);
-            string output = input;
-            if (paramsMatches.Count > 0)
+            var value = input;
+
+            foreach (var macro in Macros)
             {
-                foreach (Match paramsMatch in paramsMatches)
-                {
-                    string newValue = parameters[paramsMatch.Groups[1].Value];
-                    output = output.Replace(paramsMatch.Groups[0].Value, newValue);
-                }
+                value = await macro.SubstituteTokensInString(runtimeContext, taskContext, value);
             }
 
-            return output;
-        }
-
-        /// <summary>
-        /// Substitutes the resource tokens in the supplied string.
-        /// </summary>
-        /// <param name="input">The input string.</param>
-        /// <param name="resourcesProperties">The resources properties.</param>
-        /// <returns>The substituted string</returns>
-        public static string SubstituteResourceTokensInString(string input, IDictionary<string, JObject> resourcesProperties)
-        {
-            string output = input;
-            if (resourcesProperties != null)
-            {
-                var resourceMatches = ResourcePropertyRegex.Matches(input);
-                if (resourceMatches.Count > 0)
-                {
-                    foreach (Match resourceMatch in resourceMatches)
-                    {
-                        string resourceId = resourceMatch.Groups[1].Value;
-                        string property = resourceMatch.Groups[2].Value;
-                        var newValue = resourcesProperties[resourceId].SelectToken(property).Value<string>();
-                        output = output.Replace(resourceMatch.Groups[0].Value, newValue);
-                    }
-                }
-            }
-            return output;
+            return value;
         }
     }
 }

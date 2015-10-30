@@ -4,6 +4,7 @@ using System.Management.Automation;
 using System.Threading.Tasks;
 
 using DD.CBU.CaasDeploy.Library;
+using DD.CBU.CaasDeploy.Library.Contracts;
 using DD.CBU.CaasDeploy.Library.Models;
 using Newtonsoft.Json;
 
@@ -85,10 +86,15 @@ namespace DD.CBU.CaasDeploy.PowerShell
         /// <returns>The async <see cref="Task"/>.</returns>
         private async Task BeginProcessingAsync()
         {
-            var accountDetails = await CaasAuthentication.Authenticate(UserName, Password, Region);
-            var taskBuilder = new TaskBuilder(new ConsoleLogProvider());
+            var runtimeContext = new RuntimeContext
+            {
+                AccountDetails = await CaasAuthentication.Authenticate(UserName, Password, Region),
+                LogProvider = new ConsoleLogProvider()
+            };
+
+            var taskBuilder = new TaskBuilder();
             var taskExecutor = taskBuilder.BuildTasksFromDeploymentTemplate(ResolvePath(Template), ResolvePath(Parameters));
-            var log = await taskExecutor.Execute(accountDetails);
+            var log = await taskExecutor.Execute(runtimeContext);
 
             Console.WriteLine($"Result: {log.Status}");
             WriteLog(log, ResolvePath(DeploymentLog));

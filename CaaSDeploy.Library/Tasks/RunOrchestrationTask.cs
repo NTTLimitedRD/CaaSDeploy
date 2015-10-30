@@ -14,11 +14,6 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
     public sealed class RunOrchestrationTask : ITask
     {
         /// <summary>
-        /// The log provider.
-        /// </summary>
-        private readonly ILogProvider _logProvider;
-
-        /// <summary>
         /// The orchestration
         /// </summary>
         private readonly JObject _orchestration;
@@ -31,16 +26,10 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         /// <summary>
         /// Initializes a new instance of the <see cref="RunOrchestrationTask"/> class.
         /// </summary>
-        /// <param name="logProvider">The log provider.</param>
         /// <param name="orchestration">The orchestration.</param>
         /// <param name="resources">The resources.</param>
-        public RunOrchestrationTask(ILogProvider logProvider, JObject orchestration, IReadOnlyList<Resource> resources)
+        public RunOrchestrationTask(JObject orchestration, IReadOnlyList<Resource> resources)
         {
-            if (logProvider == null)
-            {
-                throw new ArgumentNullException(nameof(logProvider));
-            }
-
             if (orchestration == null)
             {
                 throw new ArgumentNullException(nameof(orchestration));
@@ -51,7 +40,6 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
                 throw new ArgumentNullException(nameof(resources));
             }
 
-            _logProvider = logProvider;
             _orchestration = orchestration;
             _resources = resources;
         }
@@ -59,23 +47,23 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         /// <summary>
         /// Executes the task.
         /// </summary>
-        /// <param name="accountDetails">The account details.</param>
-        /// <param name="context">The task execution context.</param>
+        /// <param name="runtimeContext">The runtime context.</param>
+        /// <param name="taskContext">The task execution context.</param>
         /// <returns>The async <see cref="Task"/>.</returns>
-        public async Task Execute(CaasAccountDetails accountDetails, TaskContext context)
+        public async Task Execute(RuntimeContext runtimeContext, TaskContext taskContext)
         {
             var providerTypeName = _orchestration["provider"].Value<String>();
             var providerType = Type.GetType(providerTypeName);
             if (providerType == null)
             {
-                _logProvider.LogError($"Unable to create Orchestration Provider of type {providerTypeName}.");
+                runtimeContext.LogProvider.LogError($"Unable to create Orchestration Provider of type {providerTypeName}.");
                 return;
             }
 
             var provider = (IOrchestrationProvider)Activator.CreateInstance(providerType);
-            _logProvider.LogMessage($"Running Orchestration Provider '{providerTypeName}'.");
+            runtimeContext.LogProvider.LogMessage($"Running Orchestration Provider '{providerTypeName}'.");
 
-            await provider.RunOrchestration(_orchestration, context.Parameters, _resources, context.ResourcesProperties, _logProvider);
+            await provider.RunOrchestration(runtimeContext, taskContext, _orchestration, _resources);
         }
     }
 }

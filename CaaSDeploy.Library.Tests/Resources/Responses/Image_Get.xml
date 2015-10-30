@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ImagesWithDiskSpeed pageNumber="1" pageCount="1" totalCount="4" pageSize="250"
+    xmlns:ns16="http://oec.api.opsource.net/schemas/reset"
+    xmlns="http://oec.api.opsource.net/schemas/server"
+    xmlns:ns14="http://oec.api.opsource.net/schemas/support"
+    xmlns:ns15="http://oec.api.opsource.net/schemas/multigeo"
+    xmlns:ns9="http://oec.api.opsource.net/schemas/serverbootstrap"
+    xmlns:ns5="http://oec.api.opsource.net/schemas/organization"
+    xmlns:ns12="http://oec.api.opsource.net/schemas/backup"
+    xmlns:ns13="http://oec.api.opsource.net/schemas/storage"
+    xmlns:ns6="http://oec.api.opsource.net/schemas/vip"
+    xmlns:ns7="http://oec.api.opsource.net/schemas/datacenter"
+    xmlns:ns10="http://oec.api.opsource.net/schemas/admin"
+    xmlns:ns8="http://oec.api.opsource.net/schemas/manualimport"
+    xmlns:ns11="http://oec.api.opsource.net/schemas/whitelabel"
+    xmlns:ns2="http://oec.api.opsource.net/schemas/network"
+    xmlns:ns4="http://oec.api.opsource.net/schemas/directory"
+    xmlns:ns3="http://oec.api.opsource.net/schemas/general">
+  <image id="792b085b-493b-4953-8bc5-68c13f0f1703" location="NA1">
+    <name>RedHat 6 64-bit 2 CPU</name>
+    <description>RedHat 6.6 Enterprise (Santiago) 64-bit</description>
+    <operatingSystem id="REDHAT664" displayName="REDHAT6/64" type="UNIX"/>
+    <cpuCount>2</cpuCount>
+    <memoryMb>4096</memoryMb>
+    <disk id="7c07ff21-25cb-4825-ba01-4df6fbe9f78e" scsiId="0" sizeGb="10" speed="STANDARD" state="NORMAL"/>
+    <source type="BASE"/>
+    <created>2015-05-13T07:11:34.000Z</created>
+    <state>NORMAL</state>
+  </image>
+  <image id="0bf731a8-29c5-4b8b-a460-2a60ab4019cf" location="NA2">
+    <name>RedHat 6 64-bit 2 CPU</name>
+    <description>RedHat 6.6 Enterprise (Santiago) 64-bit</description>
+    <operatingSystem id="REDHAT664" displayName="REDHAT6/64" type="UNIX"/>
+    <cpuCount>2</cpuCount>
+    <memoryMb>4096</memoryMb>
+    <disk id="853a3285-1c7b-459f-8ab6-53cb863d6207" scsiId="0" sizeGb="10" speed="STANDARD" state="NORMAL"/>
+    <source type="BASE"/>
+    <created>2015-05-13T07:11:32.000Z</created>
+    <state>NORMAL</state>
+  </image>
+</ImagesWithDiskSpeed>

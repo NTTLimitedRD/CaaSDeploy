@@ -3,7 +3,7 @@
 using DD.CBU.CaasDeploy.Library.Models;
 using Newtonsoft.Json.Linq;
 
-namespace DD.CBU.CaasDeploy.Library
+namespace DD.CBU.CaasDeploy.Library.Contracts
 {
     /// <summary>
     /// The task execution context provides template and runtime information across tasks.

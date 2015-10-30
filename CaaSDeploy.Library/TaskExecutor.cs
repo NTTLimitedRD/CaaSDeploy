@@ -53,15 +53,15 @@ namespace DD.CBU.CaasDeploy.Library
         /// <summary>
         /// Executes the tasks.
         /// </summary>
-        /// <param name="accountDetails">The CaaS account details.</param>
+        /// <param name="runtimeContext">The runtime context.</param>
         /// <returns>The async <see cref="Task" /> with the deployment log.</returns>
-        public async Task<DeploymentLog> Execute(CaasAccountDetails accountDetails)
+        public async Task<DeploymentLog> Execute(RuntimeContext runtimeContext)
         {
             foreach (var task in Tasks)
             {
                 try
                 {
-                    await task.Execute(accountDetails, Context);
+                    await task.Execute(runtimeContext, Context);
 
                     if (Context.Log.Status == DeploymentLogStatus.Failed)
                     {

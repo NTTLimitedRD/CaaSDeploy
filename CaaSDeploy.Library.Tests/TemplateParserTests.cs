@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 
+using DD.CBU.CaasDeploy.Library.Contracts;
 using DD.CBU.CaasDeploy.Library.Models;
 using DD.CBU.CaasDeploy.Library.Tests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -21,12 +22,16 @@ namespace DD.CBU.CaasDeploy.Library.Tests
         private string _resourceFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\Resources\Templates");
 
         /// <summary>
-        /// The account details.
+        /// The runtime context.
         /// </summary>
-        private CaasAccountDetails _accountDetails = new CaasAccountDetails
+        private RuntimeContext _runtimeContext = new RuntimeContext
         {
-            BaseUrl = "https://api-na.dimensiondata.com",
-            OrgId = "68819F2B-22F9-4D46-86B8-7926B640464C"
+            LogProvider = new ConsoleLogProvider(),
+            AccountDetails = new CaasAccountDetails
+            {
+                BaseUrl = "https://api-na.dimensiondata.com",
+                OrgId = "68819F2B-22F9-4D46-86B8-7926B640464C"
+            }
         };
 
         /// <summary>
@@ -41,6 +46,7 @@ namespace DD.CBU.CaasDeploy.Library.Tests
             client.AddResponse("/network/vlan?name=Unit Test VLAN", "GenericNotFound.json");
             client.AddResponse("/network/deployVlan", "Vlan_Delpoy.json");
             client.AddResponse("/network/vlan/997e2084-00b1-4d1d-96ce-099946679c6f", "Vlan_Get.json");
+            client.AddResponse("/imageWithDiskSpeed?name=RedHat 6 64-bit 2 CPU", "Image_Get.xml");
             client.AddResponse("/server/server?name=Unit Test Server", "GenericNotFound.json");
             client.AddResponse("/server/deployServer", "Server_Deploy.json");
             client.AddResponse("/server/server/b42b40e1-351a-4df9-b726-2ccff01f2767", "Server_Get.json");
@@ -52,9 +58,9 @@ namespace DD.CBU.CaasDeploy.Library.Tests
 
             var templateFile = Path.Combine(_resourceFolder, "StandardTemplate.json");
             var parametersFile = Path.Combine(_resourceFolder, "StandardTemplateParams.json");
-            var taskBuilder = new TaskBuilder(new ConsoleLogProvider());
+            var taskBuilder = new TaskBuilder();
             var taskExecutor = taskBuilder.BuildTasksFromDeploymentTemplate(templateFile, parametersFile);
-            var log = await taskExecutor.Execute(_accountDetails);
+            var log = await taskExecutor.Execute(_runtimeContext);
 
             Assert.AreEqual(DeploymentLogStatus.Success, log.Status);
         }
@@ -73,9 +79,9 @@ namespace DD.CBU.CaasDeploy.Library.Tests
 
             var templateFile = Path.Combine(_resourceFolder, "StandardTemplate.json");
             var parametersFile = Path.Combine(_resourceFolder, "StandardTemplateParams.json");
-            var taskBuilder = new TaskBuilder(new ConsoleLogProvider());
+            var taskBuilder = new TaskBuilder();
             var taskExecutor = taskBuilder.BuildTasksFromDeploymentTemplate(templateFile, parametersFile);
-            var log = await taskExecutor.Execute(_accountDetails);
+            var log = await taskExecutor.Execute(_runtimeContext);
 
             Assert.AreEqual(DeploymentLogStatus.Failed, log.Status);
             Assert.AreEqual(1, log.Resources.Count);
@@ -101,9 +107,9 @@ namespace DD.CBU.CaasDeploy.Library.Tests
             client.AddResponse("/network/vlan/997e2084-00b1-4d1d-96ce-099946679c6f", "Vlan_Get_NotFound.json", HttpStatusCode.BadRequest);
 
             var logFile = Path.Combine(_resourceFolder, "StandardTemplateLog.json");
-            var taskBuilder = new TaskBuilder(new ConsoleLogProvider());
+            var taskBuilder = new TaskBuilder();
             var taskExecutor = taskBuilder.BuildTasksFromDeploymentLog(logFile);
-            var log = await taskExecutor.Execute(_accountDetails);
+            var log = await taskExecutor.Execute(_runtimeContext);
 
             Assert.AreEqual(DeploymentLogStatus.Success, log.Status);
         }
@@ -121,9 +127,9 @@ namespace DD.CBU.CaasDeploy.Library.Tests
             client.AddResponse("/network/removePublicIpBlock", "GenericError.json", HttpStatusCode.BadRequest);
 
             var logFile = Path.Combine(_resourceFolder, "StandardTemplateLog.json");
-            var taskBuilder = new TaskBuilder(new ConsoleLogProvider());
+            var taskBuilder = new TaskBuilder();
             var taskExecutor = taskBuilder.BuildTasksFromDeploymentLog(logFile);
-            var log = await taskExecutor.Execute(_accountDetails);
+            var log = await taskExecutor.Execute(_runtimeContext);
 
             Assert.AreEqual(DeploymentLogStatus.Failed, log.Status);
             Assert.AreEqual(2, log.Resources.Count);
@@ -141,7 +147,7 @@ namespace DD.CBU.CaasDeploy.Library.Tests
         {
             var templateFile = Path.Combine(_resourceFolder, "MissingDependency.json");
             var parametersFile = Path.Combine(_resourceFolder, "StandardTemplateParams.json");
-            var taskBuilder = new TaskBuilder(new ConsoleLogProvider());
+            var taskBuilder = new TaskBuilder();
             var taskExecutor = taskBuilder.BuildTasksFromDeploymentTemplate(templateFile, parametersFile);
         }
 
@@ -154,7 +160,7 @@ namespace DD.CBU.CaasDeploy.Library.Tests
         {
             var templateFile = Path.Combine(_resourceFolder, "CircularDependency.json");
             var parametersFile = Path.Combine(_resourceFolder, "StandardTemplateParams.json");
-            var taskBuilder = new TaskBuilder(new ConsoleLogProvider());
+            var taskBuilder = new TaskBuilder();
             var taskExecutor = taskBuilder.BuildTasksFromDeploymentTemplate(templateFile, parametersFile);
         }
     }

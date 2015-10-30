@@ -94,17 +94,16 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
         /// <summary>
         /// Initializes a new instance of the <see cref="ResourceDeployer"/> class.
         /// </summary>
-        /// <param name="logProvider">The log provider.</param>
-        /// <param name="accountDetails">The account details.</param>
+        /// <param name="runtimeContext">The runtime context.</param>
         /// <param name="resourceId">The resource identifier.</param>
         /// <param name="resourceType">Type of the resource.</param>
-        public ResourceDeployer(ILogProvider logProvider, CaasAccountDetails accountDetails, string resourceId, ResourceType resourceType)
+        public ResourceDeployer(RuntimeContext runtimeContext, string resourceId, ResourceType resourceType)
         {
             _resourceId = resourceId;
             _resourceType = resourceType;
             _resourceApi = ResourceApis[resourceType];
-            _accountDetails = accountDetails;
-            _logProvider = logProvider;
+            _accountDetails = runtimeContext.AccountDetails;
+            _logProvider = runtimeContext.LogProvider;
         }
 
         /// <summary>
@@ -175,12 +174,12 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
         {
             _logProvider.LogMessage($"Deploying {_resourceType}: '{_resourceId}' ");
 
-            using (var client = HttpClientFactory.GetClient(_accountDetails))
+            using (var client = HttpClientFactory.GetClient(_accountDetails, "application/json"))
             {
                 var url = GetApiUrl(_resourceApi.DeployUrl);
                 var response = await client.PostAsync(url, new StringContent(resourceDefinition.ToString(), Encoding.UTF8, "application/json"));
+                response.ThrowForHttpFailure();
                 var responseBody = await response.Content.ReadAsStringAsync();
-                await ThrowForHttpFailure(response);
                 var jsonResponse = JObject.Parse(responseBody);
                 var info = (JArray)jsonResponse["info"];
                 // TODO: Check if we ever get more than 1 
@@ -198,7 +197,7 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
         {
             _logProvider.LogMessage($"Updating existing {_resourceType}: '{_resourceId}' ");
 
-            using (var client = HttpClientFactory.GetClient(_accountDetails))
+            using (var client = HttpClientFactory.GetClient(_accountDetails, "application/json"))
             {
                 resourceDefinition.AddFirst(new JProperty("id", existingId));
                 RemovePropertiesUnsupportedForEdit(resourceDefinition);
@@ -206,8 +205,8 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
                 var content = new StringContent(resourceDefinition.ToString(), Encoding.UTF8, "application/json");
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json"); // CaaS bug is causing errors if charset is preset in the content-type header
                 var response = await client.PostAsync(url, content);
+                response.ThrowForHttpFailure();
                 var responseBody = await response.Content.ReadAsStringAsync();
-                await ThrowForHttpFailure(response);
             }
         }
 
@@ -230,12 +229,12 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
         /// <returns>The async <see cref="Task"/>.</returns>
         public async Task<JObject> Get(string caasId)
         {
-            using (var client = HttpClientFactory.GetClient(_accountDetails))
+            using (var client = HttpClientFactory.GetClient(_accountDetails, "application/json"))
             {
                 var url = String.Format(GetApiUrl(_resourceApi.GetUrl), caasId);
                 var response = await client.GetAsync(url);
+                response.ThrowForHttpFailure();
                 var responseBody = await response.Content.ReadAsStringAsync();
-                await ThrowForHttpFailure(response);
                 var jsonResponse = JObject.Parse(responseBody);
                 return jsonResponse;
             }
@@ -288,14 +287,14 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
         private async Task<bool> DeleteExistingResource(string caasId)
         {
             _logProvider.LogMessage($"Deleting {_resourceType}: '{_resourceId}' (ID: {caasId}) ");
-            using (var client = HttpClientFactory.GetClient(_accountDetails))
+            using (var client = HttpClientFactory.GetClient(_accountDetails, "application/json"))
             {
                 try
                 {
                     var url = GetApiUrl(_resourceApi.DeleteUrl);
                     string jsonPayload = String.Format("{{ \"id\": \"{0}\" }}", caasId);
                     var response = await client.PostAsync(url, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
-                    await ThrowForHttpFailure(response);
+                    response.ThrowForHttpFailure();
                     return true;
                 }
                 catch (CaasException ex)
@@ -308,20 +307,6 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
                     }
                     throw;
                 }
-            }
-        }
-
-        /// <summary>
-        /// Throws an exception if the supplied HTTP response message represents a failure.
-        /// </summary>
-        /// <param name="response">The response message.</param>
-        /// <returns>The async <see cref="Task"/>.</returns>
-        private async Task ThrowForHttpFailure(HttpResponseMessage response)
-        {
-            var responseBody = await response.Content.ReadAsStringAsync();
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new CaasException(responseBody);
             }
         }
 
@@ -431,12 +416,12 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
                 return null;
             }
 
-            using (var client = HttpClientFactory.GetClient(_accountDetails))
+            using (var client = HttpClientFactory.GetClient(_accountDetails, "application/json"))
             {
                 var url = String.Format(GetApiUrl(_resourceApi.ListUrl), ids);
                 var response = await client.GetAsync(url);
+                response.ThrowForHttpFailure();
                 var responseBody = await response.Content.ReadAsStringAsync();
-                await ThrowForHttpFailure(response);
                 var jsonResponse = JObject.Parse(responseBody);
                 var results = (JArray)jsonResponse.First.Children().First();
                 return results.Select(jv => (JObject)jv).ToArray();

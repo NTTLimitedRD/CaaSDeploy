@@ -41,7 +41,7 @@
       "resourceDefinition": {
         "name": "$parameters['ServerName']",
         "description": "$parameters['ServerName']",
-        "imageId": "8bc629a9-8d71-4b1b-8b26-acdc077edab1",
+        "imageId": "$serverImage['NA2', 'RedHat 6 64-bit 2 CPU']",
         "start": true,
         "administratorPassword": "Password@1",
         "networkInfo": {

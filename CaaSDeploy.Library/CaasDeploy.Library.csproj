@@ -80,6 +80,11 @@
     <Compile Include="Config\ComputeConfigurationSection.cs" />
     <Compile Include="Config\RegionConfigurationElement.cs" />
     <Compile Include="Config\RegionConfigurationElementCollection.cs" />
+    <Compile Include="Contracts\RuntimeContext.cs" />
+    <Compile Include="Contracts\IMacro.cs" />
+    <Compile Include="Macros\ParametersMacro.cs" />
+    <Compile Include="Macros\ImageMacro.cs" />
+    <Compile Include="Macros\ResourcesMacro.cs" />
     <Compile Include="NullLogProvider.cs" />
     <Compile Include="ConsoleLogProvider.cs" />
     <Compile Include="Contracts\ILogProvider.cs" />
@@ -104,11 +109,12 @@
     <Compile Include="Tasks\DeployResourceTask.cs" />
     <Compile Include="Tasks\LoadExistingResourcesTask.cs" />
     <Compile Include="Tasks\RunOrchestrationTask.cs" />
-    <Compile Include="TaskContext.cs" />
+    <Compile Include="Contracts\TaskContext.cs" />
     <Compile Include="TaskExecutor.cs" />
     <Compile Include="Utilities\DeploymentTemplateLogExtensions.cs" />
     <Compile Include="Utilities\HttpClientAdapter.cs" />
     <Compile Include="Utilities\HttpClientFactory.cs" />
+    <Compile Include="Utilities\HttpResponseMessageExtensions.cs" />
     <Compile Include="Utilities\IHttpClient.cs" />
     <Compile Include="Utilities\JsonEnumConverter.cs" />
     <Compile Include="Utilities\ResourceDependencies.cs" />

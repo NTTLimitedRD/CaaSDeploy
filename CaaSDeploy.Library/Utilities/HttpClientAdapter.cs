@@ -36,9 +36,9 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
         /// </summary>
         /// <param name="uri">The URI</param>
         /// <returns>The <see cref="Task" />.</returns>
-        public Task<HttpResponseMessage> GetAsync(string uri)
+        public async Task<HttpResponseMessage> GetAsync(string uri)
 		{
-			return _client.GetAsync(uri);
+			return await _client.GetAsync(uri);
 		}
 
         /// <summary>
@@ -47,9 +47,9 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
         /// <param name="uri">The URI</param>
         /// <param name="content">The content to post</param>
         /// <returns>The <see cref="Task" />.</returns>
-        public Task<HttpResponseMessage> PostAsync(string uri, HttpContent content)
+        public async Task<HttpResponseMessage> PostAsync(string uri, HttpContent content)
 		{
-			return _client.PostAsync(uri, content);
+			return await _client.PostAsync(uri, content);
 		}
 
         /// <summary>

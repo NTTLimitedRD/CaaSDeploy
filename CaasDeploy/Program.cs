@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using DD.CBU.CaasDeploy.Library;
+using DD.CBU.CaasDeploy.Library.Contracts;
 using DD.CBU.CaasDeploy.Library.Utilities;
 
 namespace DD.CBU.CaasDeploy
@@ -117,14 +118,21 @@ namespace DD.CBU.CaasDeploy
                     arguments["password"],
                     arguments["region"]);
 
+                var runtimeContext = new RuntimeContext
+                {
+                    AccountDetails = accountDetails,
+                    LogProvider = new ConsoleLogProvider()
+                };
+
+                var taskBuilder = new TaskBuilder();
+
                 if (arguments["action"].ToLower() == "deploy")
                 {
                     var parametersFile = arguments.ContainsKey("parameters") ? arguments["parameters"] : null;
                     var templateFile = arguments["template"];
 
-                    var taskBuilder = new TaskBuilder(new ConsoleLogProvider());
                     var taskExecutor = taskBuilder.BuildTasksFromDeploymentTemplate(templateFile, parametersFile);
-                    var log = await taskExecutor.Execute(accountDetails);
+                    var log = await taskExecutor.Execute(runtimeContext);
 
                     Console.WriteLine($"Result: {log.Status}");
 
@@ -135,9 +143,8 @@ namespace DD.CBU.CaasDeploy
                 {
                     var deploymentLogFile = arguments["deploymentlog"];
 
-                    var taskBuilder = new TaskBuilder(new ConsoleLogProvider());
                     var taskExecutor = taskBuilder.BuildTasksFromDeploymentLog(deploymentLogFile);
-                    var log = await taskExecutor.Execute(accountDetails);
+                    var log = await taskExecutor.Execute(runtimeContext);
 
                     Console.WriteLine($"Result: {log.Status}");
                 }

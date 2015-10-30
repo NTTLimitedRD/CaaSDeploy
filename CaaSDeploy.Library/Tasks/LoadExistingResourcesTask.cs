@@ -14,11 +14,6 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
     public sealed class LoadExistingResourcesTask : ITask
     {
         /// <summary>
-        /// The log provider
-        /// </summary>
-        private readonly ILogProvider _logProvider;
-
-        /// <summary>
         /// The existing resources
         /// </summary>
         private readonly IList<ExistingResource> _existingResources;
@@ -26,31 +21,24 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         /// <summary>
         /// Initializes a new instance of the <see cref="LoadExistingResourcesTask"/> class.
         /// </summary>
-        /// <param name="logProvider">The log provider.</param>
         /// <param name="existingResources">The existing resources to load.</param>
-        public LoadExistingResourcesTask(ILogProvider logProvider, IList<ExistingResource> existingResources)
+        public LoadExistingResourcesTask(IList<ExistingResource> existingResources)
         {
-            if (logProvider == null)
-            {
-                throw new ArgumentNullException(nameof(logProvider));
-            }
-
             if (existingResources == null)
             {
                 throw new ArgumentNullException(nameof(existingResources));
             }
 
-            _logProvider = logProvider;
             _existingResources = existingResources;
         }
 
         /// <summary>
         /// Executes the task.
         /// </summary>
-        /// <param name="accountDetails">The account details.</param>
-        /// <param name="context">The task execution context.</param>
+        /// <param name="runtimeContext">The runtime context.</param>
+        /// <param name="taskContext">The task execution context.</param>
         /// <returns>The async <see cref="Task"/>.</returns>
-        public async Task Execute(CaasAccountDetails accountDetails, TaskContext context)
+        public async Task Execute(RuntimeContext runtimeContext, TaskContext taskContext)
         {
             if (_existingResources == null)
             {
@@ -59,10 +47,10 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
 
             foreach (var existingResource in _existingResources)
             {
-                existingResource.CaasId = TokenHelper.SubstitutePropertyTokensInString(existingResource.CaasId, context.Parameters);
-                var deployer = new ResourceDeployer(_logProvider, accountDetails, existingResource.ResourceId, existingResource.ResourceType);
+                existingResource.CaasId = await TokenHelper.SubstitutePropertyTokensInString(runtimeContext, taskContext, existingResource.CaasId);
+                var deployer = new ResourceDeployer(runtimeContext, existingResource.ResourceId, existingResource.ResourceType);
                 var resource = await deployer.Get(existingResource.CaasId);
-                context.ResourcesProperties.Add(existingResource.ResourceId, resource);
+                taskContext.ResourcesProperties.Add(existingResource.ResourceId, resource);
             }
         }
     }

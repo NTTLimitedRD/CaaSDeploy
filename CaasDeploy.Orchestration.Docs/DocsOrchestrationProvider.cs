@@ -64,27 +64,21 @@ namespace DD.CBU.CaasDeploy.Orchestration.Docs
         /// <summary>
         /// Runs the orchestration.
         /// </summary>
+        /// <param name="runtimeContext">The runtime context.</param>
+        /// <param name="taskContext">The task execution context.</param>
         /// <param name="orchestrationObject">The orchestration object.</param>
-        /// <param name="parameters">The parameters.</param>
         /// <param name="resources">The resources.</param>
-        /// <param name="resourcesProperties">The resources properties.</param>
-        /// <param name="logProvider">The log provider.</param>
         /// <returns>The async <see cref="Task"/>.</returns>
-        public async Task RunOrchestration(
-            JObject orchestrationObject,
-            IDictionary<string, string> parameters,
-            IEnumerable<Resource> resources,
-            IDictionary<string, JObject> resourcesProperties,
-            ILogProvider logProvider)
+        public async Task RunOrchestration(RuntimeContext runtimeContext, TaskContext taskContext, JObject orchestrationObject, IEnumerable<Resource> resources)
         {
-            _logProvider = logProvider;
+            _logProvider = runtimeContext.LogProvider;
             _docsApiClient = new DocsApiClient(orchestrationObject["docsServiceUrl"].Value<string>());
             _orchestratorClient = new OrchestratorApiClient(orchestrationObject["orchestratorServiceUrl"].Value<string>());
 
-            TokenHelper.SubstituteTokensInJObject(orchestrationObject, parameters, resourcesProperties);
+            await TokenHelper.SubstituteTokensInJObject(runtimeContext, taskContext, orchestrationObject);
 
             await SendConfiguration((JArray)orchestrationObject["configuration"]);
-            await SendEnvironment((JObject)orchestrationObject["environment"], resources, resourcesProperties);
+            await SendEnvironment((JObject)orchestrationObject["environment"], resources, taskContext.ResourcesProperties);
             LaunchRunbook(orchestrationObject["runbook"].Value<string>());
         }
 
