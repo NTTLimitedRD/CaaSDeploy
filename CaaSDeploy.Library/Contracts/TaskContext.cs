@@ -12,11 +12,6 @@ namespace DD.CBU.CaasDeploy.Library.Contracts
     public sealed class TaskContext
     {
         /// <summary>
-        /// Gets or sets the script path.
-        /// </summary>
-        public string ScriptPath { get; set; }
-
-        /// <summary>
         /// Gets or sets the parameters.
         /// </summary>
         public IDictionary<string, string> Parameters { get; set; }

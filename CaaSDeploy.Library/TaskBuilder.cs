@@ -74,7 +74,7 @@ namespace DD.CBU.CaasDeploy.Library
         {
             var sortedResources = ResourceDependencies.DependencySort(template.Resources).Reverse().ToList();
 
-            // First we convert Resource objects to ExistingResource objects if they already have a CaaS id.
+            // Extract the resources which already exist from the resource collection and create a task to load them.
             var existingResources = new List<Resource>();
             var resourcesWithExistingCaasId = sortedResources
                 .Where(resource => !string.IsNullOrEmpty(resource.ExistingCaasId))
@@ -90,7 +90,6 @@ namespace DD.CBU.CaasDeploy.Library
                 }
             }
 
-            // Create the tasks to load existing resources.
             var tasks = new List<ITask>();
 
             if (existingResources.Count > 0)
@@ -98,14 +97,14 @@ namespace DD.CBU.CaasDeploy.Library
                 tasks.Add(new LoadExistingResourcesTask(existingResources));
             }
 
-            // Create the tasks to deploy resources.
+            // Create the tasks to deploy new resources.
             foreach (var resource in sortedResources)
             {
                 tasks.Add(new DeployResourceTask(resource));
 
                 if ((resource.Scripts != null) && (resource.ResourceType == ResourceType.Server))
                 {
-                    tasks.Add(new ExecuteScriptTask(resource));
+                    tasks.Add(new ExecuteScriptTask(resource, scriptPath));
                 }
             }
 
@@ -117,7 +116,6 @@ namespace DD.CBU.CaasDeploy.Library
             // Create the task execution context.
             var context = new TaskContext
             {
-                ScriptPath = scriptPath,
                 Parameters = parameters,
                 ResourcesProperties = new Dictionary<string, JObject>(),
                 Log = new DeploymentLog()

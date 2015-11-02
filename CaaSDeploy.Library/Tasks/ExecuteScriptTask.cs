@@ -22,10 +22,16 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         private readonly Resource _resource;
 
         /// <summary>
+        /// The path to the scripts folder
+        /// </summary>
+        private readonly string _scriptPath;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ExecuteScriptTask"/> class.
         /// </summary>
         /// <param name="resource">The resource.</param>
-        public ExecuteScriptTask(Resource resource)
+        /// <param name="scriptPath">The path to the scripts folder.</param>
+        public ExecuteScriptTask(Resource resource, string scriptPath)
         {
             if (resource == null)
             {
@@ -33,6 +39,7 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
             }
 
             _resource = resource;
+            _scriptPath = scriptPath;
         }
 
         /// <summary>
@@ -55,7 +62,7 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
 
             var scriptRunner = PostDeployScriptRunnerFactory.Create(ipv6Unc, userName, password, osType);
 
-            string scriptPath = UnzipScriptBundle(taskContext.ScriptPath, _resource.Scripts.BundleFile);
+            string scriptPath = UnzipScriptBundle(_scriptPath, _resource.Scripts.BundleFile);
             var scriptDirectory = new DirectoryInfo(scriptPath);
             foreach (var scriptFile in scriptDirectory.EnumerateFiles())
             {
