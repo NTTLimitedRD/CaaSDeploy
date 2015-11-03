@@ -50,7 +50,8 @@ namespace DD.CBU.CaasDeploy.Library
                 {
                     Credentials = new NetworkCredential(userName, password),
                     OrgId = orgId,
-                    BaseUrl = region.BaseUrl
+                    BaseUrl = region.BaseUrl,
+                    Roles = xdoc.Root.Elements(ns5 + "roles").Elements(ns5 + "role").Elements(ns5 + "name").Select(e => e.Value).ToList()
                 };
             }
         }

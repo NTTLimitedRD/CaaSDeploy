@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
@@ -30,7 +31,8 @@ namespace DD.CBU.CaasDeploy.Library.Tests
             AccountDetails = new CaasAccountDetails
             {
                 BaseUrl = "https://api-na.dimensiondata.com",
-                OrgId = "68819F2B-22F9-4D46-86B8-7926B640464C"
+                OrgId = "68819F2B-22F9-4D46-86B8-7926B640464C",
+                Roles = new List<string> { "network", "server" }
             }
         };
 

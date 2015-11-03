@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security;
 using System.Threading.Tasks;
 
 using DD.CBU.CaasDeploy.Library.Contracts;
+using DD.CBU.CaasDeploy.Library.Utilities;
 using DD.CBU.CaasDeploy.Library.Models;
 
 namespace DD.CBU.CaasDeploy.Library
@@ -57,6 +60,30 @@ namespace DD.CBU.CaasDeploy.Library
         /// <returns>The async <see cref="Task" /> with the deployment log.</returns>
         public async Task<DeploymentLog> Execute(RuntimeContext runtimeContext)
         {
+            // Check the roles.
+            if (runtimeContext.AccountDetails.Roles == null || runtimeContext.AccountDetails.Roles.Count == 0)
+            {
+                throw new InvalidOperationException("The account details does not contain any roles.");
+            }
+
+            if (!runtimeContext.AccountDetails.Roles.Contains("primary administrator", StringComparer.OrdinalIgnoreCase))
+            {
+                var requiredRoles = Tasks
+                    .Select(resource => resource.GetRequiredRole())
+                    .Where(role => !string.IsNullOrEmpty(role))
+                    .Distinct();
+
+                var missingRole = requiredRoles
+                    .Where(role => !runtimeContext.AccountDetails.Roles.Contains(role, StringComparer.OrdinalIgnoreCase))
+                    .Any();
+
+                if (missingRole)
+                {
+                    throw new SecurityException("The template requires you to be a member of the following roles: " + string.Join(", ", requiredRoles));
+                }
+            }
+
+            // Execute each individual task.
             foreach (var task in Tasks)
             {
                 try

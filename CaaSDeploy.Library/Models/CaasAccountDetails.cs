@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 
 namespace DD.CBU.CaasDeploy.Library.Models
 {
@@ -21,5 +22,10 @@ namespace DD.CBU.CaasDeploy.Library.Models
         /// Gets or sets the API base URL for the region.
         /// </summary>
         public string BaseUrl { get; set; }
+
+        /// <summary>
+        /// Gets or sets the account's role memberships.
+        /// </summary>
+        public IList<string> Roles { get; set; }
     }
 }
