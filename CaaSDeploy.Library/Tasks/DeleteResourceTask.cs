@@ -13,11 +13,6 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
     public sealed class DeleteResourceTask : ITask
     {
         /// <summary>
-        /// The resource
-        /// </summary>
-        private readonly ResourceLog _resourceLog;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="DeleteResourceTask"/> class.
         /// </summary>
         /// <param name="resourceLog">The resource log to delete.</param>
@@ -28,8 +23,13 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
                 throw new ArgumentNullException(nameof(resourceLog));
             }
 
-            _resourceLog = resourceLog;
+            ResourceLog = resourceLog;
         }
+
+        /// <summary>
+        /// Gets the log of the deployed resource to delete.
+        /// </summary>
+        public ResourceLog ResourceLog { get; private set; }
 
         /// <summary>
         /// Executes the task.
@@ -39,10 +39,10 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         /// <returns>The async <see cref="Task"/>.</returns>
         public async Task Execute(RuntimeContext runtimeContext, TaskContext taskContext)
         {
-            if (_resourceLog.CaasId != null)
+            if (ResourceLog.CaasId != null)
             {
-                var deployer = new ResourceDeployer(runtimeContext, _resourceLog.ResourceId, _resourceLog.ResourceType);
-                var resourceLog = await deployer.DeleteAndWait(_resourceLog.CaasId);
+                var deployer = new ResourceDeployer(runtimeContext, ResourceLog.ResourceId, ResourceLog.ResourceType);
+                var resourceLog = await deployer.DeleteAndWait(ResourceLog.CaasId);
 
                 taskContext.Log.Resources.Add(resourceLog);
 

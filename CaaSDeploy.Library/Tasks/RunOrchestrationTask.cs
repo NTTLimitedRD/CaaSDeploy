@@ -14,16 +14,6 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
     public sealed class RunOrchestrationTask : ITask
     {
         /// <summary>
-        /// The orchestration
-        /// </summary>
-        private readonly JObject _orchestration;
-
-        /// <summary>
-        /// The resources
-        /// </summary>
-        private readonly IReadOnlyList<Resource> _resources;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="RunOrchestrationTask"/> class.
         /// </summary>
         /// <param name="orchestration">The orchestration.</param>
@@ -40,9 +30,19 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
                 throw new ArgumentNullException(nameof(resources));
             }
 
-            _orchestration = orchestration;
-            _resources = resources;
+            Orchestration = orchestration;
+            Resources = resources;
         }
+
+        /// <summary>
+        /// Gets the orchestration.
+        /// </summary>
+        public JObject Orchestration { get; private set; }
+
+        /// <summary>
+        /// Gets the resources.
+        /// </summary>
+        public IReadOnlyList<Resource> Resources { get; private set; }
 
         /// <summary>
         /// Executes the task.
@@ -52,7 +52,7 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         /// <returns>The async <see cref="Task"/>.</returns>
         public async Task Execute(RuntimeContext runtimeContext, TaskContext taskContext)
         {
-            var providerTypeName = _orchestration["provider"].Value<String>();
+            var providerTypeName = Orchestration["provider"].Value<String>();
             var providerType = Type.GetType(providerTypeName);
             if (providerType == null)
             {
@@ -63,7 +63,7 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
             var provider = (IOrchestrationProvider)Activator.CreateInstance(providerType);
             runtimeContext.LogProvider.LogMessage($"Running Orchestration Provider '{providerTypeName}'.");
 
-            await provider.RunOrchestration(runtimeContext, taskContext, _orchestration, _resources);
+            await provider.RunOrchestration(runtimeContext, taskContext, Orchestration, Resources);
         }
     }
 }

@@ -42,6 +42,18 @@ namespace DD.CBU.CaasDeploy.Library
         }
 
         /// <summary>
+        /// Gets the deployment tasks for the supplied deployment template.
+        /// </summary>
+        /// <param name="templateFilePath">The template file path.</param>
+        /// <param name="parameters">The deployment parameters.</param>
+        /// <returns>Instance of <see cref="TaskExecutor"/> with tasks and task execution context.</returns>
+        public TaskExecutor BuildTasksFromDeploymentTemplate(string templateFilePath, IDictionary<string, string> parameters)
+        {
+            var template = TemplateParser.ParseDeploymentTemplate(templateFilePath);
+            return BuildTasks(template, new FileInfo(templateFilePath).DirectoryName, parameters);
+        }
+
+        /// <summary>
         /// Gets the deletion tasks for the supplied deployment log.
         /// </summary>
         /// <param name="deploymentLogFilePath">The deployment log file path.</param>

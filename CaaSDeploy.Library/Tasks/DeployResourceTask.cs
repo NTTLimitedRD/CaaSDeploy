@@ -13,11 +13,6 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
     public sealed class DeployResourceTask : ITask
     {
         /// <summary>
-        /// The resource
-        /// </summary>
-        private readonly Resource _resource;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="DeployResourceTask"/> class.
         /// </summary>
         /// <param name="resource">The resource to deploy.</param>
@@ -28,8 +23,13 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
                 throw new ArgumentNullException(nameof(resource));
             }
 
-            _resource = resource;
+            Resource = resource;
         }
+
+        /// <summary>
+        /// Gets the resource to deploy.
+        /// </summary>
+        public Resource Resource { get; private set; }
 
         /// <summary>
         /// Executes the task.
@@ -39,9 +39,9 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         /// <returns>The async <see cref="Task"/>.</returns>
         public async Task Execute(RuntimeContext runtimeContext, TaskContext taskContext)
         {
-            await TokenHelper.SubstituteTokensInJObject(runtimeContext, taskContext, _resource.ResourceDefinition);
-            var deployer = new ResourceDeployer(runtimeContext, _resource.ResourceId, _resource.ResourceType);
-            var resourceLog = await deployer.DeployAndWait(_resource.ResourceDefinition);
+            await TokenHelper.SubstituteTokensInJObject(runtimeContext, taskContext, Resource.ResourceDefinition);
+            var deployer = new ResourceDeployer(runtimeContext, Resource.ResourceId, Resource.ResourceType);
+            var resourceLog = await deployer.DeployAndWait(Resource.ResourceDefinition);
 
             taskContext.Log.Resources.Add(resourceLog);
             taskContext.ResourcesProperties.Add(resourceLog.ResourceId, resourceLog.Details);

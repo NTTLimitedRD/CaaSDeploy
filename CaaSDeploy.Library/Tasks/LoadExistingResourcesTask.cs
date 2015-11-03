@@ -14,11 +14,6 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
     public sealed class LoadExistingResourcesTask : ITask
     {
         /// <summary>
-        /// The existing resources
-        /// </summary>
-        private readonly IList<Resource> _existingResources;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="LoadExistingResourcesTask"/> class.
         /// </summary>
         /// <param name="existingResources">The existing resources to load.</param>
@@ -29,8 +24,13 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
                 throw new ArgumentNullException(nameof(existingResources));
             }
 
-            _existingResources = existingResources;
+            ExistingResources = existingResources;
         }
+
+        /// <summary>
+        /// Gets the existing resources to load.
+        /// </summary>
+        public IList<Resource> ExistingResources { get; private set; }
 
         /// <summary>
         /// Executes the task.
@@ -40,12 +40,12 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         /// <returns>The async <see cref="Task"/>.</returns>
         public async Task Execute(RuntimeContext runtimeContext, TaskContext taskContext)
         {
-            if (_existingResources == null)
+            if (ExistingResources == null)
             {
                 return;
             }
 
-            foreach (var existingResource in _existingResources)
+            foreach (var existingResource in ExistingResources)
             {
                 existingResource.ExistingCaasId = await TokenHelper.SubstituteTokensInString(runtimeContext, taskContext, existingResource.ExistingCaasId);
                 var deployer = new ResourceDeployer(runtimeContext, existingResource.ResourceId, existingResource.ResourceType);

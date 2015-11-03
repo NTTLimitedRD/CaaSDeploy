@@ -17,16 +17,6 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
     public sealed class ExecuteScriptTask : ITask
     {
         /// <summary>
-        /// The resource
-        /// </summary>
-        private readonly Resource _resource;
-
-        /// <summary>
-        /// The path to the scripts folder
-        /// </summary>
-        private readonly string _scriptPath;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="ExecuteScriptTask"/> class.
         /// </summary>
         /// <param name="resource">The resource.</param>
@@ -38,9 +28,19 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
                 throw new ArgumentNullException(nameof(resource));
             }
 
-            _resource = resource;
-            _scriptPath = scriptPath;
+            Resource = resource;
+            ScriptPath = scriptPath;
         }
+
+        /// <summary>
+        /// Gets the resource to execute the script for.
+        /// </summary>
+        public Resource Resource { get; private set; }
+
+        /// <summary>
+        /// Gets the path to the scripts folder.
+        /// </summary>
+        public string ScriptPath { get; private set; }
 
         /// <summary>
         /// Executes the task.
@@ -50,7 +50,7 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         /// <returns>The async <see cref="Task"/>.</returns>
         public async Task Execute(RuntimeContext runtimeContext, TaskContext taskContext)
         {
-            var details = taskContext.ResourcesProperties[_resource.ResourceId];
+            var details = taskContext.ResourcesProperties[Resource.ResourceId];
 
             runtimeContext.LogProvider.LogMessage($"Running deployment scripts.");
             string ipv6Address = details["networkInfo"]["primaryNic"]["ipv6"].Value<string>();
@@ -58,11 +58,11 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
             OSType osType = details["operatingSystem"]["family"].Value<string>() == "WINDOWS" ? OSType.Windows : OSType.Linux;
 
             string userName = osType == OSType.Windows ? "administrator" : "root";
-            string password = _resource.ResourceDefinition["administratorPassword"].Value<string>();
+            string password = Resource.ResourceDefinition["administratorPassword"].Value<string>();
 
             var scriptRunner = PostDeployScriptRunnerFactory.Create(ipv6Unc, userName, password, osType);
 
-            string scriptPath = UnzipScriptBundle(_scriptPath, _resource.Scripts.BundleFile);
+            string scriptPath = UnzipScriptBundle(ScriptPath, Resource.Scripts.BundleFile);
             var scriptDirectory = new DirectoryInfo(scriptPath);
             foreach (var scriptFile in scriptDirectory.EnumerateFiles())
             {
@@ -72,7 +72,7 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
             }
             scriptDirectory.Delete();
 
-            string deployScript = await TokenHelper.SubstituteTokensInString(runtimeContext, taskContext, _resource.Scripts.OnDeploy);
+            string deployScript = await TokenHelper.SubstituteTokensInString(runtimeContext, taskContext, Resource.Scripts.OnDeploy);
             runtimeContext.LogProvider.LogMessage("\tExecuting script " + deployScript);
             await scriptRunner.ExecuteScript(deployScript);
         }
