@@ -48,8 +48,7 @@ namespace DD.CBU.CaasDeploy.Library
                 var orgId = xdoc.Root.Element(ns5 + "orgId").Value;
                 return new CaasAccountDetails
                 {
-                    UserName = userName,
-                    Password = password,
+                    Credentials = new NetworkCredential(userName, password),
                     OrgId = orgId,
                     BaseUrl = region.BaseUrl
                 };

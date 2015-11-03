@@ -1,4 +1,6 @@
-﻿namespace DD.CBU.CaasDeploy.Library.Models
+﻿using System.Net;
+
+namespace DD.CBU.CaasDeploy.Library.Models
 {
     /// <summary>
     /// Contains CaaS account details after successful authentication.
@@ -6,14 +8,9 @@
     public class CaasAccountDetails
     {
         /// <summary>
-        /// Gets or sets the name of the user.
+        /// Gets or sets the credentials.
         /// </summary>
-        public string UserName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the password.
-        /// </summary>
-        public string Password { get; set; }
+        public ICredentials Credentials { get; set; }
 
         /// <summary>
         /// Gets or sets the organisation identifier.

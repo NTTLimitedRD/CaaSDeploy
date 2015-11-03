@@ -40,9 +40,7 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
         /// <returns>The client.</returns>
         private static IHttpClient GetProductionClient(CaasAccountDetails accountDetails, string mediaType)
         {
-            var credentials = new NetworkCredential(accountDetails.UserName, accountDetails.Password);
-            var handler = new HttpClientHandler { Credentials = credentials };
-
+            var handler = new HttpClientHandler { Credentials = accountDetails.Credentials };
             var client = new HttpClient(handler);
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(mediaType));
 
