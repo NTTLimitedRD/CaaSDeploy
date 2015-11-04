@@ -27,7 +27,7 @@
     <created>2015-05-13T07:11:34.000Z</created>
     <state>NORMAL</state>
   </image>
-  <image id="0bf731a8-29c5-4b8b-a460-2a60ab4019cf" location="NA2">
+  <image id="0bf731a8-29c5-4b8b-a460-2a60ab4019cf" location="NA9">
     <name>RedHat 6 64-bit 2 CPU</name>
     <description>RedHat 6.6 Enterprise (Santiago) 64-bit</description>
     <operatingSystem id="REDHAT664" displayName="REDHAT6/64" type="UNIX"/>

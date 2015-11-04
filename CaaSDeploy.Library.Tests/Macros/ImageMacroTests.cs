@@ -44,7 +44,7 @@ namespace DD.CBU.CaasDeploy.Library.Tests.Macros
             client.AddResponse("/oec/0.9/base/imageWithDiskSpeed?name=RedHat 6 64-bit 2 CPU", "Image_Get.xml");
 
             var macro = new ImageMacro();
-            var input = "$serverImage['NA2', 'RedHat 6 64-bit 2 CPU']";
+            var input = "$serverImage['NA9', 'RedHat 6 64-bit 2 CPU']";
             var output = await macro.SubstituteTokensInString(_runtimeContext, null, input);
 
             Assert.AreEqual("0bf731a8-29c5-4b8b-a460-2a60ab4019cf", output);
@@ -62,7 +62,7 @@ namespace DD.CBU.CaasDeploy.Library.Tests.Macros
             client.AddResponse("/oec/0.9/base/imageWithDiskSpeed?name=RedHat 6 64-bit 2 CPU", "Image_Get_NotFound.xml");
 
             var macro = new ImageMacro();
-            var input = "$serverImage['NA2', 'RedHat 6 64-bit 2 CPU']";
+            var input = "$serverImage['NA9', 'RedHat 6 64-bit 2 CPU']";
             await macro.SubstituteTokensInString(_runtimeContext, null, input);
         }
 
@@ -77,7 +77,7 @@ namespace DD.CBU.CaasDeploy.Library.Tests.Macros
             client.AddResponse("/oec/0.9/" + OrgId + "/imageWithDiskSpeed?name=RedHat 6 64-bit 2 CPU", "Image_Get.xml");
 
             var macro = new ImageMacro();
-            var input = "$customerImage['NA2', 'RedHat 6 64-bit 2 CPU']";
+            var input = "$customerImage['NA9', 'RedHat 6 64-bit 2 CPU']";
             var output = await macro.SubstituteTokensInString(_runtimeContext, null, input);
 
             Assert.AreEqual("0bf731a8-29c5-4b8b-a460-2a60ab4019cf", output);
@@ -95,7 +95,7 @@ namespace DD.CBU.CaasDeploy.Library.Tests.Macros
             client.AddResponse("/oec/0.9/" + OrgId + "/imageWithDiskSpeed?name=RedHat 6 64-bit 2 CPU", "Image_Get_NotFound.xml");
 
             var macro = new ImageMacro();
-            var input = "$customerImage['NA2', 'RedHat 6 64-bit 2 CPU']";
+            var input = "$customerImage['NA9', 'RedHat 6 64-bit 2 CPU']";
             await macro.SubstituteTokensInString(_runtimeContext, null, input);
         }
     }

@@ -41,7 +41,7 @@
       "resourceDefinition": {
         "name": "$parameters['ServerName']",
         "description": "$parameters['ServerName']",
-        "imageId": "$serverImage['NA2', 'RedHat 6 64-bit 2 CPU']",
+        "imageId": "$serverImage[$resources['UnitTestNetworkDomain'].datacenterId, 'RedHat 6 64-bit 2 CPU']",
         "start": true,
         "administratorPassword": "Password@1",
         "networkInfo": {
