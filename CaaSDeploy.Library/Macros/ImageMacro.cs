@@ -54,7 +54,7 @@ namespace DD.CBU.CaasDeploy.Library.Macros
                             ? string.Format(ImageUrl, runtimeContext.AccountDetails.OrgId, imageName)
                             : string.Format(ImageUrl, "base", imageName);
 
-                        var response = await client.GetAsync(url);
+                        var response = await client.GetAsync(runtimeContext.AccountDetails.BaseUrl + url);
                         response.ThrowForHttpFailure();
 
                         var responseBody = await response.Content.ReadAsStringAsync();
