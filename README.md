@@ -184,7 +184,7 @@ public IP to the private IP, and opens firewall ports for web and RDP traffic.
       "resourceDefinition": {
         "name": "$parameters['myVMName']",
         "description": "Testing CaaS Deployment Templates",
-        "imageId": "8bc629a9-8d71-4b1b-8b26-acdc077edab1",
+        "imageId": "$serverImage[$parameters['datacenterId'], 'Ubuntu 12.04 2 CPU']",
         "start": true,
         "administratorPassword": "Password@1",
         "networkInfo": {
