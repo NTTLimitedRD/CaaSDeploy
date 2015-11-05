@@ -47,7 +47,16 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
                 {
                     foreach (var jtoken in ((JArray)parameter.Value))
                     {
-                        await SubstituteTokensInJObject(runtimeContext, taskContext, (JObject)jtoken);
+                        if (jtoken is JObject)
+                        {
+                            await SubstituteTokensInJObject(runtimeContext, taskContext, (JObject)jtoken);
+                        }
+                        else
+                        {
+                            var value = jtoken.Value<string>();
+                            value = await SubstituteTokensInString(runtimeContext, taskContext, value);
+                            ((JValue)jtoken).Replace(new JValue(value));
+                        }
                     }
                 }
             }
