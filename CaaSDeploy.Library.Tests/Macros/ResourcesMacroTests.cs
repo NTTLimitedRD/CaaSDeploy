@@ -31,10 +31,10 @@ namespace DD.CBU.CaasDeploy.Library.Tests.Macros
             };
 
             var macro = new ResourcesMacro();
-            var input = "Hello_$resources[$resources['Param1'].name].name";
+            var input = "http://$resources[$resources['Param1'].name].name/index.html";
             var output = await macro.SubstituteTokensInString(null, context, input);
 
-            Assert.AreEqual("Hello_Param3", output);
+            Assert.AreEqual("http://Param3/index.html", output);
         }
 
         /// <summary>

@@ -125,6 +125,11 @@ namespace DD.CBU.CaasDeploy.Library
                 tasks.Add(new RunOrchestrationTask(template.Orchestration, sortedResources));
             }
 
+            if (template.OutputParameters != null && template.OutputParameters.Properties().Any())
+            {
+                tasks.Add(new SetOutputParametersTask(template.OutputParameters));
+            }
+
             // Create the task execution context.
             var context = new TaskContext
             {

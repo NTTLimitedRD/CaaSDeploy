@@ -12,9 +12,14 @@ namespace DD.CBU.CaasDeploy.Library.Contracts
     public sealed class TaskContext
     {
         /// <summary>
-        /// Gets or sets the parameters.
+        /// Gets or sets the input parameters.
         /// </summary>
         public IDictionary<string, string> Parameters { get; set; }
+
+        /// <summary>
+        /// Gets or sets the output parameters.
+        /// </summary>
+        public IDictionary<string, string> OutputParameters { get; set; }
 
         /// <summary>
         /// Gets or sets the resources properties.

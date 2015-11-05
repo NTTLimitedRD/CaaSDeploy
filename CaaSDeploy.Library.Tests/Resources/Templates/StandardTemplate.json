@@ -6,13 +6,23 @@
   },
   "parameters": {
     "ServerName": {
-      "description": "The name to use for the Server",
+      "title": "Server Name",
+      "description": "The name to use for the new Server.",
       "type": "string"
     },
     "VlanId": {
+      "title": "VLAN Id",
       "description": "The id of an existing VLAN to use (optional).",
       "type": "string",
       "required": false
+    }
+  },
+  "outputParameters": {
+    "ServerPublicUrl": {
+      "title": "Public IPv4 address",
+      "description": "The public IPv4 address of the newly created Server.",
+      "type": "string",
+      "value": "http://$resources['PublicIpBlock'].baseIp/index.html"
     }
   },
   "resources": [

@@ -138,6 +138,16 @@ namespace DD.CBU.CaasDeploy
 
                     log.SaveToFile(arguments["deploymentlog"]);
                     Console.WriteLine($"Complete! Deployment log written to {arguments["deploymentlog"]}.");
+
+                    if (taskExecutor.Context.OutputParameters != null)
+                    {
+                        Console.WriteLine("OUTPUT PARAMETERS:");
+
+                        foreach (var param in taskExecutor.Context.OutputParameters)
+                        {
+                            Console.WriteLine($"{param.Key}: {param.Value}");
+                        }
+                    }
                 }
                 else if (arguments["action"].ToLower() == "delete")
                 {

@@ -23,6 +23,12 @@ namespace DD.CBU.CaasDeploy.Library.Models
         public JObject Parameters { get; set; }
 
         /// <summary>
+        /// Gets or sets the output parameters.
+        /// </summary>
+        [JsonProperty("outputParameters")]
+        public JObject OutputParameters { get; set; }
+
+        /// <summary>
         /// Gets or sets the resources to deploy.
         /// </summary>
         [JsonProperty("resources")]

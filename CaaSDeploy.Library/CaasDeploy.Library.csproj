@@ -91,6 +91,7 @@
     <Compile Include="Contracts\IOrchestrationProvider.cs" />
     <Compile Include="Models\Error.cs" />
     <Compile Include="TaskBuilder.cs" />
+    <Compile Include="Tasks\SetOutputParametersTask.cs" />
     <Compile Include="TemplateParserException.cs" />
     <Compile Include="Models\CaasAccountDetails.cs" />
     <Compile Include="Models\CaasApiUrls.cs" />

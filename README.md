@@ -33,6 +33,11 @@ The templates are in JSON format and contain up to five sections: **metadata** (
 * **required**: An optional value indicating whether the parameter is required. The default is _true_.
 * **minLength**: An optional value specifiyng the minimum string length.
 * **maxLength**: An optional value specifiyng the maximum string length.
+* **enum**: An optional array of allowed values.
+* **value**: The default value (optional).
+
+**outputParameters** defines an optional list of parameters which will be returned to the hosting application. The value property usually uses $resources macros to extract and return details of deployed resources.
+
 
 **resources** contains an array with the list of resources to be deployed. Each element in the array has the following properties.
 
@@ -81,6 +86,14 @@ public IP to the private IP, and opens firewall ports for web and RDP traffic.
       "title": "Data Center",
       "description": "The region to deploy to",
       "type": "caas.dataCenterId"
+    }
+  },
+  "outputParameters": {
+    "serverUrl": {
+      "title": "Server URL",
+      "description": "The URL to the deployed server's web application.",
+      "type": "string",
+	  "value": "http://$resources['PublicIpBlock'].baseIp/index.html"
     }
   },
   "resources": [

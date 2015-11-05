@@ -65,6 +65,7 @@ namespace DD.CBU.CaasDeploy.Library.Tests
             var log = await taskExecutor.Execute(_runtimeContext);
 
             Assert.AreEqual(DeploymentLogStatus.Success, log.Status);
+            Assert.AreEqual("http://168.128.5.106/index.html", taskExecutor.Context.OutputParameters["ServerPublicUrl"]);
         }
 
         /// <summary>

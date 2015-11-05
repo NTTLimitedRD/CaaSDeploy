@@ -99,6 +99,16 @@ namespace DD.CBU.CaasDeploy.PowerShell
             Console.WriteLine($"Result: {log.Status}");
             WriteLog(log, ResolvePath(DeploymentLog));
             Console.WriteLine($"Complete! Deployment log written to {DeploymentLog}.");
+
+            if (taskExecutor.Context.OutputParameters != null)
+            {
+                Console.WriteLine("OUTPUT PARAMETERS:");
+
+                foreach (var param in taskExecutor.Context.OutputParameters)
+                {
+                    Console.WriteLine($"{param.Key}: {param.Value}");
+                }
+            }
         }
 
         /// <summary>

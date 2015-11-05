@@ -21,7 +21,7 @@ namespace DD.CBU.CaasDeploy.Library.Macros
         /// <summary>
         /// The server image regex
         /// </summary>
-        private static readonly Regex ImageRegex = new Regex(@"\$(serverImage|customerImage)\['?([^']*)'?\s*,\s*'([^']*)'\]");
+        private static readonly Regex ImageRegex = new Regex(@"\$(serverImage|customerImage)\['([^']*)'\s*,\s*'([^']*)'\]");
 
         /// <summary>
         /// The CaaS XML namespace.

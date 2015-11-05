@@ -50,6 +50,8 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         /// <returns>The async <see cref="Task"/>.</returns>
         public async Task Execute(RuntimeContext runtimeContext, TaskContext taskContext)
         {
+            throw new NotSupportedException("Script are currently not supported by the console application.");
+
             var details = taskContext.ResourcesProperties[Resource.ResourceId];
 
             runtimeContext.LogProvider.LogMessage($"Running deployment scripts.");
