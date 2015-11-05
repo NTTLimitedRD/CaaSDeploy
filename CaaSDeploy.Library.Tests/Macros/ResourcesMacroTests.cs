@@ -25,17 +25,16 @@ namespace DD.CBU.CaasDeploy.Library.Tests.Macros
             {
                 ResourcesProperties = new Dictionary<string, JObject>()
                 {
-                    { "Param1", JObject.Parse("{ name: 'Value1' }") },
-                    { "Param2", JObject.Parse("{ name: 'Value2' }") },
-                    { "Param3", JObject.Parse("{ name: 'Value3' }") }
+                    { "Param1", JObject.Parse("{ name: 'Param2' }") },
+                    { "Param2", JObject.Parse("{ name: 'Param3' }") }
                 }
             };
 
             var macro = new ResourcesMacro();
-            var input = "Hello_$resources['Param2'].name";
+            var input = "Hello_$resources[$resources['Param1'].name].name";
             var output = await macro.SubstituteTokensInString(null, context, input);
 
-            Assert.AreEqual("Hello_Value2", output);
+            Assert.AreEqual("Hello_Param3", output);
         }
 
         /// <summary>

@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 using DD.CBU.CaasDeploy.Library.Contracts;
+using DD.CBU.CaasDeploy.Library.Utilities;
 
 namespace DD.CBU.CaasDeploy.Library.Macros
 {
@@ -40,26 +41,31 @@ namespace DD.CBU.CaasDeploy.Library.Macros
         /// <returns>The substituted string</returns>
         internal static string SubstituteTokensInString(string input, IDictionary<string, string> parameters, bool required)
         {
-            var paramsMatches = ParameterRegex.Matches(input);
-            var output = input;
-            if (paramsMatches.Count > 0)
+            string output = input;
+            MatchCollection paramsMatches = ParameterRegex.Matches(output);
+
+            while (paramsMatches.Count > 0)
             {
-                foreach (Match paramsMatch in paramsMatches)
+                Match paramsMatch = paramsMatches[paramsMatches.Count - 1];
+                string parameterValue;
+
+                if (!parameters.TryGetValue(paramsMatch.Groups[1].Value, out parameterValue))
                 {
-                    string parameterValue;
-
-                    if (!parameters.TryGetValue(paramsMatch.Groups[1].Value, out parameterValue))
+                    if (required)
                     {
-                        if (required)
-                        {
-                            throw new TemplateParserException($"Value for parameter '{paramsMatch.Groups[1].Value}' has not been provided.");
-                        }
-
-                        parameterValue = string.Empty;
+                        throw new TemplateParserException($"Value for parameter '{paramsMatch.Groups[1].Value}' has not been provided.");
                     }
 
-                    output = output.Replace(paramsMatch.Groups[0].Value, parameterValue);
+                    parameterValue = string.Empty;
                 }
+
+                if (TokenHelper.QuotesRequired(output, paramsMatch))
+                {
+                    parameterValue = "'" + parameterValue + "'";
+                }
+
+                output = output.Replace(paramsMatch.Groups[0].Value, parameterValue);
+                paramsMatches = ParameterRegex.Matches(output);
             }
 
             return output;

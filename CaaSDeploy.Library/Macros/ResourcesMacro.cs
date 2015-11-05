@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 
 using DD.CBU.CaasDeploy.Library.Contracts;
+using DD.CBU.CaasDeploy.Library.Utilities;
 using Newtonsoft.Json.Linq;
 
 namespace DD.CBU.CaasDeploy.Library.Macros
@@ -28,26 +29,33 @@ namespace DD.CBU.CaasDeploy.Library.Macros
             return await Task.Run(() =>
             {
                 string output = input;
+
                 if (taskContext.ResourcesProperties != null)
                 {
-                    var resourceMatches = ResourcePropertyRegex.Matches(input);
-                    if (resourceMatches.Count > 0)
+                    MatchCollection resourceMatches = ResourcePropertyRegex.Matches(output);
+
+                    while (resourceMatches.Count > 0)
                     {
-                        foreach (Match resourceMatch in resourceMatches)
+                        Match resourceMatch = resourceMatches[resourceMatches.Count - 1];
+                        string resourceId = resourceMatch.Groups[1].Value;
+                        string property = resourceMatch.Groups[2].Value;
+
+                        JObject resource;
+
+                        if (!taskContext.ResourcesProperties.TryGetValue(resourceId, out resource))
                         {
-                            string resourceId = resourceMatch.Groups[1].Value;
-                            string property = resourceMatch.Groups[2].Value;
-
-                            JObject resource;
-
-                            if (!taskContext.ResourcesProperties.TryGetValue(resourceId, out resource))
-                            {
-                                throw new TemplateParserException($"Referenced resource '{resourceId}' not found.");
-                            }
-
-                            var newValue = resource.SelectToken(property).Value<string>();
-                            output = output.Replace(resourceMatch.Groups[0].Value, newValue);
+                            throw new TemplateParserException($"Referenced resource '{resourceId}' not found.");
                         }
+
+                        var newValue = resource.SelectToken(property).Value<string>();
+
+                        if (TokenHelper.QuotesRequired(output, resourceMatch))
+                        {
+                            newValue = "'" + newValue + "'";
+                        }
+
+                        output = output.Replace(resourceMatch.Groups[0].Value, newValue);
+                        resourceMatches = ResourcePropertyRegex.Matches(output);
                     }
                 }
 

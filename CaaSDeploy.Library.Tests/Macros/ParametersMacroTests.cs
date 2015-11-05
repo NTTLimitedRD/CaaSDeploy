@@ -24,17 +24,17 @@ namespace DD.CBU.CaasDeploy.Library.Tests.Macros
             {
                 Parameters = new Dictionary<string, string>()
                 {
-                    { "Param1", "Value1" },
-                    { "Param2", "Value2" },
-                    { "Param3", "Value3" }
+                    { "Param1", "Param2" },
+                    { "Param2", "Param3" },
+                    { "Param3", "Param4" }
                 }
             };
 
             var macro = new ParametersMacro();
-            var input = "Hello_$parameters['Param2']";
+            var input = "Hello_$parameters[$parameters['Param1']]";
             var output = await macro.SubstituteTokensInString(null, context, input);
 
-            Assert.AreEqual("Hello_Value2", output);
+            Assert.AreEqual("Hello_Param3", output);
         }
 
         /// <summary>

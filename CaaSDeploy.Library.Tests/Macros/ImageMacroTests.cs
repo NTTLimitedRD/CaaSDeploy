@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using DD.CBU.CaasDeploy.Library.Contracts;
 using DD.CBU.CaasDeploy.Library.Macros;
 using DD.CBU.CaasDeploy.Library.Models;
 using DD.CBU.CaasDeploy.Library.Tests.Helpers;
+using DD.CBU.CaasDeploy.Library.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DD.CBU.CaasDeploy.Library.Tests.Macros
@@ -23,13 +25,25 @@ namespace DD.CBU.CaasDeploy.Library.Tests.Macros
         /// <summary>
         /// The runtime context.
         /// </summary>
-        private RuntimeContext _runtimeContext = new RuntimeContext
+        private readonly RuntimeContext _runtimeContext = new RuntimeContext
         {
             LogProvider = new ConsoleLogProvider(),
             AccountDetails = new CaasAccountDetails
             {
                 BaseUrl = "https://api-na.dimensiondata.com",
                 OrgId = OrgId
+            }
+        };
+
+        /// <summary>
+        /// The task context.
+        /// </summary>
+        private readonly TaskContext _taskContext = new TaskContext
+        {
+            Parameters = new Dictionary<string, string>
+            {
+                {  "dataCenterId", "NA9" },
+                {  "imageName", "RedHat 6 64-bit 2 CPU" },
             }
         };
 
@@ -44,8 +58,8 @@ namespace DD.CBU.CaasDeploy.Library.Tests.Macros
             client.AddResponse("/oec/0.9/base/imageWithDiskSpeed?name=RedHat 6 64-bit 2 CPU", "Image_Get.xml");
 
             var macro = new ImageMacro();
-            var input = "$serverImage['NA9', 'RedHat 6 64-bit 2 CPU']";
-            var output = await macro.SubstituteTokensInString(_runtimeContext, null, input);
+            var input = "$serverImage[$parameters['dataCenterId'], $parameters['imageName']]";
+            var output = await TokenHelper.SubstituteTokensInString(_runtimeContext, _taskContext, input);
 
             Assert.AreEqual("0bf731a8-29c5-4b8b-a460-2a60ab4019cf", output);
         }
@@ -77,8 +91,8 @@ namespace DD.CBU.CaasDeploy.Library.Tests.Macros
             client.AddResponse("/oec/0.9/" + OrgId + "/imageWithDiskSpeed?name=RedHat 6 64-bit 2 CPU", "Image_Get.xml");
 
             var macro = new ImageMacro();
-            var input = "$customerImage['NA9', 'RedHat 6 64-bit 2 CPU']";
-            var output = await macro.SubstituteTokensInString(_runtimeContext, null, input);
+            var input = "$customerImage[$parameters['dataCenterId'], $parameters['imageName']]";
+            var output = await TokenHelper.SubstituteTokensInString(_runtimeContext, _taskContext, input);
 
             Assert.AreEqual("0bf731a8-29c5-4b8b-a460-2a60ab4019cf", output);
         }
