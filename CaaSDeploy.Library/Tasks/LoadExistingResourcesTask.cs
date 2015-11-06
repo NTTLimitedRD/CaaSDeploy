@@ -47,7 +47,7 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
 
             foreach (var existingResource in ExistingResources)
             {
-                existingResource.ExistingCaasId = await TokenHelper.SubstituteTokensInString(runtimeContext, taskContext, existingResource.ExistingCaasId);
+                existingResource.ExistingCaasId = await Macro.SubstituteTokensInString(runtimeContext, taskContext, existingResource.ExistingCaasId);
                 var deployer = new ResourceDeployer(runtimeContext, existingResource.ResourceId, existingResource.ResourceType);
                 var resource = await deployer.Get(existingResource.ExistingCaasId);
                 taskContext.ResourcesProperties.Add(existingResource.ResourceId, resource);

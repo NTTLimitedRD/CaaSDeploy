@@ -59,7 +59,7 @@ namespace DD.CBU.CaasDeploy.Library.Tests.Macros
 
             var macro = new ImageMacro();
             var input = "$serverImage[$parameters['dataCenterId'], $parameters['imageName']]";
-            var output = await TokenHelper.SubstituteTokensInString(_runtimeContext, _taskContext, input);
+            var output = await Macro.SubstituteTokensInString(_runtimeContext, _taskContext, input);
 
             Assert.AreEqual("0bf731a8-29c5-4b8b-a460-2a60ab4019cf", output);
         }
@@ -92,7 +92,7 @@ namespace DD.CBU.CaasDeploy.Library.Tests.Macros
 
             var macro = new ImageMacro();
             var input = "$customerImage[$parameters['dataCenterId'], $parameters['imageName']]";
-            var output = await TokenHelper.SubstituteTokensInString(_runtimeContext, _taskContext, input);
+            var output = await Macro.SubstituteTokensInString(_runtimeContext, _taskContext, input);
 
             Assert.AreEqual("0bf731a8-29c5-4b8b-a460-2a60ab4019cf", output);
         }

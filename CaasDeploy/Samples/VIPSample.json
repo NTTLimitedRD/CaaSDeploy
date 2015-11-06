@@ -1,0 +1,133 @@
+﻿{
+  "metadata": {
+    "schemaVersion": "0.1",
+    "templateName": "VIP Sample",
+    "templateDescription": "Deploys a new Virtual Listener with a Pool and two Members/Nodes."
+  },
+  "parameters": {
+    "networkDomainId": {
+      "title": "Network Domain",
+      "description": "The network domain that the VIP should be deployed into.",
+      "group": "Environment",
+      "type": "caas.networkDomainId"
+    },
+    "listenerIpAddress": {
+      "title": "Listener IPv4 Address",
+      "description": "The IPv4 Address of the virtual listener. This must be an available address from a reserved public IP block.",
+      "group": "Environment",
+      "type": "string",
+      "minLength": "8",
+      "maxLength": "15"
+    },
+    "ipv4Address1": {
+      "title": "IPv4 Address 1",
+      "description": "The IPv4 Address of the first node.",
+      "group": "Environment",
+      "type": "string",
+      "minLength": "8",
+      "maxLength": "15"
+    },
+    "ipv4Address2": {
+      "title": "IPv4 Address 2",
+      "description": "The IPv4 Address of the second node.",
+      "group": "Environment",
+      "type": "string",
+      "minLength": "8",
+      "maxLength": "15"
+    },
+    "port": {
+      "title": "Port",
+      "description": "The TCP port for the pool members.",
+      "group": "Environment",
+      "type": "integer",
+      "value": "80"
+    }
+  },
+  "resources": [
+    {
+      "resourceType": "Pool",
+      "resourceId": "MyPool",
+      "dependsOn": [ ],
+      "resourceDefinition": {
+        "networkDomainId": "$parameters['networkDomainId']",
+        "name": "SamplePool",
+        "description": "Sample Pool",
+        "loadBalanceMethod": "ROUND_ROBIN",
+        "serviceDownAction": "RESELECT",
+        "slowRampTime": 10
+      }
+    },
+    {
+      "resourceType": "VirtualListener",
+      "resourceId": "MyVirtualListener",
+      "dependsOn": [ "MyPool" ],
+      "resourceDefinition": {
+        "networkDomainId": "$parameters['networkDomainId']",
+        "name": "SampleVirtualListener",
+        "description": "Sample Virtual Listener",
+        "type": "STANDARD",
+        "protocol": "TCP",
+        "listenerIpAddress": "$parameters['listenerIpAddress']",
+        "port": "$parameters['port']",
+        "enabled": true,
+        "connectionLimit": 25000,
+        "connectionRateLimit": 2000,
+        "sourcePortPreservation": "PRESERVE",
+        "poolId": "$resources['MyPool'].id",
+        "optimizationProfile": [
+          "TCP"
+        ]
+      }
+    },
+    {
+      "resourceType": "Node",
+      "resourceId": "MyNode1",
+      "dependsOn": [ ],
+      "resourceDefinition": {
+        "networkDomainId": "$parameters['networkDomainId']",
+        "name": "SampleNode1",
+        "description": "Sample Node 1",
+        "ipv4Address": "$parameters['ipv4Address1']",
+        "status": "ENABLED",
+        "connectionLimit": "20000",
+        "connectionRateLimit": "2000"
+      }
+    },
+    {
+      "resourceType": "Node",
+      "resourceId": "MyNode2",
+      "dependsOn": [ ],
+      "resourceDefinition": {
+        "networkDomainId": "$parameters['networkDomainId']",
+        "name": "SampleNode2",
+        "description": "Sample Node 2",
+        "ipv4Address": "$parameters['ipv4Address2']",
+        "status": "ENABLED",
+        "connectionLimit": "20000",
+        "connectionRateLimit": "2000"
+      }
+    },
+    {
+      "resourceType": "PoolMember",
+      "resourceId": "MyPoolMember1",
+      "dependsOn": [ "MyNode1", "MyPool" ],
+      "resourceDefinition": {
+        "poolId": "$resources['MyPool'].id",
+        "nodeId": "$resources['MyNode1'].id",
+        "status": "ENABLED",
+        "port": "$parameters['port']"
+      }
+    },
+    {
+      "resourceType": "PoolMember",
+      "resourceId": "MyPoolMember2",
+      "dependsOn": [ "MyNode2", "MyPool" ],
+      "resourceDefinition": {
+        "poolId": "$resources['MyPool'].id",
+        "nodeId": "$resources['MyNode2'].id",
+        "status": "ENABLED",
+        "port": "$parameters['port']"
+      }
+    }
+  ]
+}

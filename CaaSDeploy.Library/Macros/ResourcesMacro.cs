@@ -49,7 +49,7 @@ namespace DD.CBU.CaasDeploy.Library.Macros
 
                         var newValue = resource.SelectToken(property).Value<string>();
 
-                        if (TokenHelper.QuotesRequired(output, resourceMatch))
+                        if (IsNested(output, resourceMatch))
                         {
                             newValue = "'" + newValue + "'";
                         }
@@ -61,6 +61,27 @@ namespace DD.CBU.CaasDeploy.Library.Macros
 
                 return output;
             });
+        }
+
+        /// <summary>
+        /// Checkes whether the replacement of the supplied token requires quotes.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <param name="match">The match.</param>
+        /// <returns>True if quotes are required, otherwise false.</returns>
+        private bool IsNested(string input, Match match)
+        {
+            if ((match.Index == 0) || (match.Index + match.Value.Length == input.Length))
+            {
+                return false;
+            }
+
+            if ((input[match.Index - 1] == '[') || (input[match.Index + match.Value.Length - 1] == ']'))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

@@ -39,7 +39,7 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
         /// <returns>The async <see cref="Task"/>.</returns>
         public async Task Execute(RuntimeContext runtimeContext, TaskContext taskContext)
         {
-            await TokenHelper.SubstituteTokensInJObject(runtimeContext, taskContext, Resource.ResourceDefinition);
+            await Macro.SubstituteTokensInJObject(runtimeContext, taskContext, Resource.ResourceDefinition);
             var deployer = new ResourceDeployer(runtimeContext, Resource.ResourceId, Resource.ResourceType);
             var resourceLog = await deployer.DeployAndWait(Resource.ResourceDefinition);
 

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using DD.CBU.CaasDeploy.Library;
 using DD.CBU.CaasDeploy.Library.Contracts;
 using DD.CBU.CaasDeploy.Library.Models;
-using DD.CBU.CaasDeploy.Library.Utilities;
 using Newtonsoft.Json.Linq;
 
 namespace DD.CBU.CaasDeploy.Orchestration.Docs
@@ -75,7 +75,7 @@ namespace DD.CBU.CaasDeploy.Orchestration.Docs
             _docsApiClient = new DocsApiClient(orchestrationObject["docsServiceUrl"].Value<string>());
             _orchestratorClient = new OrchestratorApiClient(orchestrationObject["orchestratorServiceUrl"].Value<string>());
 
-            await TokenHelper.SubstituteTokensInJObject(runtimeContext, taskContext, orchestrationObject);
+            await Macro.SubstituteTokensInJObject(runtimeContext, taskContext, orchestrationObject);
 
             await SendConfiguration((JArray)orchestrationObject["configuration"]);
             await SendEnvironment((JObject)orchestrationObject["environment"], resources, taskContext.ResourcesProperties);

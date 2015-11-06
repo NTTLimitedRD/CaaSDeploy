@@ -124,17 +124,11 @@
     <Compile Include="Models\Resource.cs" />
     <Compile Include="Utilities\ResourceDeployer.cs" />
     <Compile Include="Utilities\TaskExtensions.cs" />
-    <Compile Include="Utilities\TokenHelper.cs" />
+    <Compile Include="Macro.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Package.nuspec" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CaasDeploy.PostDeployScriptRunner\CaasDeploy.PostDeployScriptRunner.csproj">
-      <Project>{3fb85ed6-c120-44cc-a339-18a9d6212e35}</Project>
-      <Name>CaasDeploy.PostDeployScriptRunner</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

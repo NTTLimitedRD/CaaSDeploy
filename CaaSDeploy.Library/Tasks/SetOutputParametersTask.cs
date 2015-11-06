@@ -45,7 +45,7 @@ namespace DD.CBU.CaasDeploy.Library.Tasks
             foreach (var param in OutputParameters.Properties())
             {
                 var value = param.Value["value"].Value<string>();
-                value = await TokenHelper.SubstituteTokensInString(runtimeContext, taskContext, value);
+                value = await Macro.SubstituteTokensInString(runtimeContext, taskContext, value);
                 taskContext.OutputParameters.Add(param.Name, value);
             }
         }

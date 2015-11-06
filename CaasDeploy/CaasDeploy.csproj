@@ -89,6 +89,7 @@
     <None Include="Samples\TestTemplate.params.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Samples\VIPSample.json" />
     <None Include="Samples\VIPTemplate.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

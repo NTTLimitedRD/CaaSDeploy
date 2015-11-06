@@ -1,17 +1,16 @@
 ﻿using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 using DD.CBU.CaasDeploy.Library.Contracts;
 using DD.CBU.CaasDeploy.Library.Macros;
 using Newtonsoft.Json.Linq;
 
-namespace DD.CBU.CaasDeploy.Library.Utilities
+namespace DD.CBU.CaasDeploy.Library
 {
     /// <summary>
     /// Provides commonly used helper methods to replace tokens in JSON templates.
     /// </summary>
-    public static class TokenHelper
+    public static class Macro
     {
         /// <summary>
         /// The macros to execute.
@@ -85,27 +84,6 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
             }
 
             return value;
-        }
-
-        /// <summary>
-        /// Checkes whether the replacement of the supplied token requires quotes.
-        /// </summary>
-        /// <param name="input">The input.</param>
-        /// <param name="match">The match.</param>
-        /// <returns>True if quotes are required, otherwise false.</returns>
-        internal static bool QuotesRequired(string input, Match match)
-        {
-            if ((match.Index == 0) || (match.Index + match.Value.Length == input.Length))
-            {
-                return false;
-            }
-
-            if ((input[match.Index - 1] == '[') || (input[match.Index + match.Value.Length - 1] == ']'))
-            {
-                return true;
-            }
-
-            return false;
         }
     }
 }
