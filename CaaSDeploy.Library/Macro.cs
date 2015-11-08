@@ -41,7 +41,15 @@ namespace DD.CBU.CaasDeploy.Library
                 {
                     var value = parameter.Value.Value<string>();
                     value = await SubstituteTokensInString(runtimeContext, taskContext, value);
-                    parameter.Value.Replace(new JValue(value));
+
+                    if (value == string.Empty)
+                    {
+                        parameter.Value.Replace(null);
+                    }
+                    else
+                    {
+                        parameter.Value.Replace(new JValue(value));
+                    }
                 }
                 else if (parameter.Value is JArray)
                 {
