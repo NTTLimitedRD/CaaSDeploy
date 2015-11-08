@@ -84,7 +84,7 @@ namespace DD.CBU.CaasDeploy.Library.Macros
                 return false;
             }
 
-            if ((input[match.Index - 1] == '[') || (input[match.Index + match.Value.Length - 1] == ']'))
+            if ((input[match.Index - 1] == '[') || (input[match.Index + match.Value.Length] == ']'))
             {
                 return true;
             }

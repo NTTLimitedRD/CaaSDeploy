@@ -6,7 +6,6 @@ using DD.CBU.CaasDeploy.Library.Contracts;
 using DD.CBU.CaasDeploy.Library.Macros;
 using DD.CBU.CaasDeploy.Library.Models;
 using DD.CBU.CaasDeploy.Library.Tests.Helpers;
-using DD.CBU.CaasDeploy.Library.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DD.CBU.CaasDeploy.Library.Tests.Macros
