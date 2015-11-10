@@ -24,5 +24,23 @@ namespace DD.CBU.CaasDeploy.Library.Models
         /// </summary>
         [JsonProperty("templateDescription")]
         public string TemplateDescription { get; set; }
+
+        /// <summary>
+        /// Gets or sets the product description.
+        /// </summary>
+        [JsonProperty("productDescription")]
+        public string ProductDescription { get; set; }
+
+        /// <summary>
+        /// Gets or sets the product category.
+        /// </summary>
+        [JsonProperty("productCategory")]
+        public string ProductCategory { get; set; }
+
+        /// <summary>
+        /// Gets or sets the product URL.
+        /// </summary>
+        [JsonProperty("productUrl")]
+        public string ProductUrl { get; set; }
     }
 }

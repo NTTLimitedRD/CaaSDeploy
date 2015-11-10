@@ -47,7 +47,7 @@ The templates are in JSON format and contain up to five sections: **metadata** (
 * **dependsOn**: An array with the resourceIds for any other resources which must be created before this one.
 * **resourceDefinition**: A blob of JSON that is passed to the CloudControl 2.0 API to create the resource (see [documentation](https://community.opsourcecloud.net/Browse.jsp?id=e5b1a66815188ad439f76183b401f026) for syntax).
 * **scripts**: For Server resources only, used to specify that you want to run scripts on the VM after deployment. Contains two child properties:
-  * **bundleFile**: A .zip file containing scripts and related files that should be uploaded to the server post-deployment
+  * **bundleFile**: Either a script file or a .zip file containing scripts and related files that should be uploaded to the server post-deployment. Zip files will be extracted automatically.
   * **onDeploy**: The command line to execute on the VM post deployment.
 
 **orchestration** defines an orchestration process that will be executed after the infrastructure is deployed. The JSON
