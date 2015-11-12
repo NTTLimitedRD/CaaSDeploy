@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+
+using DD.CBU.CaasDeploy.Library.Utilities;
+using Newtonsoft.Json;
 
 namespace DD.CBU.CaasDeploy.Library.Models
 {
@@ -11,12 +14,14 @@ namespace DD.CBU.CaasDeploy.Library.Models
         /// Gets or sets the path to the bundle file.
         /// </summary>
         [JsonProperty("bundleFile")]
-        public string BundleFile { get; set; }
+        [JsonConverter(typeof(JsonSingleOrArrayConverter<string>))]
+        public IList<string> BundleFile { get; set; }
 
         /// <summary>
         /// Gets or sets the on deploy.
         /// </summary>
         [JsonProperty("onDeploy")]
-        public string OnDeploy { get; set; }
+        [JsonConverter(typeof(JsonSingleOrArrayConverter<string>))]
+        public IList<string> OnDeploy { get; set; }
     }
 }

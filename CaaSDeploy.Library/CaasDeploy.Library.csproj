@@ -117,6 +117,7 @@
     <Compile Include="Utilities\HttpResponseMessageExtensions.cs" />
     <Compile Include="Utilities\IHttpClient.cs" />
     <Compile Include="Utilities\JsonEnumConverter.cs" />
+    <Compile Include="Utilities\JsonSingleOrArrayConverter.cs" />
     <Compile Include="Utilities\ResourceDependencies.cs" />
     <Compile Include="TemplateParser.cs" />
     <Compile Include="Models\DeploymentTemplate.cs" />

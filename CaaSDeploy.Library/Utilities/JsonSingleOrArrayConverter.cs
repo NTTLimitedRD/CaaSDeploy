@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace DD.CBU.CaasDeploy.Library.Utilities
 {
     /// <summary>
-    /// Serializes and deserializes enum values as strings instead of numbers.
+    /// Supports properties to be specified either a s a single value or an array.
     /// </summary>
-    public class JsonEnumConverter : JsonConverter
+    /// <typeparam name="T">The type of the array element</typeparam>
+    public class JsonSingleOrArrayConverter<T> : JsonConverter
     {
         /// <summary>
         /// Determines whether this instance can convert the specified object type.
@@ -15,7 +19,7 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
         /// <returns>True if the object can be converted.</returns>
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof(string);
+            return (objectType == typeof(List<T>));
         }
 
         /// <summary>
@@ -28,7 +32,14 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
         /// <returns>The deserialized value.</returns>
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            return Enum.Parse(objectType, (string)reader.Value);
+            JToken token = JToken.Load(reader);
+
+            if (token.Type == JTokenType.Array)
+            {
+                return token.ToObject<List<T>>();
+            }
+
+            return new List<T> { token.ToObject<T>() };
         }
 
         /// <summary>
@@ -39,7 +50,21 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
         /// <param name="serializer">The serializer.</param>
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            writer.WriteValue(value.ToString());
+            if (value != null && typeof(IEnumerable<T>).IsAssignableFrom(value.GetType()))
+            {
+                writer.WriteStartArray();
+
+                foreach (var item in (IEnumerable<T>)value)
+                {
+                    writer.WriteValue(item.ToString());
+                }
+
+                writer.WriteEndArray();
+            }
+            else
+            {
+                writer.WriteValue(value.ToString());
+            }
         }
     }
 }
