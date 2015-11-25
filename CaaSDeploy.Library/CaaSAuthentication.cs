@@ -42,7 +42,7 @@ namespace DD.CBU.CaasDeploy.Library
                     throw new ArgumentException($"The region with key '{regionKey}' does not exist in the app.config file.");
                 }
 
-                var responseSteam = await client.GetStreamAsync(region.BaseUrl);
+                var responseSteam = await client.GetStreamAsync(region.BaseUrl + AuthUrl);
                 var xdoc = XDocument.Load(responseSteam);
                 XNamespace ns5 = "http://oec.api.opsource.net/schemas/directory";
                 var orgId = xdoc.Root.Element(ns5 + "orgId").Value;
