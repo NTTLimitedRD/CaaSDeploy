@@ -107,6 +107,14 @@ namespace DD.CBU.CaasDeploy.Library
             if (existingResources.Count > 0)
             {
                 tasks.Add(new LoadExistingResourcesTask(existingResources));
+
+                foreach (var existingResource in existingResources)
+                {
+                    if ((existingResource.Scripts != null) && (existingResource.ResourceType == ResourceType.Server))
+                    {
+                        tasks.Add(new ExecuteScriptTask(existingResource, scriptPath));
+                    }
+                }
             }
 
             // Create the tasks to deploy new resources.
