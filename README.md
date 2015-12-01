@@ -54,13 +54,15 @@ The templates are in JSON format and contain up to five sections: **metadata** (
 elmement must contain a **provider** attribute that specifies the .NET type name of the orchestration provider. All other
 properties and nested objects will vary depending on the provider implementation.
 
-JSON properties within the template may use the following macros to retrieve values from parameters or from the output after creating another resource:
+## Macros
+
+JSON properties within the template may use the following macros to retrieve values from parameters or to access special resources and functionality:
 
 * **$parameters['*paramName*']**: Retrieves the value of the specfied parameter
 * **$resources['*resourceId*']._propertyPath_**: Retrieves the value of the requested property for a previously created resource (including those defined in **existingResources**). The properties can be several levels deep, e.g. "$resources['MyVM'].networkInfo.primaryNic.privateIpv4"
 * **$serverImage['*dataCenterId*', '*ImageName*']**: Retrieves the base server image with the supplied name from the supplied data center.
 * **$customerImage['*dataCenterId*', '*ImageName*']**: Retrieves the customer server image with the supplied name from the supplied data center.
-* **$nextAvailablePublicIP['*networkDomainId*']**: Retrieves the next available Public IP Address for a network domain. A new Public Ip Block will be added only if necessary.
+* **$nextAvailablePublicIP['*networkDomainId*']**: Retrieves the next available Public IP Address for a network domain. A new Public IP Block will be added if necessary.
 
 ## Sample Template
 This template deploys a new Network Domain with a VNET, a Public IP Block and a Server. It also creates a NAT rule mapping the 
@@ -128,7 +130,7 @@ public IP to the private IP, and opens firewall ports for web and RDP traffic.
         "PublicIpBlock"
       ]
     },
-        {
+    {
       "resourceType": "FirewallRule",
       "resourceId": "AllowRDPFirewallRule",
       "resourceDefinition": {
