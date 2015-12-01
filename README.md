@@ -60,7 +60,8 @@ JSON properties within the template may use the following macros to retrieve val
 * **$resources['*resourceId*']._propertyPath_**: Retrieves the value of the requested property for a previously created resource (including those defined in **existingResources**). The properties can be several levels deep, e.g. "$resources['MyVM'].networkInfo.primaryNic.privateIpv4"
 * **$serverImage['*dataCenterId*', '*ImageName*']**: Retrieves the base server image with the supplied name from the supplied data center.
 * **$customerImage['*dataCenterId*', '*ImageName*']**: Retrieves the customer server image with the supplied name from the supplied data center.
-* 
+* **$nextAvailablePublicIP['*networkDomainId*']**: Retrieves the next available Public IP Address for a network domain. A new Public Ip Block will be added only if necessary.
+
 ## Sample Template
 This template deploys a new Network Domain with a VNET, a Public IP Block and a Server. It also creates a NAT rule mapping the 
 public IP to the private IP, and opens firewall ports for web and RDP traffic.

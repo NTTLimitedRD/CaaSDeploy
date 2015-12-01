@@ -86,6 +86,7 @@
   <ItemGroup>
     <Compile Include="ComputeConfigurationSectionTests.cs" />
     <Compile Include="Helpers\FakeHttpClient.cs" />
+    <Compile Include="Macros\NextAvailablePublicIpMacroTests.cs" />
     <Compile Include="Macros\ImageMacroTests.cs" />
     <Compile Include="Macros\ResourcesMacroTests.cs" />
     <Compile Include="Macros\ParametersMacroTests.cs" />
@@ -139,6 +140,8 @@
   <ItemGroup>
     <Content Include="Resources\Responses\Image_Get_NotFound.xml" />
     <Content Include="Resources\Responses\Image_Get.xml" />
+    <None Include="Resources\Responses\NextAvailablePublicIp_PublicIpBlock_Get.json" />
+    <None Include="Resources\Responses\NextAvailablePublicIp_ReservedPublicIpv4Address_Get.json" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

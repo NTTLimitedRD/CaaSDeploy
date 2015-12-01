@@ -19,7 +19,8 @@ namespace DD.CBU.CaasDeploy.Library
         {
             new ParametersMacro(),
             new ResourcesMacro(),
-            new ImageMacro()
+            new ImageMacro(),
+            new NextAvailablePublicIpMacro()
         };
 
         /// <summary>

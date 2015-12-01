@@ -1,0 +1,9 @@
+﻿{
+  "ip":[
+    {"value":"168.128.52.10","datacenterId":"AU10","ipBlockId":"a3caada4-8d20-11e5-b393-d4bed9b19967","networkDomainId":"e71d10b1-2b39-454b-ac27-e6fcb366fcd3"}
+  ],
+  "pageNumber":1,
+  "pageCount":1,
+  "totalCount":1,
+  "pageSize":250
+}

@@ -82,6 +82,7 @@
     <Compile Include="Config\RegionConfigurationElementCollection.cs" />
     <Compile Include="Contracts\RuntimeContext.cs" />
     <Compile Include="Contracts\IMacro.cs" />
+    <Compile Include="Macros\NextAvailablePublicIpMacro.cs" />
     <Compile Include="Macros\ParametersMacro.cs" />
     <Compile Include="Macros\ImageMacro.cs" />
     <Compile Include="Macros\ResourcesMacro.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Models\Error.cs" />
     <Compile Include="TaskBuilder.cs" />
     <Compile Include="Tasks\SetOutputParametersTask.cs" />
+    <Compile Include="MacroException.cs" />
     <Compile Include="TemplateParserException.cs" />
     <Compile Include="Models\CaasAccountDetails.cs" />
     <Compile Include="Models\CaasApiUrls.cs" />
