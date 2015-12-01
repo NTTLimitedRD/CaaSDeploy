@@ -1,0 +1,14 @@
+﻿{
+  "operation": "ADD_PUBLIC_IP_BLOCK",
+  "responseCode": "OK",
+  "message": "Public IPv4 Address Block has been added successfully to Network Domain <networkDomainId>.",
+  "info": [
+    {
+    "name": "publicIpBlockId",
+    "value": "4487241a-f0ca-11e3-9315-d4bed9b167ba"
+    }
+  ],
+  "warning": [],
+  "error": [],
+  "requestId": "NA9/2014-04-14T13:37:20/62f06368-c3fb-11e3-b29c-001517c4643e"
+}

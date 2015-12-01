@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -18,9 +19,24 @@ namespace DD.CBU.CaasDeploy.Library.Macros
     public sealed class NextAvailablePublicIpMacro : IMacro
     {
         /// <summary>
+        /// The list reserved public IP addresses URL
+        /// </summary>
+        private const string ListReservedPublicIpv4AddressesUrl = "{0}/caas/2.0/{1}/network/reservedPublicIpv4Address?networkDomainId={2}";
+
+        /// <summary>
+        /// The list public IP blocks URL
+        /// </summary>
+        private const string ListPublicIpBlocksUrl = "{0}/caas/2.0/{1}/network/publicIpBlock?networkDomainId={2}";
+
+        /// <summary>
+        /// The add public IP block URL
+        /// </summary>
+        private const string AddPublicIpBlockUrl = "{0}/caas/2.0/{1}/network/addPublicIpBlock";
+
+        /// <summary>
         /// The macro regex.
         /// </summary>
-        private static readonly Regex ImageRegex = new Regex(@"\$nextAvailablePublicIP\['([^']*)'\]");
+        private static readonly Regex ImageRegex = new Regex(@"\$nextAvailablePublicIP\['([^']*)'\]", RegexOptions.IgnoreCase);
 
         /// <summary>
         /// Substitutes the property tokens in the supplied string.
@@ -49,10 +65,10 @@ namespace DD.CBU.CaasDeploy.Library.Macros
 
                     if (publicIps.Count == 0)
                     {
-                        throw new MacroException("No more public IPs available.");
+                        throw new InvalidOperationException("Failed to find free public IP address.");
                     }
 
-                    output = publicIps[0];
+                    output = output.Replace(match.Groups[0].Value, publicIps[0]);
                 }
             }
 
@@ -72,29 +88,27 @@ namespace DD.CBU.CaasDeploy.Library.Macros
             using (var client = HttpClientFactory.GetClient(accountDetails, "application/json"))
             {
                 // Get the reserved public IPs.
-                var url = string.Format("{0}/caas/2.0/{1}/network/reservedPublicIpv4Address?networkDomainId={2}", accountDetails.BaseUrl, accountDetails.OrgId, networkDomainId);
+                var url = string.Format(ListReservedPublicIpv4AddressesUrl, accountDetails.BaseUrl, accountDetails.OrgId, networkDomainId);
                 var response = await client.GetAsync(url);
                 response.ThrowForHttpFailure();
 
                 var responseBody = await response.Content.ReadAsStringAsync();
                 var document = JObject.Parse(responseBody);
-                var reservedPublicIps = (document.Property("ip").Value as JArray).Cast<JObject>()
+                var reservedPublicIps = document["ip"].Value<JArray>()
+                    .Cast<JObject>()
                     .Select(e => e["value"].Value<string>())
                     .ToList();
 
                 // Get the public IP blocks.
-                url = string.Format("{0}/caas/2.0/{1}/network/publicIpBlock?networkDomainId={2}", accountDetails.BaseUrl, accountDetails.OrgId, networkDomainId);
+                url = string.Format(ListPublicIpBlocksUrl, accountDetails.BaseUrl, accountDetails.OrgId, networkDomainId);
                 response = await client.GetAsync(url);
                 response.ThrowForHttpFailure();
 
                 responseBody = await response.Content.ReadAsStringAsync();
                 document = JObject.Parse(responseBody);
-                var ipBlocks = (document.Property("publicIpBlock").Value as JArray).Cast<JObject>()
-                    .Select(e => new
-                    {
-                        BaseIp = e["baseIp"].Value<string>(),
-                        Size = e["size"].Value<int>()
-                    })
+                var ipBlocks = document["publicIpBlock"].Value<JArray>()
+                    .Cast<JObject>()
+                    .Select(e => new { BaseIp = e["baseIp"].Value<string>(), Size = e["size"].Value<int>() })
                     .ToList();
 
                 // Get the available public IPs.
@@ -102,16 +116,7 @@ namespace DD.CBU.CaasDeploy.Library.Macros
                 {
                     for (int offset = 0; offset < ipBlock.Size; offset++)
                     {
-                        var segments = ipBlock.BaseIp.Split('.');
-                        var segment = int.Parse(segments.Last()) + offset;
-                        if (segment > 255)
-                        {
-                            segment -= 256;
-                        }
-
-                        segments[3] = segment.ToString();
-                        var ipAddress = string.Join(".", segments);
-
+                        var ipAddress = IncrementIpAddress(ipBlock.BaseIp, offset);
                         if (!reservedPublicIps.Contains(ipAddress))
                         {
                             result.Add(ipAddress);
@@ -133,11 +138,35 @@ namespace DD.CBU.CaasDeploy.Library.Macros
         {
             using (var client = HttpClientFactory.GetClient(accountDetails, "application/json"))
             {
-                var url = string.Format("{0}/caas/2.0/{1}/network/addPublicIpBlock", accountDetails.BaseUrl, accountDetails.OrgId);
+                var url = string.Format(AddPublicIpBlockUrl, accountDetails.BaseUrl, accountDetails.OrgId);
                 var request = new JObject(new JProperty("networkDomainId", networkDomainId));
                 var response = await client.PostAsync(url, new StringContent(request.ToString(), Encoding.UTF8, "application/json"));
                 response.ThrowForHttpFailure();
             }
+        }
+
+        /// <summary>
+        /// Increments the IP address.
+        /// </summary>
+        /// <param name="baseIp">The base ip.</param>
+        /// <param name="offset">The offset.</param>
+        /// <returns>The incremented IP address.</returns>
+        private string IncrementIpAddress(string baseIp, int offset)
+        {
+            if (offset == 0)
+            {
+                return baseIp;
+            }
+
+            var segments = baseIp.Split('.');
+            var segment = int.Parse(segments.Last()) + offset;
+            if (segment > 255)
+            {
+                segment -= 256;
+            }
+
+            segments[3] = segment.ToString();
+            return string.Join(".", segments);
         }
     }
 }

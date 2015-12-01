@@ -93,7 +93,6 @@
     <Compile Include="Models\Error.cs" />
     <Compile Include="TaskBuilder.cs" />
     <Compile Include="Tasks\SetOutputParametersTask.cs" />
-    <Compile Include="MacroException.cs" />
     <Compile Include="TemplateParserException.cs" />
     <Compile Include="Models\CaasAccountDetails.cs" />
     <Compile Include="Models\CaasApiUrls.cs" />
@@ -120,6 +119,7 @@
     <Compile Include="Utilities\IHttpClient.cs" />
     <Compile Include="Utilities\JsonEnumConverter.cs" />
     <Compile Include="Utilities\JsonSingleOrArrayConverter.cs" />
+    <Compile Include="Utilities\MacroUtilities.cs" />
     <Compile Include="Utilities\ResourceDependencies.cs" />
     <Compile Include="TemplateParser.cs" />
     <Compile Include="Models\DeploymentTemplate.cs" />

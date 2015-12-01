@@ -103,6 +103,8 @@
     <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="Resources\Responses\GenericError.json" />
+    <None Include="Resources\Responses\NextAvailablePublicIp_PublicIpBlock_Add.json" />
+    <None Include="Resources\Responses\NextAvailablePublicIp_PublicIpBlock_Get_Empty.json" />
     <None Include="Resources\Responses\PublicIpBlock_Add.json" />
     <None Include="Resources\Responses\NatRule_Create.json" />
     <None Include="Resources\Responses\NatRule_Delete.json" />
