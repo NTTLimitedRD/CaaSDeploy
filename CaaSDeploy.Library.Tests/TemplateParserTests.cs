@@ -45,11 +45,11 @@ namespace DD.CBU.CaasDeploy.Library.Tests
         {
             var client = new FakeHttpClient();
             client.AddResponse("/network/networkDomain/d5791a6d-2b69-47e2-be06-f26a2ec4bff8", "NetworkDomain_Get.json");
-            client.AddResponse("/network/vlan?name=Unit Test VLAN", "GenericNotFound.json");
+            client.AddResponse("/network/vlan?networkDomainId=d5791a6d-2b69-47e2-be06-f26a2ec4bff8&name=Unit Test VLAN", "GenericNotFound.json");
             client.AddResponse("/network/deployVlan", "Vlan_Delpoy.json");
             client.AddResponse("/network/vlan/997e2084-00b1-4d1d-96ce-099946679c6f", "Vlan_Get.json");
             client.AddResponse("/imageWithDiskSpeed?name=RedHat 6 64-bit 2 CPU", "Image_Get.xml");
-            client.AddResponse("/server/server?name=Unit Test Server", "GenericNotFound.json");
+            client.AddResponse("/server/server?networkDomainId=d5791a6d-2b69-47e2-be06-f26a2ec4bff8&name=Unit Test Server", "GenericNotFound.json");
             client.AddResponse("/server/deployServer", "Server_Deploy.json");
             client.AddResponse("/server/server/b42b40e1-351a-4df9-b726-2ccff01f2767", "Server_Get.json");
             client.AddResponse("/network/addPublicIpBlock", "PublicIpBlock_Add.json");
@@ -77,7 +77,7 @@ namespace DD.CBU.CaasDeploy.Library.Tests
         {
             var client = new FakeHttpClient();
             client.AddResponse("/network/networkDomain/d5791a6d-2b69-47e2-be06-f26a2ec4bff8", "NetworkDomain_Get.json");
-            client.AddResponse("/network/vlan?name=Unit Test VLAN", "GenericNotFound.json");
+            client.AddResponse("/network/vlan?networkDomainId=d5791a6d-2b69-47e2-be06-f26a2ec4bff8&name=Unit Test VLAN", "GenericNotFound.json");
             client.AddResponse("/network/deployVlan", "GenericError.json", HttpStatusCode.BadRequest);
 
             var templateFile = Path.Combine(_resourceFolder, "StandardTemplate.json");

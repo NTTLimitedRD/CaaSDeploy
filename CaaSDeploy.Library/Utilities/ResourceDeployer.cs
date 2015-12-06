@@ -23,14 +23,14 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
         private readonly static Dictionary<ResourceType, CaasApiUrls> ResourceApis = new Dictionary<ResourceType, CaasApiUrls>
         {
             { ResourceType.NetworkDomain, new CaasApiUrls { DeployUrl = "/network/deployNetworkDomain", GetUrl = "/network/networkDomain/{0}", ListUrl = "/network/networkDomain?name={0}", DeleteUrl = "/network/deleteNetworkDomain", EditUrl = "/network/editNetworkDomain" } },
-            { ResourceType.Vlan, new CaasApiUrls { DeployUrl = "/network/deployVlan", GetUrl = "/network/vlan/{0}", ListUrl = "/network/vlan?name={0}", DeleteUrl = "/network/deleteVlan", EditUrl = "/network/editVlan" } },
-            { ResourceType.Server, new CaasApiUrls { DeployUrl = "/server/deployServer", GetUrl = "/server/server/{0}", ListUrl = "/server/server?name={0}", DeleteUrl = "/server/deleteServer", EditUrl = null } },
-            { ResourceType.FirewallRule, new CaasApiUrls { DeployUrl = "/network/createFirewallRule", GetUrl = "/network/firewallRule/{0}", ListUrl = "/network/firewallRule?name={0}&networkDomainId={1}", DeleteUrl = "/network/deleteFirewallRule", EditUrl = "/network/editFirewallRule" } },
+            { ResourceType.Vlan, new CaasApiUrls { DeployUrl = "/network/deployVlan", GetUrl = "/network/vlan/{0}", ListUrl = "/network/vlan?networkDomainId={0}&name={1}", DeleteUrl = "/network/deleteVlan", EditUrl = "/network/editVlan" } },
+            { ResourceType.Server, new CaasApiUrls { DeployUrl = "/server/deployServer", GetUrl = "/server/server/{0}", ListUrl = "/server/server?networkDomainId={0}&name={1}", DeleteUrl = "/server/deleteServer", EditUrl = null } },
+            { ResourceType.FirewallRule, new CaasApiUrls { DeployUrl = "/network/createFirewallRule", GetUrl = "/network/firewallRule/{0}", ListUrl = "/network/firewallRule?networkDomainId={0}&name={1}", DeleteUrl = "/network/deleteFirewallRule", EditUrl = "/network/editFirewallRule" } },
             { ResourceType.PublicIpBlock, new CaasApiUrls { DeployUrl = "/network/addPublicIpBlock", GetUrl = "/network/publicIpBlock/{0}", ListUrl = null, DeleteUrl = "/network/removePublicIpBlock", EditUrl = null } },
             { ResourceType.NatRule, new CaasApiUrls { DeployUrl = "/network/createNatRule", GetUrl = "/network/natRule/{0}", ListUrl = "/network/natRule?networkDomainId={0}&internalIp={1}", DeleteUrl = "/network/deleteNatRule", EditUrl = null } },
-            { ResourceType.VirtualListener, new CaasApiUrls { DeployUrl = "/networkDomainVip/createVirtualListener", GetUrl = "/networkDomainVip/virtualListener/{0}", ListUrl = "/networkDomainVip/virtualListener?name={0}", DeleteUrl = "/networkDomainVip/deleteVirtualListener", EditUrl = "/networkDomainVip/editVirtualListener" } },
-            { ResourceType.Pool, new CaasApiUrls { DeployUrl = "/networkDomainVip/createPool", GetUrl = "/networkDomainVip/pool/{0}", ListUrl = "/networkDomainVip/pool?name={0}", DeleteUrl = "/networkDomainVip/deletePool", EditUrl = "/networkDomainVip/editPool" } },
-            { ResourceType.Node, new CaasApiUrls { DeployUrl = "/networkDomainVip/createNode", GetUrl = "/networkDomainVip/node/{0}", ListUrl = "/networkDomainVip/node?name={0}", DeleteUrl = "/networkDomainVip/deleteNode",  EditUrl = "/networkDomainVip/editNode" } },
+            { ResourceType.VirtualListener, new CaasApiUrls { DeployUrl = "/networkDomainVip/createVirtualListener", GetUrl = "/networkDomainVip/virtualListener/{0}", ListUrl = "/networkDomainVip/virtualListener?networkDomainId={0}&name={1}", DeleteUrl = "/networkDomainVip/deleteVirtualListener", EditUrl = "/networkDomainVip/editVirtualListener" } },
+            { ResourceType.Pool, new CaasApiUrls { DeployUrl = "/networkDomainVip/createPool", GetUrl = "/networkDomainVip/pool/{0}", ListUrl = "/networkDomainVip/pool?networkDomainId={0}&name={1}", DeleteUrl = "/networkDomainVip/deletePool", EditUrl = "/networkDomainVip/editPool" } },
+            { ResourceType.Node, new CaasApiUrls { DeployUrl = "/networkDomainVip/createNode", GetUrl = "/networkDomainVip/node/{0}", ListUrl = "/networkDomainVip/node?networkDomainId={0}&name={1}", DeleteUrl = "/networkDomainVip/deleteNode",  EditUrl = "/networkDomainVip/editNode" } },
             { ResourceType.PoolMember, new CaasApiUrls { DeployUrl = "/networkDomainVip/addPoolMember", GetUrl = "/networkDomainVip/poolMember/{0}", ListUrl = "/networkDomainVip/poolMember?poolId={0}&nodeId={1}", DeleteUrl = "/networkDomainVip/removePoolMember", EditUrl = "/networkDomainVip/editPoolMember" } },
         };
 
@@ -392,12 +392,18 @@ namespace DD.CBU.CaasDeploy.Library.Utilities
         {
             switch (_resourceType)
             {
+                case ResourceType.Vlan:
+                case ResourceType.FirewallRule:
+                case ResourceType.VirtualListener:
+                case ResourceType.Pool:
+                case ResourceType.Node:
+                    return new[] { resourceDefinition["networkDomainId"].Value<string>(), resourceDefinition["name"].Value<string>() };
                 case ResourceType.PoolMember:
                     return new[] { resourceDefinition["poolId"].Value<string>(), resourceDefinition["nodeId"].Value<string>(), };
                 case ResourceType.NatRule:
                     return new[] { resourceDefinition["networkDomainId"].Value<string>(), resourceDefinition["internalIp"].Value<string>() };
-                case ResourceType.FirewallRule:
-                    return new[] { resourceDefinition["name"].Value<string>(), resourceDefinition["networkDomainId"].Value<string>() };
+                case ResourceType.Server:
+                    return new[] { resourceDefinition["networkInfo"]["networkDomainId"].Value<string>(), resourceDefinition["name"].Value<string>() };
                 default:
                     return new[] { resourceDefinition["name"].Value<string>() };
             }
